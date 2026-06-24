@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "3765cb7cb5e6610f4efdeb2a6ec3e20a0228d4bf75207ac58c83fbec5a01ea4c",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/workspace_applyEdit_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/workspace_applyEdit",
+  "status": "ADMITTED"
+}

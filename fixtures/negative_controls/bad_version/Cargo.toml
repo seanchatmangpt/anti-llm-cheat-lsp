@@ -1,0 +1,3 @@
+[package]
+name = "bad_version_fixture"
+version = "1.0.0"

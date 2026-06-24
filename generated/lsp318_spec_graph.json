@@ -1,0 +1,761 @@
+[
+  {
+    "method": "$/cancelRequest",
+    "kind": "notification",
+    "direction": "both"
+  },
+  {
+    "method": "$/logTrace",
+    "kind": "notification",
+    "direction": "serverToClient"
+  },
+  {
+    "method": "$/progress",
+    "kind": "notification",
+    "direction": "both"
+  },
+  {
+    "method": "$/setTrace",
+    "kind": "notification",
+    "direction": "clientToServer"
+  },
+  {
+    "method": "callHierarchy/incomingCalls",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "callHierarchyProvider",
+      "textDocument.callHierarchy"
+    ]
+  },
+  {
+    "method": "callHierarchy/outgoingCalls",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "callHierarchyProvider",
+      "textDocument.callHierarchy"
+    ]
+  },
+  {
+    "method": "client/registerCapability",
+    "kind": "request",
+    "direction": "serverToClient"
+  },
+  {
+    "method": "client/unregisterCapability",
+    "kind": "request",
+    "direction": "serverToClient"
+  },
+  {
+    "method": "codeAction/resolve",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "codeActionProvider.resolveProvider",
+      "textDocument.codeAction.resolveSupport"
+    ]
+  },
+  {
+    "method": "codeLens/resolve",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "codeLensProvider.resolveProvider",
+      "textDocument.codeLens.resolveSupport"
+    ]
+  },
+  {
+    "method": "completionItem/resolve",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "completionProvider.resolveProvider",
+      "textDocument.completion.completionItem.resolveSupport"
+    ]
+  },
+  {
+    "method": "documentLink/resolve",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "documentLinkProvider.resolveProvider",
+      "textDocument.documentLink"
+    ]
+  },
+  {
+    "method": "exit",
+    "kind": "notification",
+    "direction": "clientToServer"
+  },
+  {
+    "method": "initialize",
+    "kind": "request",
+    "direction": "clientToServer"
+  },
+  {
+    "method": "initialized",
+    "kind": "notification",
+    "direction": "clientToServer"
+  },
+  {
+    "method": "inlayHint/resolve",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "inlayHintProvider.resolveProvider",
+      "textDocument.inlayHint.resolveSupport"
+    ]
+  },
+  {
+    "method": "notebookDocument/didChange",
+    "kind": "notification",
+    "direction": "clientToServer"
+  },
+  {
+    "method": "notebookDocument/didClose",
+    "kind": "notification",
+    "direction": "clientToServer"
+  },
+  {
+    "method": "notebookDocument/didOpen",
+    "kind": "notification",
+    "direction": "clientToServer"
+  },
+  {
+    "method": "notebookDocument/didSave",
+    "kind": "notification",
+    "direction": "clientToServer"
+  },
+  {
+    "method": "shutdown",
+    "kind": "request",
+    "direction": "clientToServer"
+  },
+  {
+    "method": "telemetry/event",
+    "kind": "notification",
+    "direction": "serverToClient"
+  },
+  {
+    "method": "textDocument/codeAction",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "codeActionProvider",
+      "textDocument.codeAction"
+    ]
+  },
+  {
+    "method": "textDocument/codeLens",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "codeLensProvider",
+      "textDocument.codeLens"
+    ]
+  },
+  {
+    "method": "textDocument/colorPresentation",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "colorProvider",
+      "textDocument.colorProvider"
+    ]
+  },
+  {
+    "method": "textDocument/completion",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "completionProvider",
+      "textDocument.completion"
+    ]
+  },
+  {
+    "method": "textDocument/declaration",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "declarationProvider",
+      "textDocument.declaration"
+    ]
+  },
+  {
+    "method": "textDocument/definition",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "definitionProvider",
+      "textDocument.definition"
+    ]
+  },
+  {
+    "method": "textDocument/diagnostic",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "diagnosticProvider",
+      "textDocument.diagnostic"
+    ]
+  },
+  {
+    "method": "textDocument/didChange",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "textDocument.synchronization",
+      "textDocumentSync"
+    ]
+  },
+  {
+    "method": "textDocument/didClose",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "textDocument.synchronization",
+      "textDocumentSync.openClose"
+    ]
+  },
+  {
+    "method": "textDocument/didOpen",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "textDocument.synchronization",
+      "textDocumentSync.openClose"
+    ]
+  },
+  {
+    "method": "textDocument/didSave",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "textDocument.synchronization.didSave",
+      "textDocumentSync.save"
+    ]
+  },
+  {
+    "method": "textDocument/documentColor",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "colorProvider",
+      "textDocument.colorProvider"
+    ]
+  },
+  {
+    "method": "textDocument/documentHighlight",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "documentHighlightProvider",
+      "textDocument.documentHighlight"
+    ]
+  },
+  {
+    "method": "textDocument/documentLink",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "documentLinkProvider",
+      "textDocument.documentLink"
+    ]
+  },
+  {
+    "method": "textDocument/documentSymbol",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "documentSymbolProvider",
+      "textDocument.documentSymbol"
+    ]
+  },
+  {
+    "method": "textDocument/foldingRange",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "foldingRangeProvider",
+      "textDocument.foldingRange"
+    ]
+  },
+  {
+    "method": "textDocument/formatting",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "documentFormattingProvider",
+      "textDocument.formatting"
+    ]
+  },
+  {
+    "method": "textDocument/hover",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "hoverProvider",
+      "textDocument.hover"
+    ]
+  },
+  {
+    "method": "textDocument/implementation",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "implementationProvider",
+      "textDocument.implementation"
+    ]
+  },
+  {
+    "method": "textDocument/inlayHint",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "inlayHintProvider",
+      "textDocument.inlayHint"
+    ]
+  },
+  {
+    "method": "textDocument/inlineCompletion",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "inlineCompletionProvider",
+      "textDocument.inlineCompletion"
+    ]
+  },
+  {
+    "method": "textDocument/inlineValue",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "inlineValueProvider",
+      "textDocument.inlineValue"
+    ]
+  },
+  {
+    "method": "textDocument/linkedEditingRange",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "linkedEditingRangeProvider",
+      "textDocument.linkedEditingRange"
+    ]
+  },
+  {
+    "method": "textDocument/moniker",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "monikerProvider",
+      "textDocument.moniker"
+    ]
+  },
+  {
+    "method": "textDocument/onTypeFormatting",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "documentOnTypeFormattingProvider",
+      "textDocument.onTypeFormatting"
+    ]
+  },
+  {
+    "method": "textDocument/prepareCallHierarchy",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "callHierarchyProvider",
+      "textDocument.callHierarchy"
+    ]
+  },
+  {
+    "method": "textDocument/prepareRename",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "renameProvider.prepareProvider",
+      "textDocument.rename.prepareSupport"
+    ]
+  },
+  {
+    "method": "textDocument/prepareTypeHierarchy",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "textDocument.typeHierarchy",
+      "typeHierarchyProvider"
+    ]
+  },
+  {
+    "method": "textDocument/publishDiagnostics",
+    "kind": "notification",
+    "direction": "serverToClient",
+    "capability_paths": [
+      "textDocument.publishDiagnostics"
+    ]
+  },
+  {
+    "method": "textDocument/rangeFormatting",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "documentRangeFormattingProvider",
+      "textDocument.rangeFormatting"
+    ]
+  },
+  {
+    "method": "textDocument/rangesFormatting",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "documentRangeFormattingProvider.rangesSupport",
+      "textDocument.rangeFormatting.rangesSupport"
+    ]
+  },
+  {
+    "method": "textDocument/references",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "referencesProvider",
+      "textDocument.references"
+    ]
+  },
+  {
+    "method": "textDocument/rename",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "renameProvider",
+      "textDocument.rename"
+    ]
+  },
+  {
+    "method": "textDocument/selectionRange",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "selectionRangeProvider",
+      "textDocument.selectionRange"
+    ]
+  },
+  {
+    "method": "textDocument/semanticTokens/full",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "semanticTokensProvider",
+      "textDocument.semanticTokens"
+    ]
+  },
+  {
+    "method": "textDocument/semanticTokens/full/delta",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "semanticTokensProvider.full.delta",
+      "textDocument.semanticTokens.requests.full.delta"
+    ]
+  },
+  {
+    "method": "textDocument/semanticTokens/range",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "semanticTokensProvider.range",
+      "textDocument.semanticTokens.requests.range"
+    ]
+  },
+  {
+    "method": "textDocument/signatureHelp",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "signatureHelpProvider",
+      "textDocument.signatureHelp"
+    ]
+  },
+  {
+    "method": "textDocument/typeDefinition",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "textDocument.typeDefinition",
+      "typeDefinitionProvider"
+    ]
+  },
+  {
+    "method": "textDocument/willSave",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "textDocument.synchronization.willSave",
+      "textDocumentSync.willSave"
+    ]
+  },
+  {
+    "method": "textDocument/willSaveWaitUntil",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "textDocument.synchronization.willSaveWaitUntil",
+      "textDocumentSync.willSaveWaitUntil"
+    ]
+  },
+  {
+    "method": "typeHierarchy/subtypes",
+    "kind": "request",
+    "direction": "clientToServer"
+  },
+  {
+    "method": "typeHierarchy/supertypes",
+    "kind": "request",
+    "direction": "clientToServer"
+  },
+  {
+    "method": "window/logMessage",
+    "kind": "notification",
+    "direction": "serverToClient"
+  },
+  {
+    "method": "window/showDocument",
+    "kind": "request",
+    "direction": "serverToClient",
+    "capability_paths": [
+      "window.showDocument.support"
+    ]
+  },
+  {
+    "method": "window/showMessage",
+    "kind": "notification",
+    "direction": "serverToClient",
+    "capability_paths": [
+      "window.showMessage"
+    ]
+  },
+  {
+    "method": "window/showMessageRequest",
+    "kind": "request",
+    "direction": "serverToClient",
+    "capability_paths": [
+      "window.showMessage"
+    ]
+  },
+  {
+    "method": "window/workDoneProgress/cancel",
+    "kind": "notification",
+    "direction": "clientToServer"
+  },
+  {
+    "method": "window/workDoneProgress/create",
+    "kind": "request",
+    "direction": "serverToClient",
+    "capability_paths": [
+      "window.workDoneProgress"
+    ]
+  },
+  {
+    "method": "workspace/applyEdit",
+    "kind": "request",
+    "direction": "serverToClient",
+    "capability_paths": [
+      "workspace.applyEdit"
+    ]
+  },
+  {
+    "method": "workspace/codeLens/refresh",
+    "kind": "request",
+    "direction": "serverToClient",
+    "capability_paths": [
+      "workspace.codeLens"
+    ]
+  },
+  {
+    "method": "workspace/configuration",
+    "kind": "request",
+    "direction": "serverToClient",
+    "capability_paths": [
+      "workspace.configuration"
+    ]
+  },
+  {
+    "method": "workspace/diagnostic",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "diagnosticProvider.workspaceDiagnostics",
+      "workspace.diagnostics"
+    ]
+  },
+  {
+    "method": "workspace/diagnostic/refresh",
+    "kind": "request",
+    "direction": "serverToClient",
+    "capability_paths": [
+      "workspace.diagnostics.refreshSupport"
+    ]
+  },
+  {
+    "method": "workspace/didChangeConfiguration",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "workspace.didChangeConfiguration"
+    ]
+  },
+  {
+    "method": "workspace/didChangeWatchedFiles",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "workspace.didChangeWatchedFiles"
+    ]
+  },
+  {
+    "method": "workspace/didChangeWorkspaceFolders",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "workspace.workspaceFolders.changeNotifications"
+    ]
+  },
+  {
+    "method": "workspace/didCreateFiles",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "workspace.fileOperations.didCreate",
+      "workspace.fileOperations.didCreate"
+    ]
+  },
+  {
+    "method": "workspace/didDeleteFiles",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "workspace.fileOperations.didDelete",
+      "workspace.fileOperations.didDelete"
+    ]
+  },
+  {
+    "method": "workspace/didRenameFiles",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "workspace.fileOperations.didRename",
+      "workspace.fileOperations.didRename"
+    ]
+  },
+  {
+    "method": "workspace/executeCommand",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "executeCommandProvider",
+      "workspace.executeCommand"
+    ]
+  },
+  {
+    "method": "workspace/foldingRange/refresh",
+    "kind": "request",
+    "direction": "serverToClient",
+    "capability_paths": [
+      "workspace.foldingRange.refreshSupport"
+    ]
+  },
+  {
+    "method": "workspace/inlayHint/refresh",
+    "kind": "request",
+    "direction": "serverToClient",
+    "capability_paths": [
+      "workspace.inlayHint.refreshSupport"
+    ]
+  },
+  {
+    "method": "workspace/inlineValue/refresh",
+    "kind": "request",
+    "direction": "serverToClient",
+    "capability_paths": [
+      "workspace.inlineValue.refreshSupport"
+    ]
+  },
+  {
+    "method": "workspace/semanticTokens/refresh",
+    "kind": "request",
+    "direction": "serverToClient",
+    "capability_paths": [
+      "workspace.semanticTokens.refreshSupport"
+    ]
+  },
+  {
+    "method": "workspace/symbol",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "workspace.symbol",
+      "workspaceSymbolProvider"
+    ]
+  },
+  {
+    "method": "workspace/textDocumentContent",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "workspace.textDocumentContent",
+      "workspace.textDocumentContent"
+    ]
+  },
+  {
+    "method": "workspace/textDocumentContent/refresh",
+    "kind": "request",
+    "direction": "serverToClient"
+  },
+  {
+    "method": "workspace/willCreateFiles",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "workspace.fileOperations.willCreate",
+      "workspace.fileOperations.willCreate"
+    ]
+  },
+  {
+    "method": "workspace/willDeleteFiles",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "workspace.fileOperations.willDelete",
+      "workspace.fileOperations.willDelete"
+    ]
+  },
+  {
+    "method": "workspace/willRenameFiles",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "workspace.fileOperations.willRename",
+      "workspace.fileOperations.willRename"
+    ]
+  },
+  {
+    "method": "workspace/workspaceFolders",
+    "kind": "request",
+    "direction": "serverToClient",
+    "capability_paths": [
+      "workspace.workspaceFolders",
+      "workspace.workspaceFolders"
+    ]
+  },
+  {
+    "method": "workspaceSymbol/resolve",
+    "kind": "request",
+    "direction": "clientToServer",
+    "capability_paths": [
+      "workspace.symbol.resolveSupport",
+      "workspaceSymbolProvider.resolveProvider"
+    ]
+  }
+]

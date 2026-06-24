@@ -1,0 +1,6 @@
+[package]
+name = "tower_lsp_dependency"
+version = "1.0.0"
+
+[dependencies]
+tower-lsp = "0.20.0"

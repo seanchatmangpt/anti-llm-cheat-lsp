@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "cca5932ac57175939cb09bb041f3fc98316b76d911653708323fda411a4531e4",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/_cancelRequest_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/_cancelRequest",
+  "status": "ADMITTED"
+}

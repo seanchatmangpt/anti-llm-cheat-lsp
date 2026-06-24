@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "1ca6b5a5219131d793de1e18a67c622bc94b3908fb579bb2b6d00d8dbc19a3ee",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/window_workDoneProgress_cancel_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/window_workDoneProgress_cancel",
+  "status": "ADMITTED"
+}

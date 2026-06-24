@@ -1,0 +1,19 @@
+[meta]
+name = "anti-llm-cheat-lsp"
+version = "1"
+
+[[forbidden_string_patterns]]
+name = "synthetic-source"
+pattern = "engine_source.*synthetic"
+files = ["*.ts", "*.vue", "*.tsx"]
+code = "ANTI-LLM-DOMAIN-001"
+message = "engine_source: 'synthetic' is rejected by the proof gate — use real_ue4 or rocket_cli"
+blocking = true
+
+[[forbidden_string_patterns]]
+name = "sha256-hash-algorithm"
+pattern = "'sha-?256'"
+files = ["*.ts", "*.tsx", "*.vue"]
+code = "ANTI-LLM-DOMAIN-002"
+message = "SHA-256 algorithm literal must be replaced with BLAKE3 (@noble/hashes/blake3.js)"
+blocking = true

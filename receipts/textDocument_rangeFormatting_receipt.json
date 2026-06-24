@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "fdbc8c5dc11796a59026ea76817467527b5c3c5fda1a33438e72306c4227bc9b",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/textDocument_rangeFormatting_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/textDocument_rangeFormatting",
+  "status": "ADMITTED"
+}

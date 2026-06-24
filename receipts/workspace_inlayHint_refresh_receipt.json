@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "3e049213b1314d1065151f2832f4a74666ffce1e1fab6048b3a3f08f49175760",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/workspace_inlayHint_refresh_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/workspace_inlayHint_refresh",
+  "status": "ADMITTED"
+}

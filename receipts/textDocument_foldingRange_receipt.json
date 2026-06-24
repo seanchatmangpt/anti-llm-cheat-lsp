@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "d52796a7ae62c5095b163400a41361ecfe0098d66a841373e977aedb11eed375",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/textDocument_foldingRange_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/textDocument_foldingRange",
+  "status": "ADMITTED"
+}

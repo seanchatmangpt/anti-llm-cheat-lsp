@@ -1,0 +1,22 @@
+[
+  "Repository",
+  "Crate",
+  "File",
+  "FileRange",
+  "Diagnostic",
+  "DiagnosticCode",
+  "ForbiddenImplication",
+  "Checkpoint",
+  "Receipt",
+  "Digest",
+  "JsonRpcTranscript",
+  "LspMethod",
+  "LspCapabilityPath",
+  "Lsp318FeatureRow",
+  "NegativeControlFixture",
+  "TestCase",
+  "Failset",
+  "AgentReport",
+  "RouteStage",
+  "OcelEventLog"
+]

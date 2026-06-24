@@ -1,0 +1,4 @@
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"textDocument":{"inlineCompletion":{},"foldingRange":{"refreshSupport":true}}}}}
+{"jsonrpc":"2.0","id":1,"result":{"capabilities":{"inlineCompletionProvider":true,"foldingRangeProvider":true}}}
+{"jsonrpc":"2.0","id":2,"method":"textDocument/implementation","params":{}}
+{"jsonrpc":"2.0","id":2,"result":null}

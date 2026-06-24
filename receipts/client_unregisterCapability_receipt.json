@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "e80e3f84f56e8f93963a0fd6ffa690e48eb7fe1762ffb136bd5f4750909e3c8f",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/client_unregisterCapability_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/client_unregisterCapability",
+  "status": "ADMITTED"
+}

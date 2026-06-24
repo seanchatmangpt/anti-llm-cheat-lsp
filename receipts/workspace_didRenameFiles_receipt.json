@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "dcc71c74ab4f14f702555b3aa0c007d091b002b0b12073fb9cdf9ccdaf46ad73",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/workspace_didRenameFiles_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/workspace_didRenameFiles",
+  "status": "ADMITTED"
+}

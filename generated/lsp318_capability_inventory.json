@@ -1,0 +1,1855 @@
+[
+  {
+    "path": "capabilities.callHierarchyProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/prepareCallHierarchy"
+    ],
+    "transcript": "transcripts/textDocument_prepareCallHierarchy_positive.jsonl",
+    "receipt": "receipts/textDocument_prepareCallHierarchy_receipt.json"
+  },
+  {
+    "path": "capabilities.codeActionProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/codeAction"
+    ],
+    "transcript": "transcripts/textDocument_codeAction_positive.jsonl",
+    "receipt": "receipts/textDocument_codeAction_receipt.json"
+  },
+  {
+    "path": "capabilities.codeActionProvider.codeActionKinds",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/codeAction"
+    ],
+    "transcript": "transcripts/code_action_kind_doc_positive.jsonl",
+    "receipt": "receipts/code_action_kind_doc_receipt.json"
+  },
+  {
+    "path": "capabilities.codeActionProvider.resolveProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "codeAction/resolve"
+    ],
+    "transcript": "transcripts/codeAction_resolve_positive.jsonl",
+    "receipt": "receipts/codeAction_resolve_receipt.json"
+  },
+  {
+    "path": "capabilities.codeLensProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/codeLens"
+    ],
+    "transcript": "transcripts/textDocument_codeLens_positive.jsonl",
+    "receipt": "receipts/textDocument_codeLens_receipt.json"
+  },
+  {
+    "path": "capabilities.codeLensProvider.resolveProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "codeLens/resolve"
+    ],
+    "transcript": "transcripts/code_lens_resolve_positive.jsonl",
+    "receipt": "receipts/code_lens_resolve_receipt.json"
+  },
+  {
+    "path": "capabilities.colorProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/documentColor"
+    ],
+    "transcript": "transcripts/textDocument_documentColor_positive.jsonl",
+    "receipt": "receipts/textDocument_documentColor_receipt.json"
+  },
+  {
+    "path": "capabilities.completionProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/completion"
+    ],
+    "transcript": "transcripts/text_document_edit_snippets_positive.jsonl",
+    "receipt": "receipts/text_document_edit_snippets_receipt.json"
+  },
+  {
+    "path": "capabilities.completionProvider.completionItem",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/completion"
+    ],
+    "transcript": "transcripts/completion_list_apply_kind_positive.jsonl",
+    "receipt": "receipts/completion_list_apply_kind_receipt.json"
+  },
+  {
+    "path": "capabilities.completionProvider.resolveProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "completionItem/resolve"
+    ],
+    "transcript": "transcripts/completionItem_resolve_positive.jsonl",
+    "receipt": "receipts/completionItem_resolve_receipt.json"
+  },
+  {
+    "path": "capabilities.declarationProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/declaration"
+    ],
+    "transcript": "transcripts/textDocument_declaration_positive.jsonl",
+    "receipt": "receipts/textDocument_declaration_receipt.json"
+  },
+  {
+    "path": "capabilities.definitionProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/definition"
+    ],
+    "transcript": "transcripts/textDocument_definition_positive.jsonl",
+    "receipt": "receipts/textDocument_definition_receipt.json"
+  },
+  {
+    "path": "capabilities.diagnosticProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/diagnostic"
+    ],
+    "transcript": "transcripts/textDocument_diagnostic_positive.jsonl",
+    "receipt": "receipts/textDocument_diagnostic_receipt.json"
+  },
+  {
+    "path": "capabilities.diagnosticProvider.workspaceDiagnostics",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/diagnostic"
+    ],
+    "transcript": "transcripts/workspace_diagnostic_positive.jsonl",
+    "receipt": "receipts/workspace_diagnostic_receipt.json"
+  },
+  {
+    "path": "capabilities.documentFormattingProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/formatting"
+    ],
+    "transcript": "transcripts/textDocument_formatting_positive.jsonl",
+    "receipt": "receipts/textDocument_formatting_receipt.json"
+  },
+  {
+    "path": "capabilities.documentHighlightProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/documentHighlight"
+    ],
+    "transcript": "transcripts/textDocument_documentHighlight_positive.jsonl",
+    "receipt": "receipts/textDocument_documentHighlight_receipt.json"
+  },
+  {
+    "path": "capabilities.documentLinkProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/documentLink"
+    ],
+    "transcript": "transcripts/textDocument_documentLink_positive.jsonl",
+    "receipt": "receipts/textDocument_documentLink_receipt.json"
+  },
+  {
+    "path": "capabilities.documentLinkProvider.resolveProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "documentLink/resolve"
+    ],
+    "transcript": "transcripts/documentLink_resolve_positive.jsonl",
+    "receipt": "receipts/documentLink_resolve_receipt.json"
+  },
+  {
+    "path": "capabilities.documentOnTypeFormattingProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/onTypeFormatting"
+    ],
+    "transcript": "transcripts/textDocument_onTypeFormatting_positive.jsonl",
+    "receipt": "receipts/textDocument_onTypeFormatting_receipt.json"
+  },
+  {
+    "path": "capabilities.documentRangeFormattingProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/rangeFormatting"
+    ],
+    "transcript": "transcripts/textDocument_rangeFormatting_positive.jsonl",
+    "receipt": "receipts/textDocument_rangeFormatting_receipt.json"
+  },
+  {
+    "path": "capabilities.documentRangeFormattingProvider.rangesSupport",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/rangesFormatting"
+    ],
+    "transcript": "transcripts/textDocument_rangesFormatting_positive.jsonl",
+    "receipt": "receipts/textDocument_rangesFormatting_receipt.json"
+  },
+  {
+    "path": "capabilities.documentSymbolProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/documentSymbol"
+    ],
+    "transcript": "transcripts/textDocument_documentSymbol_positive.jsonl",
+    "receipt": "receipts/textDocument_documentSymbol_receipt.json"
+  },
+  {
+    "path": "capabilities.executeCommandProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/executeCommand"
+    ],
+    "transcript": "transcripts/workspace_executeCommand_positive.jsonl",
+    "receipt": "receipts/workspace_executeCommand_receipt.json"
+  },
+  {
+    "path": "capabilities.executeCommandProvider.commands",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/executeCommand"
+    ],
+    "transcript": "transcripts/command_tooltips_positive.jsonl",
+    "receipt": "receipts/command_tooltips_receipt.json"
+  },
+  {
+    "path": "capabilities.foldingRangeProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/foldingRange"
+    ],
+    "transcript": "transcripts/textDocument_foldingRange_positive.jsonl",
+    "receipt": "receipts/textDocument_foldingRange_receipt.json"
+  },
+  {
+    "path": "capabilities.hoverProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/hover"
+    ],
+    "transcript": "transcripts/textDocument_hover_positive.jsonl",
+    "receipt": "receipts/textDocument_hover_receipt.json"
+  },
+  {
+    "path": "capabilities.implementationProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/implementation"
+    ],
+    "transcript": "transcripts/textDocument_implementation_positive.jsonl",
+    "receipt": "receipts/textDocument_implementation_receipt.json"
+  },
+  {
+    "path": "capabilities.inlayHintProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/inlayHint"
+    ],
+    "transcript": "transcripts/textDocument_inlayHint_positive.jsonl",
+    "receipt": "receipts/textDocument_inlayHint_receipt.json"
+  },
+  {
+    "path": "capabilities.inlayHintProvider.resolveProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "inlayHint/resolve"
+    ],
+    "transcript": "transcripts/inlayHint_resolve_positive.jsonl",
+    "receipt": "receipts/inlayHint_resolve_receipt.json"
+  },
+  {
+    "path": "capabilities.inlineCompletionProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/inlineCompletion"
+    ],
+    "transcript": "transcripts/inline_completion_positive.jsonl",
+    "receipt": "receipts/inline_completion_receipt.json"
+  },
+  {
+    "path": "capabilities.inlineValueProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/inlineValue"
+    ],
+    "transcript": "transcripts/textDocument_inlineValue_positive.jsonl",
+    "receipt": "receipts/textDocument_inlineValue_receipt.json"
+  },
+  {
+    "path": "capabilities.linkedEditingRangeProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/linkedEditingRange"
+    ],
+    "transcript": "transcripts/textDocument_linkedEditingRange_positive.jsonl",
+    "receipt": "receipts/textDocument_linkedEditingRange_receipt.json"
+  },
+  {
+    "path": "capabilities.monikerProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/moniker"
+    ],
+    "transcript": "transcripts/textDocument_moniker_positive.jsonl",
+    "receipt": "receipts/textDocument_moniker_receipt.json"
+  },
+  {
+    "path": "capabilities.notebookDocument.synchronization",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "refused",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "none"
+    ],
+    "transcript": "none",
+    "receipt": "receipts/notebook_refusal_receipt.json"
+  },
+  {
+    "path": "capabilities.notebookDocumentSync",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "refused",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "none"
+    ],
+    "transcript": "none",
+    "receipt": "receipts/notebook_refusal_receipt.json"
+  },
+  {
+    "path": "capabilities.referencesProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/references"
+    ],
+    "transcript": "transcripts/textDocument_references_positive.jsonl",
+    "receipt": "receipts/textDocument_references_receipt.json"
+  },
+  {
+    "path": "capabilities.renameProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/rename"
+    ],
+    "transcript": "transcripts/textDocument_rename_positive.jsonl",
+    "receipt": "receipts/textDocument_rename_receipt.json"
+  },
+  {
+    "path": "capabilities.renameProvider.prepareProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/prepareRename"
+    ],
+    "transcript": "transcripts/textDocument_prepareRename_positive.jsonl",
+    "receipt": "receipts/textDocument_prepareRename_receipt.json"
+  },
+  {
+    "path": "capabilities.selectionRangeProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/selectionRange"
+    ],
+    "transcript": "transcripts/textDocument_selectionRange_positive.jsonl",
+    "receipt": "receipts/textDocument_selectionRange_receipt.json"
+  },
+  {
+    "path": "capabilities.semanticTokensProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/semanticTokens/full"
+    ],
+    "transcript": "transcripts/textDocument_semanticTokens_full_positive.jsonl",
+    "receipt": "receipts/textDocument_semanticTokens_full_receipt.json"
+  },
+  {
+    "path": "capabilities.semanticTokensProvider.full.delta",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/semanticTokens/full/delta"
+    ],
+    "transcript": "transcripts/textDocument_semanticTokens_full_delta_positive.jsonl",
+    "receipt": "receipts/textDocument_semanticTokens_full_delta_receipt.json"
+  },
+  {
+    "path": "capabilities.semanticTokensProvider.range",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/semanticTokens/range"
+    ],
+    "transcript": "transcripts/textDocument_semanticTokens_range_positive.jsonl",
+    "receipt": "receipts/textDocument_semanticTokens_range_receipt.json"
+  },
+  {
+    "path": "capabilities.signatureHelpProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/signatureHelp"
+    ],
+    "transcript": "transcripts/nullable_active_parameter_positive.jsonl",
+    "receipt": "receipts/nullable_active_parameter_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.callHierarchy",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/prepareCallHierarchy"
+    ],
+    "transcript": "transcripts/textDocument_prepareCallHierarchy_positive.jsonl",
+    "receipt": "receipts/textDocument_prepareCallHierarchy_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.codeAction",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/codeAction"
+    ],
+    "transcript": "transcripts/textDocument_codeAction_positive.jsonl",
+    "receipt": "receipts/textDocument_codeAction_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.codeAction.codeActionLiteralSupport.codeActionKind.valueSet",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/codeAction"
+    ],
+    "transcript": "transcripts/code_action_kind_doc_positive.jsonl",
+    "receipt": "receipts/code_action_kind_doc_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.codeAction.resolveSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "codeAction/resolve"
+    ],
+    "transcript": "transcripts/codeAction_resolve_positive.jsonl",
+    "receipt": "receipts/codeAction_resolve_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.codeLens",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/codeLens"
+    ],
+    "transcript": "transcripts/textDocument_codeLens_positive.jsonl",
+    "receipt": "receipts/textDocument_codeLens_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.codeLens.dynamicRegistration",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "codeLens/resolve"
+    ],
+    "transcript": "transcripts/code_lens_resolve_positive.jsonl",
+    "receipt": "receipts/code_lens_resolve_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.codeLens.resolveSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "unsupported",
+    "default_behavior": "disabled",
+    "since": "3.0.0",
+    "related_methods": [],
+    "transcript": null,
+    "receipt": null
+  },
+  {
+    "path": "capabilities.textDocument.colorProvider",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/documentColor"
+    ],
+    "transcript": "transcripts/textDocument_documentColor_positive.jsonl",
+    "receipt": "receipts/textDocument_documentColor_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.completion",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "unsupported",
+    "default_behavior": "disabled",
+    "since": "3.0.0",
+    "related_methods": [],
+    "transcript": null,
+    "receipt": null
+  },
+  {
+    "path": "capabilities.textDocument.completion.completionItem.resolveSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "completionItem/resolve"
+    ],
+    "transcript": "transcripts/completionItem_resolve_positive.jsonl",
+    "receipt": "receipts/completionItem_resolve_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.completion.completionItem.snippetSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/completion"
+    ],
+    "transcript": "transcripts/text_document_edit_snippets_positive.jsonl",
+    "receipt": "receipts/text_document_edit_snippets_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.completion.completionList.itemDefaults",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/completion"
+    ],
+    "transcript": "transcripts/completion_list_apply_kind_positive.jsonl",
+    "receipt": "receipts/completion_list_apply_kind_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.declaration",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/declaration"
+    ],
+    "transcript": "transcripts/textDocument_declaration_positive.jsonl",
+    "receipt": "receipts/textDocument_declaration_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.definition",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/definition"
+    ],
+    "transcript": "transcripts/textDocument_definition_positive.jsonl",
+    "receipt": "receipts/textDocument_definition_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.diagnostic",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/diagnostic"
+    ],
+    "transcript": "transcripts/textDocument_diagnostic_positive.jsonl",
+    "receipt": "receipts/textDocument_diagnostic_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.documentHighlight",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/documentHighlight"
+    ],
+    "transcript": "transcripts/textDocument_documentHighlight_positive.jsonl",
+    "receipt": "receipts/textDocument_documentHighlight_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.documentLink",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/documentLink"
+    ],
+    "transcript": "transcripts/textDocument_documentLink_positive.jsonl",
+    "receipt": "receipts/textDocument_documentLink_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.documentSymbol",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/documentSymbol"
+    ],
+    "transcript": "transcripts/textDocument_documentSymbol_positive.jsonl",
+    "receipt": "receipts/textDocument_documentSymbol_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.foldingRange",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/foldingRange"
+    ],
+    "transcript": "transcripts/textDocument_foldingRange_positive.jsonl",
+    "receipt": "receipts/textDocument_foldingRange_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.formatting",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/formatting"
+    ],
+    "transcript": "transcripts/textDocument_formatting_positive.jsonl",
+    "receipt": "receipts/textDocument_formatting_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.formatting.rangesSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/rangesFormatting"
+    ],
+    "transcript": "transcripts/ranges_formatting_positive.jsonl",
+    "receipt": "receipts/ranges_formatting_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.hover",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/hover"
+    ],
+    "transcript": "transcripts/textDocument_hover_positive.jsonl",
+    "receipt": "receipts/textDocument_hover_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.implementation",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/implementation"
+    ],
+    "transcript": "transcripts/textDocument_implementation_positive.jsonl",
+    "receipt": "receipts/textDocument_implementation_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.inlayHint",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/inlayHint"
+    ],
+    "transcript": "transcripts/textDocument_inlayHint_positive.jsonl",
+    "receipt": "receipts/textDocument_inlayHint_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.inlayHint.resolveSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "inlayHint/resolve"
+    ],
+    "transcript": "transcripts/inlayHint_resolve_positive.jsonl",
+    "receipt": "receipts/inlayHint_resolve_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.inlineCompletion",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/inlineCompletion"
+    ],
+    "transcript": "transcripts/inline_completion_positive.jsonl",
+    "receipt": "receipts/inline_completion_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.inlineValue",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/inlineValue"
+    ],
+    "transcript": "transcripts/textDocument_inlineValue_positive.jsonl",
+    "receipt": "receipts/textDocument_inlineValue_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.linkedEditingRange",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/linkedEditingRange"
+    ],
+    "transcript": "transcripts/textDocument_linkedEditingRange_positive.jsonl",
+    "receipt": "receipts/textDocument_linkedEditingRange_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.moniker",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/moniker"
+    ],
+    "transcript": "transcripts/textDocument_moniker_positive.jsonl",
+    "receipt": "receipts/textDocument_moniker_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.onTypeFormatting",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/onTypeFormatting"
+    ],
+    "transcript": "transcripts/textDocument_onTypeFormatting_positive.jsonl",
+    "receipt": "receipts/textDocument_onTypeFormatting_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.publishDiagnostics",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/publishDiagnostics"
+    ],
+    "transcript": "transcripts/textDocument_publishDiagnostics_positive.jsonl",
+    "receipt": "receipts/textDocument_publishDiagnostics_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.rangeFormatting",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/rangeFormatting"
+    ],
+    "transcript": "transcripts/textDocument_rangeFormatting_positive.jsonl",
+    "receipt": "receipts/textDocument_rangeFormatting_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.rangeFormatting.rangesSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/rangesFormatting"
+    ],
+    "transcript": "transcripts/textDocument_rangesFormatting_positive.jsonl",
+    "receipt": "receipts/textDocument_rangesFormatting_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.references",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/references"
+    ],
+    "transcript": "transcripts/textDocument_references_positive.jsonl",
+    "receipt": "receipts/textDocument_references_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.rename",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/rename"
+    ],
+    "transcript": "transcripts/textDocument_rename_positive.jsonl",
+    "receipt": "receipts/textDocument_rename_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.rename.prepareSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/prepareRename"
+    ],
+    "transcript": "transcripts/textDocument_prepareRename_positive.jsonl",
+    "receipt": "receipts/textDocument_prepareRename_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.selectionRange",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/selectionRange"
+    ],
+    "transcript": "transcripts/textDocument_selectionRange_positive.jsonl",
+    "receipt": "receipts/textDocument_selectionRange_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.semanticTokens",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/semanticTokens/full"
+    ],
+    "transcript": "transcripts/textDocument_semanticTokens_full_positive.jsonl",
+    "receipt": "receipts/textDocument_semanticTokens_full_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.semanticTokens.requests.full.delta",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/semanticTokens/full/delta"
+    ],
+    "transcript": "transcripts/textDocument_semanticTokens_full_delta_positive.jsonl",
+    "receipt": "receipts/textDocument_semanticTokens_full_delta_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.semanticTokens.requests.range",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/semanticTokens/range"
+    ],
+    "transcript": "transcripts/textDocument_semanticTokens_range_positive.jsonl",
+    "receipt": "receipts/textDocument_semanticTokens_range_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.signatureHelp",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "unsupported",
+    "default_behavior": "disabled",
+    "since": "3.0.0",
+    "related_methods": [],
+    "transcript": null,
+    "receipt": null
+  },
+  {
+    "path": "capabilities.textDocument.signatureHelp.signatureInformation.activeParameterSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/signatureHelp"
+    ],
+    "transcript": "transcripts/nullable_active_parameter_positive.jsonl",
+    "receipt": "receipts/nullable_active_parameter_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.synchronization",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/didOpen"
+    ],
+    "transcript": "transcripts/textDocument_didOpen_positive.jsonl",
+    "receipt": "receipts/textDocument_didOpen_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.synchronization.didSave",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/didSave"
+    ],
+    "transcript": "transcripts/textDocument_didSave_positive.jsonl",
+    "receipt": "receipts/textDocument_didSave_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.synchronization.dynamicRegistration",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "client/registerCapability"
+    ],
+    "transcript": "transcripts/relative_patterns_positive.jsonl",
+    "receipt": "receipts/relative_patterns_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.synchronization.willSave",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/willSave"
+    ],
+    "transcript": "transcripts/textDocument_willSave_positive.jsonl",
+    "receipt": "receipts/textDocument_willSave_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.synchronization.willSaveWaitUntil",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/willSaveWaitUntil"
+    ],
+    "transcript": "transcripts/textDocument_willSaveWaitUntil_positive.jsonl",
+    "receipt": "receipts/textDocument_willSaveWaitUntil_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.typeDefinition",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/typeDefinition"
+    ],
+    "transcript": "transcripts/textDocument_typeDefinition_positive.jsonl",
+    "receipt": "receipts/textDocument_typeDefinition_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocument.typeHierarchy",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/prepareTypeHierarchy"
+    ],
+    "transcript": "transcripts/textDocument_prepareTypeHierarchy_positive.jsonl",
+    "receipt": "receipts/textDocument_prepareTypeHierarchy_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocumentContentProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/textDocumentContent"
+    ],
+    "transcript": "transcripts/text_document_content_positive.jsonl",
+    "receipt": "receipts/text_document_content_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocumentSync",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "client/registerCapability"
+    ],
+    "transcript": "transcripts/relative_patterns_positive.jsonl",
+    "receipt": "receipts/relative_patterns_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocumentSync.openClose",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/didOpen"
+    ],
+    "transcript": "transcripts/textDocument_didOpen_positive.jsonl",
+    "receipt": "receipts/textDocument_didOpen_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocumentSync.save",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/didSave"
+    ],
+    "transcript": "transcripts/textDocument_didSave_positive.jsonl",
+    "receipt": "receipts/textDocument_didSave_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocumentSync.willSave",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/willSave"
+    ],
+    "transcript": "transcripts/textDocument_willSave_positive.jsonl",
+    "receipt": "receipts/textDocument_willSave_receipt.json"
+  },
+  {
+    "path": "capabilities.textDocumentSync.willSaveWaitUntil",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/willSaveWaitUntil"
+    ],
+    "transcript": "transcripts/textDocument_willSaveWaitUntil_positive.jsonl",
+    "receipt": "receipts/textDocument_willSaveWaitUntil_receipt.json"
+  },
+  {
+    "path": "capabilities.typeDefinitionProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/typeDefinition"
+    ],
+    "transcript": "transcripts/textDocument_typeDefinition_positive.jsonl",
+    "receipt": "receipts/textDocument_typeDefinition_receipt.json"
+  },
+  {
+    "path": "capabilities.typeHierarchyProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "textDocument/prepareTypeHierarchy"
+    ],
+    "transcript": "transcripts/textDocument_prepareTypeHierarchy_positive.jsonl",
+    "receipt": "receipts/textDocument_prepareTypeHierarchy_receipt.json"
+  },
+  {
+    "path": "capabilities.window.showDocument",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/executeCommand"
+    ],
+    "transcript": "transcripts/command_tooltips_positive.jsonl",
+    "receipt": "receipts/command_tooltips_receipt.json"
+  },
+  {
+    "path": "capabilities.window.showDocument.support",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "window/showDocument"
+    ],
+    "transcript": "transcripts/window_showDocument_positive.jsonl",
+    "receipt": "receipts/window_showDocument_receipt.json"
+  },
+  {
+    "path": "capabilities.window.showMessage",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "window/showMessageRequest"
+    ],
+    "transcript": "transcripts/window_showMessageRequest_positive.jsonl",
+    "receipt": "receipts/window_showMessageRequest_receipt.json"
+  },
+  {
+    "path": "capabilities.window.showMessage.messageActionItem",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "window/logMessage"
+    ],
+    "transcript": "transcripts/debug_message_kind_positive.jsonl",
+    "receipt": "receipts/debug_message_kind_receipt.json"
+  },
+  {
+    "path": "capabilities.window.workDoneProgress",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "window/workDoneProgress/create"
+    ],
+    "transcript": "transcripts/window_workDoneProgress_create_positive.jsonl",
+    "receipt": "receipts/window_workDoneProgress_create_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.applyEdit",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/applyEdit"
+    ],
+    "transcript": "transcripts/workspace_applyEdit_positive.jsonl",
+    "receipt": "receipts/workspace_applyEdit_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.codeLens",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/codeLens/refresh"
+    ],
+    "transcript": "transcripts/workspace_codeLens_refresh_positive.jsonl",
+    "receipt": "receipts/workspace_codeLens_refresh_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.configuration",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/configuration"
+    ],
+    "transcript": "transcripts/workspace_configuration_positive.jsonl",
+    "receipt": "receipts/workspace_configuration_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.diagnostics",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/diagnostic"
+    ],
+    "transcript": "transcripts/workspace_diagnostic_positive.jsonl",
+    "receipt": "receipts/workspace_diagnostic_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.diagnostics.refreshSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/diagnostic/refresh"
+    ],
+    "transcript": "transcripts/workspace_diagnostic_refresh_positive.jsonl",
+    "receipt": "receipts/workspace_diagnostic_refresh_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.didChangeConfiguration",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/didChangeConfiguration"
+    ],
+    "transcript": "transcripts/workspace_didChangeConfiguration_positive.jsonl",
+    "receipt": "receipts/workspace_didChangeConfiguration_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.didChangeWatchedFiles",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/didChangeWatchedFiles"
+    ],
+    "transcript": "transcripts/workspace_didChangeWatchedFiles_positive.jsonl",
+    "receipt": "receipts/workspace_didChangeWatchedFiles_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.executeCommand",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/executeCommand"
+    ],
+    "transcript": "transcripts/workspace_executeCommand_positive.jsonl",
+    "receipt": "receipts/workspace_executeCommand_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.fileOperations.didCreate",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/didCreateFiles"
+    ],
+    "transcript": "transcripts/workspace_didCreateFiles_positive.jsonl",
+    "receipt": "receipts/workspace_didCreateFiles_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.fileOperations.didCreate",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/didCreateFiles"
+    ],
+    "transcript": "transcripts/workspace_didCreateFiles_positive.jsonl",
+    "receipt": "receipts/workspace_didCreateFiles_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.fileOperations.didDelete",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/didDeleteFiles"
+    ],
+    "transcript": "transcripts/workspace_didDeleteFiles_positive.jsonl",
+    "receipt": "receipts/workspace_didDeleteFiles_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.fileOperations.didDelete",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/didDeleteFiles"
+    ],
+    "transcript": "transcripts/workspace_didDeleteFiles_positive.jsonl",
+    "receipt": "receipts/workspace_didDeleteFiles_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.fileOperations.didRename",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/didRenameFiles"
+    ],
+    "transcript": "transcripts/workspace_didRenameFiles_positive.jsonl",
+    "receipt": "receipts/workspace_didRenameFiles_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.fileOperations.didRename",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/didRenameFiles"
+    ],
+    "transcript": "transcripts/workspace_didRenameFiles_positive.jsonl",
+    "receipt": "receipts/workspace_didRenameFiles_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.fileOperations.willCreate",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/willCreateFiles"
+    ],
+    "transcript": "transcripts/workspace_willCreateFiles_positive.jsonl",
+    "receipt": "receipts/workspace_willCreateFiles_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.fileOperations.willCreate",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/willCreateFiles"
+    ],
+    "transcript": "transcripts/workspace_willCreateFiles_positive.jsonl",
+    "receipt": "receipts/workspace_willCreateFiles_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.fileOperations.willDelete",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/willDeleteFiles"
+    ],
+    "transcript": "transcripts/workspace_willDeleteFiles_positive.jsonl",
+    "receipt": "receipts/workspace_willDeleteFiles_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.fileOperations.willDelete",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/willDeleteFiles"
+    ],
+    "transcript": "transcripts/workspace_willDeleteFiles_positive.jsonl",
+    "receipt": "receipts/workspace_willDeleteFiles_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.fileOperations.willRename",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/willRenameFiles"
+    ],
+    "transcript": "transcripts/workspace_willRenameFiles_positive.jsonl",
+    "receipt": "receipts/workspace_willRenameFiles_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.fileOperations.willRename",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/willRenameFiles"
+    ],
+    "transcript": "transcripts/workspace_willRenameFiles_positive.jsonl",
+    "receipt": "receipts/workspace_willRenameFiles_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.foldingRange.refresh",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/foldingRange/refresh"
+    ],
+    "transcript": "transcripts/folding_range_refresh_positive.jsonl",
+    "receipt": "receipts/folding_range_refresh_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.foldingRange.refreshSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/foldingRange/refresh"
+    ],
+    "transcript": "transcripts/workspace_foldingRange_refresh_positive.jsonl",
+    "receipt": "receipts/workspace_foldingRange_refresh_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.inlayHint.refreshSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/inlayHint/refresh"
+    ],
+    "transcript": "transcripts/workspace_inlayHint_refresh_positive.jsonl",
+    "receipt": "receipts/workspace_inlayHint_refresh_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.inlineValue.refreshSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/inlineValue/refresh"
+    ],
+    "transcript": "transcripts/workspace_inlineValue_refresh_positive.jsonl",
+    "receipt": "receipts/workspace_inlineValue_refresh_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.semanticTokens.refreshSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/semanticTokens/refresh"
+    ],
+    "transcript": "transcripts/workspace_semanticTokens_refresh_positive.jsonl",
+    "receipt": "receipts/workspace_semanticTokens_refresh_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.symbol",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/symbol"
+    ],
+    "transcript": "transcripts/workspace_symbol_positive.jsonl",
+    "receipt": "receipts/workspace_symbol_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.symbol.resolveSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspaceSymbol/resolve"
+    ],
+    "transcript": "transcripts/workspaceSymbol_resolve_positive.jsonl",
+    "receipt": "receipts/workspaceSymbol_resolve_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.textDocumentContent",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/textDocumentContent"
+    ],
+    "transcript": "transcripts/text_document_content_positive.jsonl",
+    "receipt": "receipts/text_document_content_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.textDocumentContent",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/textDocumentContent"
+    ],
+    "transcript": "transcripts/text_document_content_positive.jsonl",
+    "receipt": "receipts/text_document_content_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.workspaceEdit",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/applyEdit"
+    ],
+    "transcript": "transcripts/workspace_edit_snippets_positive.jsonl",
+    "receipt": "receipts/workspace_edit_snippets_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.workspaceEdit.changeAnnotationSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/applyEdit"
+    ],
+    "transcript": "transcripts/workspace_edit_snippets_positive.jsonl",
+    "receipt": "receipts/workspace_edit_snippets_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.workspaceEdit.metadataSupport",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/applyEdit"
+    ],
+    "transcript": "transcripts/workspace_edit_metadata_positive.jsonl",
+    "receipt": "receipts/workspace_edit_metadata_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.workspaceFolders",
+    "owner": "client",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/workspaceFolders"
+    ],
+    "transcript": "transcripts/workspace_workspaceFolders_positive.jsonl",
+    "receipt": "receipts/workspace_workspaceFolders_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.workspaceFolders",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/workspaceFolders"
+    ],
+    "transcript": "transcripts/workspace_workspaceFolders_positive.jsonl",
+    "receipt": "receipts/workspace_workspaceFolders_receipt.json"
+  },
+  {
+    "path": "capabilities.workspace.workspaceFolders.changeNotifications",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/didChangeWorkspaceFolders"
+    ],
+    "transcript": "transcripts/workspace_didChangeWorkspaceFolders_positive.jsonl",
+    "receipt": "receipts/workspace_didChangeWorkspaceFolders_receipt.json"
+  },
+  {
+    "path": "capabilities.workspaceSymbolProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspace/symbol"
+    ],
+    "transcript": "transcripts/workspace_symbol_positive.jsonl",
+    "receipt": "receipts/workspace_symbol_receipt.json"
+  },
+  {
+    "path": "capabilities.workspaceSymbolProvider.resolveProvider",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "workspaceSymbol/resolve"
+    ],
+    "transcript": "transcripts/workspaceSymbol_resolve_positive.jsonl",
+    "receipt": "receipts/workspaceSymbol_resolve_receipt.json"
+  },
+  {
+    "path": "none",
+    "owner": "server",
+    "type": "boolean | object",
+    "status": "supported",
+    "default_behavior": "disabled",
+    "since": "3.18.0",
+    "related_methods": [
+      "window/logMessage"
+    ],
+    "transcript": "transcripts/debug_message_kind_positive.jsonl",
+    "receipt": "receipts/debug_message_kind_receipt.json"
+  }
+]

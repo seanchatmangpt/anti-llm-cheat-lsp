@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "fbcf7a7a10acf0c70ad2176e776ba80c9671e2ab198fbdd09535a036d998820d",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/workspace_codeLens_refresh_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/workspace_codeLens_refresh",
+  "status": "ADMITTED"
+}

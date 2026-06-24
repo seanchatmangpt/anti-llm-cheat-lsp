@@ -1,0 +1,9 @@
+{
+  "digest": "6a1595f8c40ebe13c40109d1fc94c4621217a6b587d902fbb8771bd192646fdb",
+  "digest_algorithm": "BLAKE3",
+  "boundary": "LSP318-COMB-boundary",
+  "checkpoint": "LSP318_COMBINATORIAL_MAXIMALISM",
+  "raw_command": "cargo test --test dogfood detects_changelog_only_laundering",
+  "output_digest": "ea88e335d35b642af30280a72f207856ec8695570081618b8bc86ccaa7fe3719",
+  "status": "ADMITTED"
+}

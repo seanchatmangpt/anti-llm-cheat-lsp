@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "ddab659ab52a921b5ce7ec5116eb532f4be748555276996cd70102feda75d328",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/callHierarchy_incomingCalls_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/callHierarchy_incomingCalls",
+  "status": "ADMITTED"
+}

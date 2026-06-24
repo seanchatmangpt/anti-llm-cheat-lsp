@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "85705ceef65aeb119bd05a4ffd5464560c681cde6401458f43872d697df501ec",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/folding_range_refresh_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/folding_range_refresh",
+  "status": "ADMITTED"
+}

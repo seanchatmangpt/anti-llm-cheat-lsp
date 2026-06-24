@@ -1,0 +1,9 @@
+{
+  "digest": "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+  "digest_algorithm": "BLAKE3",
+  "boundary": "cp001",
+  "checkpoint": "CP-001",
+  "raw_command": "cargo test -p lsp-max",
+  "output_digest": "fedcba0987654321fedcba0987654321fedcba0987654321fedcba0987654321",
+  "status": "complete"
+}

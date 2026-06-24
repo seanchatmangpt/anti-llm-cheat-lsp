@@ -1,0 +1,10 @@
+{
+  "boundary": "examples/anti-llm-lsp/ocel",
+  "checkpoint": "OCEL-COMPAT-001",
+  "digest": "fdcfe39645cc02e613382403658a719c0228ee9eccbe2931be8a0fe9ebbb1169",
+  "digest_algorithm": "BLAKE3",
+  "raw_command": "cargo run -p anti-llm-lsp -- scan --dir .",
+  "output_hash": "fdcfe39645cc02e613382403658a719c0228ee9eccbe2931be8a0fe9ebbb1169",
+  "run_id": "OCEL-COMPAT-001",
+  "replay_pointer": "cargo run -p anti-llm-lsp -- scan --dir ."
+}

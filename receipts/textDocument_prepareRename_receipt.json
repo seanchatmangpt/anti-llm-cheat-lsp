@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "77ef8a7b03f46e1f2d8893d81aa20477d9e7d7a4d52fb71d027980e934c06fd6",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/textDocument_prepareRename_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/textDocument_prepareRename",
+  "status": "ADMITTED"
+}

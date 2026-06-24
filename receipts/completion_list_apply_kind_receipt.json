@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "a9c7d9c4ea02b49dc60bc3a9c43c96e7025cc423000d7a1bdc2597b136b23f33",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/completion_list_apply_kind_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/completion_list_apply_kind",
+  "status": "ADMITTED"
+}

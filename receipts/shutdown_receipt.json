@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "b9d6a5e247318b081c6a0df7a3265ecab9c479d4578230b777b95f76c724dda6",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/shutdown_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/shutdown",
+  "status": "ADMITTED"
+}

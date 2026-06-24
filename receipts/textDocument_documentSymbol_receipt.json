@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "6c5a3dcb5bec6445e0bc9dc81ce29504d7b13371914c437ef812d1487ca45e97",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/textDocument_documentSymbol_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/textDocument_documentSymbol",
+  "status": "ADMITTED"
+}

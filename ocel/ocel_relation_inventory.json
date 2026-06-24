@@ -1,0 +1,43 @@
+[
+  {
+    "event": "DiagnosticEmitted",
+    "objects": [
+      "FileRange",
+      "DiagnosticCode",
+      "ForbiddenImplication",
+      "Checkpoint"
+    ]
+  },
+  {
+    "event": "ReceiptValidated",
+    "objects": [
+      "Receipt",
+      "Digest",
+      "Checkpoint"
+    ]
+  },
+  {
+    "event": "Lsp318FeatureExercised",
+    "objects": [
+      "Lsp318FeatureRow",
+      "JsonRpcTranscript",
+      "Receipt"
+    ]
+  },
+  {
+    "event": "NegativeControlExecuted",
+    "objects": [
+      "NegativeControlFixture",
+      "DiagnosticCode",
+      "Receipt"
+    ]
+  },
+  {
+    "event": "FailsetUpdated",
+    "objects": [
+      "Diagnostic",
+      "Checkpoint",
+      "AgentReport"
+    ]
+  }
+]

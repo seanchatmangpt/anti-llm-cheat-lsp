@@ -1,0 +1,870 @@
+[
+  {
+    "message": "textDocument/implementation",
+    "capability_path": "capabilities.textDocument.implementation",
+    "type_name": "ImplementationParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/typeDefinition",
+    "capability_path": "capabilities.textDocument.typeDefinition",
+    "type_name": "TypeDefinitionParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/workspaceFolders",
+    "capability_path": "capabilities.workspace.workspaceFolders",
+    "type_name": "void",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/configuration",
+    "capability_path": "capabilities.workspace.configuration",
+    "type_name": "ConfigurationParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/documentColor",
+    "capability_path": "capabilities.textDocument.colorProvider",
+    "type_name": "DocumentColorParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/colorPresentation",
+    "capability_path": "capabilities.textDocument.colorProvider",
+    "type_name": "ColorPresentationParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/foldingRange",
+    "capability_path": "capabilities.textDocument.foldingRange",
+    "type_name": "FoldingRangeParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/foldingRange/refresh",
+    "capability_path": "capabilities.workspace.foldingRange.refreshSupport",
+    "type_name": "void",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/declaration",
+    "capability_path": "capabilities.textDocument.declaration",
+    "type_name": "DeclarationParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/selectionRange",
+    "capability_path": "capabilities.textDocument.selectionRange",
+    "type_name": "SelectionRangeParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "window/workDoneProgress/create",
+    "capability_path": "capabilities.window.workDoneProgress",
+    "type_name": "WorkDoneProgressCreateParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/prepareCallHierarchy",
+    "capability_path": "capabilities.textDocument.callHierarchy",
+    "type_name": "CallHierarchyPrepareParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "callHierarchy/incomingCalls",
+    "capability_path": "capabilities.textDocument.callHierarchy",
+    "type_name": "CallHierarchyIncomingCallsParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "callHierarchy/outgoingCalls",
+    "capability_path": "capabilities.textDocument.callHierarchy",
+    "type_name": "CallHierarchyOutgoingCallsParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/semanticTokens/full",
+    "capability_path": "capabilities.textDocument.semanticTokens",
+    "type_name": "SemanticTokensParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/semanticTokens/full/delta",
+    "capability_path": "capabilities.textDocument.semanticTokens.requests.full.delta",
+    "type_name": "SemanticTokensDeltaParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/semanticTokens/range",
+    "capability_path": "capabilities.textDocument.semanticTokens.requests.range",
+    "type_name": "SemanticTokensRangeParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/semanticTokens/refresh",
+    "capability_path": "capabilities.workspace.semanticTokens.refreshSupport",
+    "type_name": "void",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "window/showDocument",
+    "capability_path": "capabilities.window.showDocument.support",
+    "type_name": "ShowDocumentParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/linkedEditingRange",
+    "capability_path": "capabilities.textDocument.linkedEditingRange",
+    "type_name": "LinkedEditingRangeParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/willCreateFiles",
+    "capability_path": "capabilities.workspace.fileOperations.willCreate",
+    "type_name": "CreateFilesParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/willRenameFiles",
+    "capability_path": "capabilities.workspace.fileOperations.willRename",
+    "type_name": "RenameFilesParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/willDeleteFiles",
+    "capability_path": "capabilities.workspace.fileOperations.willDelete",
+    "type_name": "DeleteFilesParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/moniker",
+    "capability_path": "capabilities.textDocument.moniker",
+    "type_name": "MonikerParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/prepareTypeHierarchy",
+    "capability_path": "capabilities.textDocument.typeHierarchy",
+    "type_name": "TypeHierarchyPrepareParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "typeHierarchy/supertypes",
+    "capability_path": "none",
+    "type_name": "TypeHierarchySupertypesParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "typeHierarchy/subtypes",
+    "capability_path": "none",
+    "type_name": "TypeHierarchySubtypesParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/inlineValue",
+    "capability_path": "capabilities.textDocument.inlineValue",
+    "type_name": "InlineValueParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/inlineValue/refresh",
+    "capability_path": "capabilities.workspace.inlineValue.refreshSupport",
+    "type_name": "void",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/inlayHint",
+    "capability_path": "capabilities.textDocument.inlayHint",
+    "type_name": "InlayHintParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "inlayHint/resolve",
+    "capability_path": "capabilities.textDocument.inlayHint.resolveSupport",
+    "type_name": "InlayHint",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/inlayHint/refresh",
+    "capability_path": "capabilities.workspace.inlayHint.refreshSupport",
+    "type_name": "void",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/diagnostic",
+    "capability_path": "capabilities.textDocument.diagnostic",
+    "type_name": "DocumentDiagnosticParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/diagnostic",
+    "capability_path": "capabilities.workspace.diagnostics",
+    "type_name": "WorkspaceDiagnosticParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/diagnostic/refresh",
+    "capability_path": "capabilities.workspace.diagnostics.refreshSupport",
+    "type_name": "void",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/inlineCompletion",
+    "capability_path": "capabilities.textDocument.inlineCompletion",
+    "type_name": "InlineCompletionParams",
+    "field_name": "context",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/inlineCompletion",
+    "capability_path": "capabilities.textDocument.inlineCompletion",
+    "type_name": "InlineCompletionParams",
+    "field_name": "textDocument",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/inlineCompletion",
+    "capability_path": "capabilities.textDocument.inlineCompletion",
+    "type_name": "InlineCompletionParams",
+    "field_name": "position",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/inlineCompletion",
+    "capability_path": "capabilities.textDocument.inlineCompletion",
+    "type_name": "InlineCompletionParams",
+    "field_name": "workDoneToken",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/textDocumentContent",
+    "capability_path": "capabilities.workspace.textDocumentContent",
+    "type_name": "TextDocumentContentParams",
+    "field_name": "textDocument",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/textDocumentContent/refresh",
+    "capability_path": "none",
+    "type_name": "TextDocumentContentRefreshParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "client/registerCapability",
+    "capability_path": "capabilities.textDocument.synchronization.dynamicRegistration",
+    "type_name": "RegistrationParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "client/unregisterCapability",
+    "capability_path": "none",
+    "type_name": "UnregistrationParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "initialize",
+    "capability_path": "none",
+    "type_name": "InitializeParams",
+    "field_name": "processId",
+    "coverage": "supported"
+  },
+  {
+    "message": "initialize",
+    "capability_path": "none",
+    "type_name": "InitializeParams",
+    "field_name": "clientInfo",
+    "coverage": "supported"
+  },
+  {
+    "message": "initialize",
+    "capability_path": "none",
+    "type_name": "InitializeParams",
+    "field_name": "locale",
+    "coverage": "supported"
+  },
+  {
+    "message": "initialize",
+    "capability_path": "none",
+    "type_name": "InitializeParams",
+    "field_name": "rootPath",
+    "coverage": "supported"
+  },
+  {
+    "message": "initialize",
+    "capability_path": "none",
+    "type_name": "InitializeParams",
+    "field_name": "rootUri",
+    "coverage": "supported"
+  },
+  {
+    "message": "initialize",
+    "capability_path": "none",
+    "type_name": "InitializeParams",
+    "field_name": "capabilities",
+    "coverage": "supported"
+  },
+  {
+    "message": "initialize",
+    "capability_path": "none",
+    "type_name": "InitializeParams",
+    "field_name": "initializationOptions",
+    "coverage": "supported"
+  },
+  {
+    "message": "initialize",
+    "capability_path": "none",
+    "type_name": "InitializeParams",
+    "field_name": "trace",
+    "coverage": "supported"
+  },
+  {
+    "message": "initialize",
+    "capability_path": "none",
+    "type_name": "InitializeParams",
+    "field_name": "workDoneToken",
+    "coverage": "supported"
+  },
+  {
+    "message": "initialize",
+    "capability_path": "none",
+    "type_name": "InitializeParams",
+    "field_name": "workspaceFolders",
+    "coverage": "supported"
+  },
+  {
+    "message": "shutdown",
+    "capability_path": "none",
+    "type_name": "void",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "window/showMessageRequest",
+    "capability_path": "capabilities.window.showMessage",
+    "type_name": "ShowMessageRequestParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/willSaveWaitUntil",
+    "capability_path": "capabilities.textDocument.synchronization.willSaveWaitUntil",
+    "type_name": "WillSaveTextDocumentParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/completion",
+    "capability_path": "capabilities.textDocument.completion.completionItem.snippetSupport",
+    "type_name": "CompletionParams",
+    "field_name": "context",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/completion",
+    "capability_path": "capabilities.textDocument.completion.completionItem.snippetSupport",
+    "type_name": "CompletionParams",
+    "field_name": "textDocument",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/completion",
+    "capability_path": "capabilities.textDocument.completion.completionItem.snippetSupport",
+    "type_name": "CompletionParams",
+    "field_name": "position",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/completion",
+    "capability_path": "capabilities.textDocument.completion.completionItem.snippetSupport",
+    "type_name": "CompletionParams",
+    "field_name": "workDoneToken",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/completion",
+    "capability_path": "capabilities.textDocument.completion.completionItem.snippetSupport",
+    "type_name": "CompletionParams",
+    "field_name": "partialResultToken",
+    "coverage": "supported"
+  },
+  {
+    "message": "completionItem/resolve",
+    "capability_path": "capabilities.textDocument.completion.completionItem.resolveSupport",
+    "type_name": "CompletionItem",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/hover",
+    "capability_path": "capabilities.textDocument.hover",
+    "type_name": "HoverParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/signatureHelp",
+    "capability_path": "capabilities.textDocument.signatureHelp.signatureInformation.activeParameterSupport",
+    "type_name": "SignatureHelpParams",
+    "field_name": "context",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/signatureHelp",
+    "capability_path": "capabilities.textDocument.signatureHelp.signatureInformation.activeParameterSupport",
+    "type_name": "SignatureHelpParams",
+    "field_name": "textDocument",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/signatureHelp",
+    "capability_path": "capabilities.textDocument.signatureHelp.signatureInformation.activeParameterSupport",
+    "type_name": "SignatureHelpParams",
+    "field_name": "position",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/signatureHelp",
+    "capability_path": "capabilities.textDocument.signatureHelp.signatureInformation.activeParameterSupport",
+    "type_name": "SignatureHelpParams",
+    "field_name": "workDoneToken",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/definition",
+    "capability_path": "capabilities.textDocument.definition",
+    "type_name": "DefinitionParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/references",
+    "capability_path": "capabilities.textDocument.references",
+    "type_name": "ReferenceParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/documentHighlight",
+    "capability_path": "capabilities.textDocument.documentHighlight",
+    "type_name": "DocumentHighlightParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/documentSymbol",
+    "capability_path": "capabilities.textDocument.documentSymbol",
+    "type_name": "DocumentSymbolParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/codeAction",
+    "capability_path": "capabilities.textDocument.codeAction",
+    "type_name": "CodeActionParams",
+    "field_name": "textDocument",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/codeAction",
+    "capability_path": "capabilities.textDocument.codeAction",
+    "type_name": "CodeActionParams",
+    "field_name": "range",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/codeAction",
+    "capability_path": "capabilities.textDocument.codeAction",
+    "type_name": "CodeActionParams",
+    "field_name": "context",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/codeAction",
+    "capability_path": "capabilities.textDocument.codeAction",
+    "type_name": "CodeActionParams",
+    "field_name": "workDoneToken",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/codeAction",
+    "capability_path": "capabilities.textDocument.codeAction",
+    "type_name": "CodeActionParams",
+    "field_name": "partialResultToken",
+    "coverage": "supported"
+  },
+  {
+    "message": "codeAction/resolve",
+    "capability_path": "capabilities.textDocument.codeAction.resolveSupport",
+    "type_name": "CodeAction",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/symbol",
+    "capability_path": "capabilities.workspace.symbol",
+    "type_name": "WorkspaceSymbolParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspaceSymbol/resolve",
+    "capability_path": "capabilities.workspace.symbol.resolveSupport",
+    "type_name": "WorkspaceSymbol",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/codeLens",
+    "capability_path": "capabilities.textDocument.codeLens",
+    "type_name": "CodeLensParams",
+    "field_name": "textDocument",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/codeLens",
+    "capability_path": "capabilities.textDocument.codeLens",
+    "type_name": "CodeLensParams",
+    "field_name": "workDoneToken",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/codeLens",
+    "capability_path": "capabilities.textDocument.codeLens",
+    "type_name": "CodeLensParams",
+    "field_name": "partialResultToken",
+    "coverage": "supported"
+  },
+  {
+    "message": "codeLens/resolve",
+    "capability_path": "capabilities.textDocument.codeLens.dynamicRegistration",
+    "type_name": "CodeLens",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/codeLens/refresh",
+    "capability_path": "capabilities.workspace.codeLens",
+    "type_name": "void",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/documentLink",
+    "capability_path": "capabilities.textDocument.documentLink",
+    "type_name": "DocumentLinkParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "documentLink/resolve",
+    "capability_path": "capabilities.textDocument.documentLink",
+    "type_name": "DocumentLink",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/formatting",
+    "capability_path": "capabilities.textDocument.formatting",
+    "type_name": "DocumentFormattingParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/rangeFormatting",
+    "capability_path": "capabilities.textDocument.rangeFormatting",
+    "type_name": "DocumentRangeFormattingParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/rangesFormatting",
+    "capability_path": "capabilities.textDocument.rangeFormatting.rangesSupport",
+    "type_name": "DocumentRangesFormattingParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/onTypeFormatting",
+    "capability_path": "capabilities.textDocument.onTypeFormatting",
+    "type_name": "DocumentOnTypeFormattingParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/rename",
+    "capability_path": "capabilities.textDocument.rename",
+    "type_name": "RenameParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/prepareRename",
+    "capability_path": "capabilities.textDocument.rename.prepareSupport",
+    "type_name": "PrepareRenameParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/executeCommand",
+    "capability_path": "capabilities.workspace.executeCommand",
+    "type_name": "ExecuteCommandParams",
+    "field_name": "command",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/executeCommand",
+    "capability_path": "capabilities.workspace.executeCommand",
+    "type_name": "ExecuteCommandParams",
+    "field_name": "arguments",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/executeCommand",
+    "capability_path": "capabilities.workspace.executeCommand",
+    "type_name": "ExecuteCommandParams",
+    "field_name": "workDoneToken",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/applyEdit",
+    "capability_path": "capabilities.workspace.applyEdit",
+    "type_name": "ApplyWorkspaceEditParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/didChangeWorkspaceFolders",
+    "capability_path": "capabilities.workspace.workspaceFolders.changeNotifications",
+    "type_name": "DidChangeWorkspaceFoldersParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "window/workDoneProgress/cancel",
+    "capability_path": "none",
+    "type_name": "WorkDoneProgressCancelParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/didCreateFiles",
+    "capability_path": "capabilities.workspace.fileOperations.didCreate",
+    "type_name": "CreateFilesParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/didRenameFiles",
+    "capability_path": "capabilities.workspace.fileOperations.didRename",
+    "type_name": "RenameFilesParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/didDeleteFiles",
+    "capability_path": "capabilities.workspace.fileOperations.didDelete",
+    "type_name": "DeleteFilesParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "notebookDocument/didOpen",
+    "capability_path": "none",
+    "type_name": "DidOpenNotebookDocumentParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "notebookDocument/didChange",
+    "capability_path": "none",
+    "type_name": "DidChangeNotebookDocumentParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "notebookDocument/didSave",
+    "capability_path": "none",
+    "type_name": "DidSaveNotebookDocumentParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "notebookDocument/didClose",
+    "capability_path": "none",
+    "type_name": "DidCloseNotebookDocumentParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "initialized",
+    "capability_path": "none",
+    "type_name": "InitializedParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "exit",
+    "capability_path": "none",
+    "type_name": "void",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/didChangeConfiguration",
+    "capability_path": "capabilities.workspace.didChangeConfiguration",
+    "type_name": "DidChangeConfigurationParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "window/showMessage",
+    "capability_path": "capabilities.window.showMessage",
+    "type_name": "ShowMessageParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "window/logMessage",
+    "capability_path": "capabilities.window.showMessage.messageActionItem",
+    "type_name": "LogMessageParams",
+    "field_name": "type",
+    "coverage": "supported"
+  },
+  {
+    "message": "window/logMessage",
+    "capability_path": "capabilities.window.showMessage.messageActionItem",
+    "type_name": "LogMessageParams",
+    "field_name": "message",
+    "coverage": "supported"
+  },
+  {
+    "message": "telemetry/event",
+    "capability_path": "none",
+    "type_name": "LSPAny",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/didOpen",
+    "capability_path": "capabilities.textDocument.synchronization",
+    "type_name": "DidOpenTextDocumentParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/didChange",
+    "capability_path": "capabilities.textDocument.synchronization",
+    "type_name": "DidChangeTextDocumentParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/didClose",
+    "capability_path": "capabilities.textDocument.synchronization",
+    "type_name": "DidCloseTextDocumentParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/didSave",
+    "capability_path": "capabilities.textDocument.synchronization.didSave",
+    "type_name": "DidSaveTextDocumentParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/willSave",
+    "capability_path": "capabilities.textDocument.synchronization.willSave",
+    "type_name": "WillSaveTextDocumentParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "workspace/didChangeWatchedFiles",
+    "capability_path": "capabilities.workspace.didChangeWatchedFiles",
+    "type_name": "DidChangeWatchedFilesParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "textDocument/publishDiagnostics",
+    "capability_path": "capabilities.textDocument.publishDiagnostics",
+    "type_name": "PublishDiagnosticsParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "$/setTrace",
+    "capability_path": "none",
+    "type_name": "SetTraceParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "$/logTrace",
+    "capability_path": "none",
+    "type_name": "LogTraceParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "$/cancelRequest",
+    "capability_path": "none",
+    "type_name": "CancelParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "$/progress",
+    "capability_path": "none",
+    "type_name": "ProgressParams",
+    "field_name": "none",
+    "coverage": "supported"
+  },
+  {
+    "message": "none",
+    "capability_path": "capabilities.notebookDocument.synchronization",
+    "type_name": "NotebookDocumentFilter",
+    "field_name": "none",
+    "coverage": "supported"
+  }
+]

@@ -1,0 +1,254 @@
+{
+  "eventTypes": {},
+  "events": {
+    "ev_diag_emit": {
+      "attributes": {},
+      "relationships": [
+        {
+          "objectId": "range_server_rs_1",
+          "qualifier": "range"
+        },
+        {
+          "objectId": "diag_code_ocel_001",
+          "qualifier": "code"
+        },
+        {
+          "objectId": "forbidden_imp_ocel_001",
+          "qualifier": "forbidden_implication"
+        },
+        {
+          "objectId": "cp_ocel_compat_001",
+          "qualifier": "checkpoint"
+        }
+      ],
+      "time": "2026-06-01T01:22:15Z",
+      "type": "DiagnosticEmitted"
+    },
+    "ev_failset_up": {
+      "attributes": {},
+      "relationships": [
+        {
+          "objectId": "diag_instance_1",
+          "qualifier": "diagnostic"
+        },
+        {
+          "objectId": "cp_ocel_compat_001",
+          "qualifier": "checkpoint"
+        },
+        {
+          "objectId": "report_admissibility",
+          "qualifier": "report"
+        }
+      ],
+      "time": "2026-06-01T01:22:15Z",
+      "type": "FailsetUpdated"
+    },
+    "ev_file_obs": {
+      "attributes": {},
+      "relationships": [
+        {
+          "objectId": "file_server_rs",
+          "qualifier": "observed_file"
+        }
+      ],
+      "time": "2026-06-01T01:22:15Z",
+      "type": "FileObserved"
+    },
+    "ev_lsp318_ex": {
+      "attributes": {},
+      "relationships": [
+        {
+          "objectId": "feature_row_001",
+          "qualifier": "feature_row"
+        },
+        {
+          "objectId": "transcript_001",
+          "qualifier": "transcript"
+        },
+        {
+          "objectId": "receipt_ocel_json",
+          "qualifier": "receipt"
+        }
+      ],
+      "time": "2026-06-01T01:22:15Z",
+      "type": "Lsp318FeatureExercised"
+    },
+    "ev_neg_control": {
+      "attributes": {},
+      "relationships": [
+        {
+          "objectId": "fixture_changelog_laundering",
+          "qualifier": "fixture"
+        },
+        {
+          "objectId": "diag_code_ocel_001",
+          "qualifier": "expected_diagnostic"
+        },
+        {
+          "objectId": "receipt_ocel_json",
+          "qualifier": "receipt"
+        }
+      ],
+      "time": "2026-06-01T01:22:15Z",
+      "type": "NegativeControlExecuted"
+    },
+    "ev_raw_obs": {
+      "attributes": {},
+      "relationships": [
+        {
+          "objectId": "file_server_rs",
+          "qualifier": "containing_file"
+        }
+      ],
+      "time": "2026-06-01T01:22:15Z",
+      "type": "RawTextObservationDetected"
+    },
+    "ev_receipt_val": {
+      "attributes": {},
+      "relationships": [
+        {
+          "objectId": "receipt_ocel_json",
+          "qualifier": "receipt"
+        },
+        {
+          "objectId": "digest_ocel_json",
+          "qualifier": "digest"
+        },
+        {
+          "objectId": "cp_ocel_compat_001",
+          "qualifier": "checkpoint"
+        }
+      ],
+      "time": "2026-06-01T01:22:15Z",
+      "type": "ReceiptValidated"
+    },
+    "ev_repo_scan": {
+      "attributes": {},
+      "relationships": [
+        {
+          "objectId": "repo_lsp_max",
+          "qualifier": "repository"
+        }
+      ],
+      "time": "2026-06-01T01:22:15Z",
+      "type": "RepositoryScanned"
+    }
+  },
+  "objectTypes": {},
+  "objects": {
+    "cp_ocel_compat_001": {
+      "attributes": {
+        "name": "OCEL-COMPAT-001",
+        "status": "PROCESS_EVIDENCE_COMPLETE"
+      },
+      "type": "Checkpoint"
+    },
+    "crate_anti_llm_cheat_lsp": {
+      "attributes": {
+        "name": "anti-llm-lsp"
+      },
+      "type": "Crate"
+    },
+    "diag_code_ocel_001": {
+      "attributes": {
+        "code": "ANTI-LLM-OCEL-001"
+      },
+      "type": "DiagnosticCode"
+    },
+    "diag_instance_1": {
+      "attributes": {
+        "code": "ANTI-LLM-OCEL-001",
+        "message": "Diagnostic emitted without corresponding OCEL process event"
+      },
+      "type": "Diagnostic"
+    },
+    "digest_ocel_json": {
+      "attributes": {
+        "algorithm": "BLAKE3",
+        "value": "e84e1d519dfd66cd6a8b5e57ffc9370b79232725d199e0738427f80c77446b7c"
+      },
+      "type": "Digest"
+    },
+    "failset_main": {
+      "attributes": {
+        "status": "CANDIDATE_PENDING_RAW_EVIDENCE_REVIEW"
+      },
+      "type": "Failset"
+    },
+    "feature_row_001": {
+      "attributes": {
+        "feature_id": "LSP318-001",
+        "status": "SUPPORTED_WITH_TRANSCRIPT"
+      },
+      "type": "Lsp318FeatureRow"
+    },
+    "file_server_rs": {
+      "attributes": {
+        "path": "examples/anti-llm-lsp/src/server.rs"
+      },
+      "type": "File"
+    },
+    "fixture_changelog_laundering": {
+      "attributes": {
+        "path": "fixtures/negative_controls/changelog_laundering.md"
+      },
+      "type": "NegativeControlFixture"
+    },
+    "forbidden_imp_ocel_001": {
+      "attributes": {
+        "implication": "DiagnosticEmitted => ProcessEvidenceRecorded"
+      },
+      "type": "ForbiddenImplication"
+    },
+    "ocel_log_main": {
+      "attributes": {
+        "path": "examples/anti-llm-lsp/ocel/anti_llm_cheat_lsp_ocel.json"
+      },
+      "type": "OcelEventLog"
+    },
+    "range_server_rs_1": {
+      "attributes": {
+        "file": "examples/anti-llm-lsp/src/server.rs",
+        "line": 42
+      },
+      "type": "FileRange"
+    },
+    "receipt_ocel_json": {
+      "attributes": {
+        "path": "examples/anti-llm-lsp/ocel/anti_llm_cheat_lsp_ocel.receipt.json"
+      },
+      "type": "Receipt"
+    },
+    "repo_lsp_max": {
+      "attributes": {
+        "name": "lsp-max",
+        "path": "/Users/sac/lsp-max"
+      },
+      "type": "Repository"
+    },
+    "report_admissibility": {
+      "attributes": {
+        "status": "CANDIDATE_PENDING_RAW_EVIDENCE_REVIEW"
+      },
+      "type": "AgentReport"
+    },
+    "route_stage_scan": {
+      "attributes": {
+        "name": "scan"
+      },
+      "type": "RouteStage"
+    },
+    "test_case_ocel_001": {
+      "attributes": {
+        "name": "ocel_001_diagnostic_emits_compat_event"
+      },
+      "type": "TestCase"
+    },
+    "transcript_001": {
+      "attributes": {
+        "path": "examples/anti-llm-lsp/transcripts/lsp318_001.json"
+      },
+      "type": "JsonRpcTranscript"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "efaf2c97d57a5803f4812e1090460d397fd1874663951f61a73c88bee50e5706",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/_logTrace_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/_logTrace",
+  "status": "ADMITTED"
+}

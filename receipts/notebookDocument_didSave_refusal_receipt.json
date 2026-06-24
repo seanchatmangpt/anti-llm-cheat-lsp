@@ -1,0 +1,9 @@
+{
+  "digest": "b1bfb62dd55b2c7c8af7a940af8bf688c61d4d0f7988b4fee639d7af8ebec2a4",
+  "digest_algorithm": "BLAKE3",
+  "boundary": "notebookDocument_didSave-boundary",
+  "checkpoint": "notebook-refusal-active",
+  "raw_command": "cargo test --test dogfood lsp318_spec_graph_covered",
+  "output_digest": "4a5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c",
+  "status": "REFUSED"
+}

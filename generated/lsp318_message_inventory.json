@@ -1,0 +1,667 @@
+[
+  {
+    "method": "$/cancelRequest",
+    "kind": "notification",
+    "direction": "both",
+    "params_type": "CancelParams",
+    "result_type": null
+  },
+  {
+    "method": "$/logTrace",
+    "kind": "notification",
+    "direction": "serverToClient",
+    "params_type": "LogTraceParams",
+    "result_type": null
+  },
+  {
+    "method": "$/progress",
+    "kind": "notification",
+    "direction": "both",
+    "params_type": "ProgressParams",
+    "result_type": null
+  },
+  {
+    "method": "$/setTrace",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "SetTraceParams",
+    "result_type": null
+  },
+  {
+    "method": "callHierarchy/incomingCalls",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "CallHierarchyIncomingCallsParams",
+    "result_type": "CallHierarchyIncomingCall[] | Null"
+  },
+  {
+    "method": "callHierarchy/outgoingCalls",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "CallHierarchyOutgoingCallsParams",
+    "result_type": "CallHierarchyOutgoingCall[] | Null"
+  },
+  {
+    "method": "client/registerCapability",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": "RegistrationParams",
+    "result_type": "Null"
+  },
+  {
+    "method": "client/unregisterCapability",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": "UnregistrationParams",
+    "result_type": "Null"
+  },
+  {
+    "method": "codeAction/resolve",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "CodeAction",
+    "result_type": "CodeAction"
+  },
+  {
+    "method": "codeLens/resolve",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "CodeLens",
+    "result_type": "CodeLens"
+  },
+  {
+    "method": "completionItem/resolve",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "CompletionItem",
+    "result_type": "CompletionItem"
+  },
+  {
+    "method": "documentLink/resolve",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "DocumentLink",
+    "result_type": "DocumentLink"
+  },
+  {
+    "method": "exit",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": null,
+    "result_type": null
+  },
+  {
+    "method": "initialize",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "InitializeParams",
+    "result_type": "InitializeResult"
+  },
+  {
+    "method": "initialized",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "InitializedParams",
+    "result_type": null
+  },
+  {
+    "method": "inlayHint/resolve",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "InlayHint",
+    "result_type": "InlayHint"
+  },
+  {
+    "method": "notebookDocument/didChange",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "DidChangeNotebookDocumentParams",
+    "result_type": null
+  },
+  {
+    "method": "notebookDocument/didClose",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "DidCloseNotebookDocumentParams",
+    "result_type": null
+  },
+  {
+    "method": "notebookDocument/didOpen",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "DidOpenNotebookDocumentParams",
+    "result_type": null
+  },
+  {
+    "method": "notebookDocument/didSave",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "DidSaveNotebookDocumentParams",
+    "result_type": null
+  },
+  {
+    "method": "shutdown",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": null,
+    "result_type": "Null"
+  },
+  {
+    "method": "telemetry/event",
+    "kind": "notification",
+    "direction": "serverToClient",
+    "params_type": "LSPAny",
+    "result_type": null
+  },
+  {
+    "method": "textDocument/codeAction",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "CodeActionParams",
+    "result_type": "Command | CodeAction[] | Null"
+  },
+  {
+    "method": "textDocument/codeLens",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "CodeLensParams",
+    "result_type": "CodeLens[] | Null"
+  },
+  {
+    "method": "textDocument/colorPresentation",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "ColorPresentationParams",
+    "result_type": "ColorPresentation[]"
+  },
+  {
+    "method": "textDocument/completion",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "CompletionParams",
+    "result_type": "CompletionItem[] | CompletionList | Null"
+  },
+  {
+    "method": "textDocument/declaration",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "DeclarationParams",
+    "result_type": "Declaration | DeclarationLink[] | Null"
+  },
+  {
+    "method": "textDocument/definition",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "DefinitionParams",
+    "result_type": "Definition | DefinitionLink[] | Null"
+  },
+  {
+    "method": "textDocument/diagnostic",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "DocumentDiagnosticParams",
+    "result_type": "DocumentDiagnosticReport"
+  },
+  {
+    "method": "textDocument/didChange",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "DidChangeTextDocumentParams",
+    "result_type": null
+  },
+  {
+    "method": "textDocument/didClose",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "DidCloseTextDocumentParams",
+    "result_type": null
+  },
+  {
+    "method": "textDocument/didOpen",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "DidOpenTextDocumentParams",
+    "result_type": null
+  },
+  {
+    "method": "textDocument/didSave",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "DidSaveTextDocumentParams",
+    "result_type": null
+  },
+  {
+    "method": "textDocument/documentColor",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "DocumentColorParams",
+    "result_type": "ColorInformation[]"
+  },
+  {
+    "method": "textDocument/documentHighlight",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "DocumentHighlightParams",
+    "result_type": "DocumentHighlight[] | Null"
+  },
+  {
+    "method": "textDocument/documentLink",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "DocumentLinkParams",
+    "result_type": "DocumentLink[] | Null"
+  },
+  {
+    "method": "textDocument/documentSymbol",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "DocumentSymbolParams",
+    "result_type": "SymbolInformation[] | DocumentSymbol[] | Null"
+  },
+  {
+    "method": "textDocument/foldingRange",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "FoldingRangeParams",
+    "result_type": "FoldingRange[] | Null"
+  },
+  {
+    "method": "textDocument/formatting",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "DocumentFormattingParams",
+    "result_type": "TextEdit[] | Null"
+  },
+  {
+    "method": "textDocument/hover",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "HoverParams",
+    "result_type": "Hover | Null"
+  },
+  {
+    "method": "textDocument/implementation",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "ImplementationParams",
+    "result_type": "Definition | DefinitionLink[] | Null"
+  },
+  {
+    "method": "textDocument/inlayHint",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "InlayHintParams",
+    "result_type": "InlayHint[] | Null"
+  },
+  {
+    "method": "textDocument/inlineCompletion",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "InlineCompletionParams",
+    "result_type": "InlineCompletionList | InlineCompletionItem[] | Null"
+  },
+  {
+    "method": "textDocument/inlineValue",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "InlineValueParams",
+    "result_type": "InlineValue[] | Null"
+  },
+  {
+    "method": "textDocument/linkedEditingRange",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "LinkedEditingRangeParams",
+    "result_type": "LinkedEditingRanges | Null"
+  },
+  {
+    "method": "textDocument/moniker",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "MonikerParams",
+    "result_type": "Moniker[] | Null"
+  },
+  {
+    "method": "textDocument/onTypeFormatting",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "DocumentOnTypeFormattingParams",
+    "result_type": "TextEdit[] | Null"
+  },
+  {
+    "method": "textDocument/prepareCallHierarchy",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "CallHierarchyPrepareParams",
+    "result_type": "CallHierarchyItem[] | Null"
+  },
+  {
+    "method": "textDocument/prepareRename",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "PrepareRenameParams",
+    "result_type": "PrepareRenameResult | Null"
+  },
+  {
+    "method": "textDocument/prepareTypeHierarchy",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "TypeHierarchyPrepareParams",
+    "result_type": "TypeHierarchyItem[] | Null"
+  },
+  {
+    "method": "textDocument/publishDiagnostics",
+    "kind": "notification",
+    "direction": "serverToClient",
+    "params_type": "PublishDiagnosticsParams",
+    "result_type": null
+  },
+  {
+    "method": "textDocument/rangeFormatting",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "DocumentRangeFormattingParams",
+    "result_type": "TextEdit[] | Null"
+  },
+  {
+    "method": "textDocument/rangesFormatting",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "DocumentRangesFormattingParams",
+    "result_type": "TextEdit[] | Null"
+  },
+  {
+    "method": "textDocument/references",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "ReferenceParams",
+    "result_type": "Location[] | Null"
+  },
+  {
+    "method": "textDocument/rename",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "RenameParams",
+    "result_type": "WorkspaceEdit | Null"
+  },
+  {
+    "method": "textDocument/selectionRange",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "SelectionRangeParams",
+    "result_type": "SelectionRange[] | Null"
+  },
+  {
+    "method": "textDocument/semanticTokens/full",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "SemanticTokensParams",
+    "result_type": "SemanticTokens | Null"
+  },
+  {
+    "method": "textDocument/semanticTokens/full/delta",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "SemanticTokensDeltaParams",
+    "result_type": "SemanticTokens | SemanticTokensDelta | Null"
+  },
+  {
+    "method": "textDocument/semanticTokens/range",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "SemanticTokensRangeParams",
+    "result_type": "SemanticTokens | Null"
+  },
+  {
+    "method": "textDocument/signatureHelp",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "SignatureHelpParams",
+    "result_type": "SignatureHelp | Null"
+  },
+  {
+    "method": "textDocument/typeDefinition",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "TypeDefinitionParams",
+    "result_type": "Definition | DefinitionLink[] | Null"
+  },
+  {
+    "method": "textDocument/willSave",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "WillSaveTextDocumentParams",
+    "result_type": null
+  },
+  {
+    "method": "textDocument/willSaveWaitUntil",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "WillSaveTextDocumentParams",
+    "result_type": "TextEdit[] | Null"
+  },
+  {
+    "method": "typeHierarchy/subtypes",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "TypeHierarchySubtypesParams",
+    "result_type": "TypeHierarchyItem[] | Null"
+  },
+  {
+    "method": "typeHierarchy/supertypes",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "TypeHierarchySupertypesParams",
+    "result_type": "TypeHierarchyItem[] | Null"
+  },
+  {
+    "method": "window/logMessage",
+    "kind": "notification",
+    "direction": "serverToClient",
+    "params_type": "LogMessageParams",
+    "result_type": null
+  },
+  {
+    "method": "window/showDocument",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": "ShowDocumentParams",
+    "result_type": "ShowDocumentResult"
+  },
+  {
+    "method": "window/showMessage",
+    "kind": "notification",
+    "direction": "serverToClient",
+    "params_type": "ShowMessageParams",
+    "result_type": null
+  },
+  {
+    "method": "window/showMessageRequest",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": "ShowMessageRequestParams",
+    "result_type": "MessageActionItem | Null"
+  },
+  {
+    "method": "window/workDoneProgress/cancel",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "WorkDoneProgressCancelParams",
+    "result_type": null
+  },
+  {
+    "method": "window/workDoneProgress/create",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": "WorkDoneProgressCreateParams",
+    "result_type": "Null"
+  },
+  {
+    "method": "workspace/applyEdit",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": "ApplyWorkspaceEditParams",
+    "result_type": "ApplyWorkspaceEditResult"
+  },
+  {
+    "method": "workspace/codeLens/refresh",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": null,
+    "result_type": "Null"
+  },
+  {
+    "method": "workspace/configuration",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": "ConfigurationParams",
+    "result_type": "LSPAny[]"
+  },
+  {
+    "method": "workspace/diagnostic",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "WorkspaceDiagnosticParams",
+    "result_type": "WorkspaceDiagnosticReport"
+  },
+  {
+    "method": "workspace/diagnostic/refresh",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": null,
+    "result_type": "Null"
+  },
+  {
+    "method": "workspace/didChangeConfiguration",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "DidChangeConfigurationParams",
+    "result_type": null
+  },
+  {
+    "method": "workspace/didChangeWatchedFiles",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "DidChangeWatchedFilesParams",
+    "result_type": null
+  },
+  {
+    "method": "workspace/didChangeWorkspaceFolders",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "DidChangeWorkspaceFoldersParams",
+    "result_type": null
+  },
+  {
+    "method": "workspace/didCreateFiles",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "CreateFilesParams",
+    "result_type": null
+  },
+  {
+    "method": "workspace/didDeleteFiles",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "DeleteFilesParams",
+    "result_type": null
+  },
+  {
+    "method": "workspace/didRenameFiles",
+    "kind": "notification",
+    "direction": "clientToServer",
+    "params_type": "RenameFilesParams",
+    "result_type": null
+  },
+  {
+    "method": "workspace/executeCommand",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "ExecuteCommandParams",
+    "result_type": "LSPAny | Null"
+  },
+  {
+    "method": "workspace/foldingRange/refresh",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": null,
+    "result_type": "Null"
+  },
+  {
+    "method": "workspace/inlayHint/refresh",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": null,
+    "result_type": "Null"
+  },
+  {
+    "method": "workspace/inlineValue/refresh",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": null,
+    "result_type": "Null"
+  },
+  {
+    "method": "workspace/semanticTokens/refresh",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": null,
+    "result_type": "Null"
+  },
+  {
+    "method": "workspace/symbol",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "WorkspaceSymbolParams",
+    "result_type": "SymbolInformation[] | WorkspaceSymbol[] | Null"
+  },
+  {
+    "method": "workspace/textDocumentContent",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "TextDocumentContentParams",
+    "result_type": "TextDocumentContentResult"
+  },
+  {
+    "method": "workspace/textDocumentContent/refresh",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": "TextDocumentContentRefreshParams",
+    "result_type": "Null"
+  },
+  {
+    "method": "workspace/willCreateFiles",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "CreateFilesParams",
+    "result_type": "WorkspaceEdit | Null"
+  },
+  {
+    "method": "workspace/willDeleteFiles",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "DeleteFilesParams",
+    "result_type": "WorkspaceEdit | Null"
+  },
+  {
+    "method": "workspace/willRenameFiles",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "RenameFilesParams",
+    "result_type": "WorkspaceEdit | Null"
+  },
+  {
+    "method": "workspace/workspaceFolders",
+    "kind": "request",
+    "direction": "serverToClient",
+    "params_type": null,
+    "result_type": "WorkspaceFolder[] | Null"
+  },
+  {
+    "method": "workspaceSymbol/resolve",
+    "kind": "request",
+    "direction": "clientToServer",
+    "params_type": "WorkspaceSymbol",
+    "result_type": "WorkspaceSymbol"
+  }
+]

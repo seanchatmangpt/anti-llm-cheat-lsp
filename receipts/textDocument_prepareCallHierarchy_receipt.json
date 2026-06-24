@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "37b38a01e777ee1d5b909b7137328b6f5aac65546c6e9f8c44818eeee4c29f70",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/textDocument_prepareCallHierarchy_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/textDocument_prepareCallHierarchy",
+  "status": "ADMITTED"
+}

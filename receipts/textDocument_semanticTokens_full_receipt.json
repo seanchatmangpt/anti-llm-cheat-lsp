@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "b5a30f1b5cd0c543f634205072f1f1d678203b13d5dbd3071c577ba58f6df433",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/textDocument_semanticTokens_full_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/textDocument_semanticTokens_full",
+  "status": "ADMITTED"
+}

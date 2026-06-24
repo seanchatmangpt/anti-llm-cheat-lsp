@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "90613bd450cc21064b3c8b06a26c2bb23c479ec42fc99ba369439870d212fca2",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/textDocument_documentColor_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/textDocument_documentColor",
+  "status": "ADMITTED"
+}

@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "d64a4d10d530fbdf92e9301aa5ee3179b539df7d6b205ba8b75d409553b64175",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/relative_patterns_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/relative_patterns",
+  "status": "ADMITTED"
+}

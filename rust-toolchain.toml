@@ -1,0 +1,11 @@
+# Pinned stable toolchain.
+#
+# House default is a PINNED stable channel rather than floating nightly: it
+# stops "a new lint landed and turned CI red" churn and lets MSRV mean
+# something. Crates that genuinely need `#![feature(...)]` (e.g. specgen /
+# certain WASM crates) may override this file with `channel = "nightly-YYYY-MM-DD"`
+# (pinned, never bare "nightly").
+[toolchain]
+channel = "nightly-2026-04-15"
+components = ["rustfmt", "clippy", "llvm-tools-preview"]
+profile = "minimal"

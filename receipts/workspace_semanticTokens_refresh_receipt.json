@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "1c65737dcd7e87307fcdfad3c21f3e24516eb15b3d4ef5b51bd20881b25746d7",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/workspace_semanticTokens_refresh_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/workspace_semanticTokens_refresh",
+  "status": "ADMITTED"
+}

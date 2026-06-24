@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "4666121b10d0b2265404b52cd91d405924b4450ed2029878b90d6a1b9215a54f",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/textDocument_hover_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/textDocument_hover",
+  "status": "ADMITTED"
+}

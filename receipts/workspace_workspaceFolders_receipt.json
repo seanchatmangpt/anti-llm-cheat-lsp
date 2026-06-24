@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "d41e7195101a7144fdea6fc49f52a5e9cd046db9b3d7834527387eedb7fe7d45",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/workspace_workspaceFolders_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/workspace_workspaceFolders",
+  "status": "ADMITTED"
+}

@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "9937207d6c5113695ac60079127b94a05467f746f7f160eab99a1121beeaa062",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/textDocument_semanticTokens_full_delta_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/textDocument_semanticTokens_full_delta",
+  "status": "ADMITTED"
+}

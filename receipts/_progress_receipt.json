@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "0099f89cf0ceb2a8a38a7a674d5f69eab8d22762d13ca02106608bca6b4828ff",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/_progress_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/_progress",
+  "status": "ADMITTED"
+}

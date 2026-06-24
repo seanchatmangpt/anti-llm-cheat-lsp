@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "2e53be20b1bb4853fbd599c9779d451a9da71a578fc24b9a3699b513bf945d33",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/textDocument_moniker_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/textDocument_moniker",
+  "status": "ADMITTED"
+}

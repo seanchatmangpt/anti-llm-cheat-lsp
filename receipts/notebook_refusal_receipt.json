@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "82e7b0f46108a93673fbd39c391970325529ab87dc2892db287001257a30255f",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 <<< notebook-refusal-statement",
+  "negative_control": "fixtures/negative_controls/notebook_out_of_scope",
+  "status": "REFUSED"
+}

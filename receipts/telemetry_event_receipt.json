@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "1e101115e33bf9e26bde2ed4b948f2feb90e96de82bca47b3d4897971125ca22",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/telemetry_event_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/telemetry_event",
+  "status": "ADMITTED"
+}

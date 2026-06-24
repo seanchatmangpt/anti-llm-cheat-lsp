@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "ed013edce720ed68158446edc5d7f25b76d5eb2893d3efea4d43854488e3942c",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/typeHierarchy_supertypes_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/typeHierarchy_supertypes",
+  "status": "ADMITTED"
+}

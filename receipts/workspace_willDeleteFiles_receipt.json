@@ -1,0 +1,9 @@
+{
+  "digest_algorithm": "BLAKE3",
+  "digest": "dba5adc6a23b1ceea552e10c0ff7cbfd024fe34fdc1c1835ee86e4f09df89a42",
+  "boundary": "-----BEGIN RECEIPT-----",
+  "checkpoint": "-----END RECEIPT-----",
+  "raw_command": "blake3 transcripts/workspace_willDeleteFiles_positive.jsonl",
+  "negative_control": "fixtures/negative_controls/workspace_willDeleteFiles",
+  "status": "ADMITTED"
+}

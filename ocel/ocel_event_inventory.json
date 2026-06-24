@@ -1,0 +1,21 @@
+[
+  "RepositoryScanned",
+  "FileObserved",
+  "RawTextObservationDetected",
+  "TreeSitterObservationDetected",
+  "CargoGraphObservationDetected",
+  "MarkdownClaimDetected",
+  "JsonRpcTranscriptParsed",
+  "ReceiptFileParsed",
+  "RouteEvidenceChecked",
+  "DiagnosticEmitted",
+  "ForbiddenImplicationDetected",
+  "NegativeControlExecuted",
+  "Lsp318FeatureExercised",
+  "Lsp318FeatureRefusedByLaw",
+  "VirtualDocumentServed",
+  "FailsetUpdated",
+  "ClaimStatusReported",
+  "ReceiptValidated",
+  "AuditReportScanned"
+]
