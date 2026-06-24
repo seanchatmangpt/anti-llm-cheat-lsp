@@ -24,14 +24,14 @@ All 41 dogfood test cases compile and pass. The process event log has been expor
 
 | Checkpoint | Status | Scope | Evidence |
 |---|---|---|---|
-| `OCEL-COMPAT-001` | `PROCESS_EVIDENCE_COMPLETE` | `crates/anti-llm-cheat-lsp` | [anti_llm_lsp_ocel.json](file:///Users/sac/lsp-max/crates/anti-llm-cheat-lsp/ocel/anti_llm_lsp_ocel.json)<br>[anti_llm_lsp_ocel.receipt.json](file:///Users/sac/lsp-max/crates/anti-llm-cheat-lsp/ocel/anti_llm_lsp_ocel.receipt.json) |
+| `OCEL-COMPAT-001` | `PROCESS_EVIDENCE_COMPLETE` | `crates/anti-llm-cheat-lsp` | [anti_llm_lsp_ocel.json](file:///Users/sac/anti-llm-cheat-lsp/ocel/anti_llm_lsp_ocel.json)<br>[anti_llm_lsp_ocel.receipt.json](file:///Users/sac/anti-llm-cheat-lsp/ocel/anti_llm_lsp_ocel.receipt.json) |
 
 ## Event Type Coverage Inventory
 
 All event types are mapped inside the exported OCEL log:
 - `RepositoryScanned`, `FileObserved`, `RawTextObservationDetected`, `TreeSitterObservationDetected`, `CargoGraphObservationDetected`, `MarkdownClaimDetected`, `JsonRpcTranscriptParsed`, `ReceiptFileParsed`, `RouteEvidenceChecked`, `DiagnosticEmitted`, `ForbiddenImplicationDetected`, `NegativeControlExecuted`, `Lsp318FeatureExercised`, `Lsp318FeatureRefusedByLaw`, `VirtualDocumentServed`, `FailsetUpdated`, `ClaimStatusReported`, `ReceiptValidated`, `AuditReportScanned`
 
-For details, refer to the [ocel_event_inventory.json](file:///Users/sac/lsp-max/crates/anti-llm-cheat-lsp/ocel/ocel_event_inventory.json) and [ocel_object_inventory.json](file:///Users/sac/lsp-max/crates/anti-llm-cheat-lsp/ocel/ocel_object_inventory.json).
+For details, refer to the [ocel_event_inventory.json](file:///Users/sac/anti-llm-cheat-lsp/ocel/ocel_event_inventory.json) and [ocel_object_inventory.json](file:///Users/sac/anti-llm-cheat-lsp/ocel/ocel_object_inventory.json).
 
 ## Relation Bindings
 
@@ -42,8 +42,8 @@ The following relationships are fully bounded within the `wasm4pm-compat` typed 
 - `NegativeControlExecuted` -> `NegativeControlFixture`, `DiagnosticCode`, `Receipt`
 - `FailsetUpdated` -> `Diagnostic`, `Checkpoint`, `AgentReport`
 
-See [ocel_relation_inventory.json](file:///Users/sac/lsp-max/crates/anti-llm-cheat-lsp/ocel/ocel_relation_inventory.json) for the full mapping schema.
+See [ocel_relation_inventory.json](file:///Users/sac/anti-llm-cheat-lsp/ocel/ocel_relation_inventory.json) for the full mapping schema.
 
 ## Gap Analysis
 
-The structural parser and validator confirm zero schema anomalies. The detailed gap analysis is located in [ocel_gap_report.md](file:///Users/sac/lsp-max/crates/anti-llm-cheat-lsp/ocel/ocel_gap_report.md).
+The structural parser and validator confirm zero schema anomalies. The detailed gap analysis is located in [ocel_gap_report.md](file:///Users/sac/anti-llm-cheat-lsp/ocel/ocel_gap_report.md).
