@@ -8,6 +8,14 @@ use lsp_max::{
 use lsp_max_ast::AutoLspAdapter;
 use std::str::FromStr;
 use std::sync::{Arc, Mutex};
+use lsp_max::andon::core::InvariantRegistry;
+use lsp_max::andon::andon::{AndonBus, AndonEvent};
+use lsp_max::andon::analysis::AnalysisPipeline;
+use lsp_max::andon::lsp::LspMaxAndonRaised;
+use lsp_max::andon::patterns::{
+    build_empty_registry_invariant, build_required_artifact_invariant, build_marker_admission,
+    build_need_n_invariant, build_non_empty_check_set, build_brokered_command, build_receipt_required,
+};
 
 mod recommend;
 
@@ -26,16 +34,30 @@ pub struct AntiLlmServer {
     pub ast_adapter: RustAstAdapter,
     pub workspace_index: WorkspaceIndex,
     rule_packs: ValidatedRulePackSet,
+    pub registry: Arc<Mutex<InvariantRegistry>>,
+    pub andon_bus: Arc<Mutex<AndonBus>>,
 }
 
 impl AntiLlmServer {
     pub fn new(client: Client) -> Self {
+        let mut registry = InvariantRegistry::new();
+        // Dogfood: Initialize framework invariants and domain invariants
+        registry.register(build_empty_registry_invariant());
+        registry.register(build_required_artifact_invariant("docs/prd.md"));
+        registry.register(build_marker_admission("ADMITTED"));
+        registry.register(build_need_n_invariant(8));
+        registry.register(build_non_empty_check_set());
+        registry.register(build_brokered_command());
+        registry.register(build_receipt_required());
+
         Self {
             client,
             workspace_root: Arc::new(Mutex::new(None)),
             ast_adapter: RustAstAdapter::new(),
             workspace_index: WorkspaceIndex::new(),
             rule_packs: ValidatedRulePackSet::empty(),
+            registry: Arc::new(Mutex::new(registry)),
+            andon_bus: Arc::new(Mutex::new(AndonBus::new())),
         }
     }
 
@@ -59,17 +81,76 @@ impl AntiLlmServer {
     }
 
     async fn run_scan_and_publish(&self, uri: &Uri) {
-        let file_diags: Vec<Diagnostic> = self
-            .file_diagnostics(uri)
+        let anti_diags = self.file_diagnostics(uri);
+        
+        let file_diags: Vec<Diagnostic> = anti_diags
             .iter()
-            .map(|d| d.to_lsp())
+            .map(|d| {
+                let mut lsp_diag = d.to_lsp();
+                if d.blocking {
+                    lsp_diag.source = Some("lsp-max-andon".to_string());
+                }
+                lsp_diag
+            })
             .collect();
 
         self.client
             .publish_diagnostics(uri.clone(), file_diags, None)
             .await;
 
+        let mut andon_events = {
+            let registry = self.registry.lock().unwrap();
+            AnalysisPipeline::evaluate_registry(&registry)
+        };
+
+        for d in anti_diags {
+            if d.blocking {
+                andon_events.push(AndonEvent {
+                    id: uuid::Uuid::new_v4().to_string(),
+                    severity: lsp_max::andon::core::Severity::Refuse,
+                    code: d.code.clone(),
+                    title: format!("Cheat Detected: {}", d.category),
+                    message: d.message.clone(),
+                    invariant_id: Some(d.code.clone()),
+                    observed_state: Some(d.category.clone()),
+                    expected_state: None,
+                    blocking: true,
+                    requires_ack: true,
+                    admission_allowed: false,
+                    next_lawful_step: Some(d.required_correction.clone()),
+                    required_command: None,
+                    evidence_uri: Some(uri.to_string()),
+                    virtual_doc_uri: Some("lsp-max://truth/andon".to_string()),
+                    receipt_required: false,
+                });
+            }
+        }
+
+        for event in andon_events {
+            self.push_andon(event).await;
+        }
+
         self.fire_refreshes(uri).await;
+    }
+
+    async fn push_andon(&self, event: AndonEvent) {
+        let _ = self.client.send_notification::<LspMaxAndonRaised>(event.clone()).await;
+
+        if event.requires_ack {
+            let _ = self.client.show_message_request(
+                MessageType::ERROR,
+                event.message.clone(),
+                Some(vec![MessageActionItem {
+                    title: "Acknowledge".to_string(),
+                    properties: std::collections::HashMap::new(),
+                }]),
+            ).await;
+        } else if event.blocking {
+            self.client.show_message(MessageType::ERROR, event.message.clone()).await;
+        }
+        
+        let mut bus = self.andon_bus.lock().unwrap();
+        bus.push(event);
     }
 
     async fn fire_refreshes(&self, uri: &Uri) {

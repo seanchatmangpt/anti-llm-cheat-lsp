@@ -7,7 +7,7 @@ use crate::observations::Observation;
 /// from `VICTORY_TERMS` below) and the markdown claims parser. The rule then
 /// applies domain-term exemptions from per-repo config before emitting
 /// diagnostics.
-use aho_corasick::{AhoCorasick, MatchKind};
+use regex::Regex;
 use std::sync::OnceLock;
 
 /// Canonical victory / overclaim terms — the single source of truth.
@@ -54,25 +54,27 @@ const VICTORY_CONTEXT_PATTERNS: &[&str] = &[
     "zero diagnostics",
 ];
 
-fn victory_ac() -> &'static AhoCorasick {
-    static AC: OnceLock<AhoCorasick> = OnceLock::new();
-    AC.get_or_init(|| {
-        AhoCorasick::builder()
-            .ascii_case_insensitive(true)
-            .match_kind(MatchKind::LeftmostFirst)
-            .build(VICTORY_TERMS)
-            .expect("victory term automaton compile")
+fn victory_re() -> &'static Regex {
+    static RE: OnceLock<Regex> = OnceLock::new();
+    RE.get_or_init(|| {
+        let terms = VICTORY_TERMS
+            .iter()
+            .map(|t| regex::escape(t))
+            .collect::<Vec<_>>()
+            .join("|");
+        Regex::new(&format!(r"(?i)\b({})\b", terms)).expect("victory regex compile")
     })
 }
 
-fn context_ac() -> &'static AhoCorasick {
-    static AC: OnceLock<AhoCorasick> = OnceLock::new();
-    AC.get_or_init(|| {
-        AhoCorasick::builder()
-            .ascii_case_insensitive(true)
-            .match_kind(MatchKind::LeftmostFirst)
-            .build(VICTORY_CONTEXT_PATTERNS)
-            .expect("victory context automaton compile")
+fn context_re() -> &'static Regex {
+    static RE: OnceLock<Regex> = OnceLock::new();
+    RE.get_or_init(|| {
+        let terms = VICTORY_CONTEXT_PATTERNS
+            .iter()
+            .map(|t| regex::escape(t))
+            .collect::<Vec<_>>()
+            .join("|");
+        Regex::new(&format!(r"(?i)\b({})\b", terms)).expect("context regex compile")
     })
 }
 
@@ -89,13 +91,17 @@ fn is_domain_exempt(term: &str, domain_terms: &[String]) -> bool {
 /// Check whether `construct` (the raw matched text) or `context` (surrounding
 /// line) triggers a victory-language violation, respecting domain exemptions.
 fn is_victory(construct: &str, context: &str, domain_terms: &[String]) -> bool {
-    // Fast path: term-level match via Aho-Corasick
-    if victory_ac().is_match(construct) && !is_domain_exempt(construct, domain_terms) {
-        return true;
+    // Fast path: term-level match via Regex (with word boundaries)
+    if let Some(mat) = victory_re().find(construct) {
+        if !is_domain_exempt(mat.as_str(), domain_terms) {
+            return true;
+        }
     }
     // Context-level match for multi-word patterns in the surrounding line
-    if context_ac().is_match(context) && !is_domain_exempt(context, domain_terms) {
-        return true;
+    if let Some(mat) = context_re().find(context) {
+        if !is_domain_exempt(mat.as_str(), domain_terms) {
+            return true;
+        }
     }
     false
 }
@@ -150,9 +156,9 @@ pub fn scan_for_victory(
 
     for (line_idx, line) in content.lines().enumerate() {
         // Term-level matches
-        for mat in victory_ac().find_iter(line) {
-            let term = VICTORY_TERMS[mat.pattern().as_usize()];
-            if is_domain_exempt(term, domain_terms) {
+        for mat in victory_re().find_iter(line) {
+            let term = mat.as_str().to_lowercase();
+            if is_domain_exempt(&term, domain_terms) {
                 continue;
             }
             obs.push(Observation {
@@ -162,15 +168,15 @@ pub fn scan_for_victory(
                 line: line_idx + 1,
                 column: mat.start() + 1,
                 kind: kind.to_string(),
-                construct: term.to_string(),
+                construct: term.clone(),
                 context: line.trim().to_string(),
                 message: format!("Victory/overclaim language '{}' found", term),
             });
         }
         // Context-level matches (surrounding line patterns)
-        for mat in context_ac().find_iter(line) {
-            let pattern = VICTORY_CONTEXT_PATTERNS[mat.pattern().as_usize()];
-            if is_domain_exempt(pattern, domain_terms) {
+        for mat in context_re().find_iter(line) {
+            let pattern = mat.as_str().to_lowercase();
+            if is_domain_exempt(&pattern, domain_terms) {
                 continue;
             }
             // Avoid double-emitting if already captured by term scan
@@ -184,7 +190,7 @@ pub fn scan_for_victory(
                 line: line_idx + 1,
                 column: mat.start() + 1,
                 kind: kind.to_string(),
-                construct: pattern.to_string(),
+                construct: pattern.clone(),
                 context: line.trim().to_string(),
                 message: format!("Victory/overclaim context pattern '{}' found", pattern),
             });

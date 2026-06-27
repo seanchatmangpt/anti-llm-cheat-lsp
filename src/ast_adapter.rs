@@ -66,7 +66,7 @@ impl RustAstAdapter {
 
     pub fn get_document<F, R>(&self, uri: &DocumentUri, f: F) -> Option<R>
     where
-        F: FnOnce(&lsp_max_ast_core::document::Document) -> R,
+        F: FnOnce(&lsp_max_ast::core::document::Document) -> R,
     {
         if Self::is_rust_file(uri) {
             self.adapter.get_document(uri, f)

@@ -13,7 +13,7 @@
 use lsp_max::lsp_types::{
     Range, SemanticToken, SemanticTokenType, SemanticTokens, SemanticTokensLegend,
 };
-use lsp_max_ast_core::document::Document;
+use lsp_max_ast::core::document::Document;
 
 /// The token-type legend, indexed by position. The handler emits indices into
 /// this array; `capabilities` advertises the identical legend.

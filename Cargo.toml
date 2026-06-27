@@ -47,9 +47,10 @@ memchr = "2.5"
 rustc-hash = "2"
 lsp-max = { path = "../lsp-max", version = "26.6.18" }
 lsp-max-ast = { path = "../lsp-max/crates/lsp-max-adapters/lsp-max-ast", version = "26.6.18" }
-lsp-max-ast-core = { path = "../lsp-max/crates/lsp-max-adapters/lsp-max-ast-core", version = "26.6.18" }
+
+
 parking_lot = "0.12.5"
-lsp-types-max = { path = "../lsp-types-max", version = "26.6.5", features = ["proposed"] }
+lsp-types-max = { version = "26.6.24", features = ["proposed"] }
 chrono = { version = "0.4", features = ["serde"] }
 url = "2.5"
 tree-sitter = "0.26.5"
@@ -57,6 +58,8 @@ tree-sitter-rust = "0.24"
 tree-sitter-typescript = "0.23.2"
 blake3 = "1"
 wasm4pm-compat = { version = "26.6.11", features = ["formats", "strict", "wasm4pm"] }
+linkme = "0.3.36"
+uuid = { version = "1.20.0", features = ["v4", "serde"] }
 
 [dev-dependencies]
 tempfile = "3"
@@ -72,5 +75,6 @@ harness = false
 [patch.crates-io]
 wasm4pm = { path = "../wasm4pm/wasm4pm" }
 wasm4pm-compat = { path = "../wasm4pm-compat" }
+lsp-types-max = { path = "../lsp-types-max" }
 
 
