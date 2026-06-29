@@ -4,8 +4,9 @@
 //! ensuring advertised capabilities and handler wiring stay synchronized.
 //! A capability is enabled only when its corresponding method has a Wired handler.
 
-use crate::rules::lsp318_coverage::{full_surface, HandlerState};
 use lsp_max::lsp_types::*;
+
+use crate::rules::lsp318_coverage::{full_surface, HandlerState};
 
 // Capabilities are built from the coverage matrix; the `Refuses` variant is
 // included when a capability must be advertised for the refusal path to be
@@ -36,15 +37,14 @@ pub fn build_capabilities() -> ServerCapabilities {
             | "textDocument/willSaveWaitUntil"
                 if caps.text_document_sync.is_none() =>
             {
-                caps.text_document_sync = Some(TextDocumentSyncCapability::Options(
-                    TextDocumentSyncOptions {
+                caps.text_document_sync =
+                    Some(TextDocumentSyncCapability::Options(TextDocumentSyncOptions {
                         open_close: Some(true),
                         change: Some(TextDocumentSyncKind::FULL),
                         will_save: Some(true),
                         will_save_wait_until: Some(true),
                         save: Some(TextDocumentSyncSaveOptions::Supported(true)),
-                    },
-                ));
+                    }));
             }
 
             // ── Navigation language features ──────────────────────────────────
@@ -106,9 +106,7 @@ pub fn build_capabilities() -> ServerCapabilities {
                 caps.signature_help_provider = Some(SignatureHelpOptions::default());
             }
             "textDocument/codeLens" => {
-                caps.code_lens_provider = Some(CodeLensOptions {
-                    resolve_provider: Some(true),
-                });
+                caps.code_lens_provider = Some(CodeLensOptions { resolve_provider: Some(true) });
             }
             "codeLens/resolve" => {
                 // Already handled by textDocument/codeLens
@@ -164,12 +162,11 @@ pub fn build_capabilities() -> ServerCapabilities {
             "textDocument/inlayHint" | "inlayHint/resolve"
                 if caps.inlay_hint_provider.is_none() =>
             {
-                caps.inlay_hint_provider = Some(OneOf::Right(
-                    InlayHintServerCapabilities::Options(InlayHintOptions {
+                caps.inlay_hint_provider =
+                    Some(OneOf::Right(InlayHintServerCapabilities::Options(InlayHintOptions {
                         resolve_provider: Some(true),
                         work_done_progress_options: WorkDoneProgressOptions::default(),
-                    }),
-                ));
+                    })));
             }
             "textDocument/inlineValue" => {
                 caps.inline_value_provider = Some(OneOf::Left(true));

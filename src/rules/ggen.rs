@@ -1,5 +1,4 @@
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 /// Evaluate GGEN-* observations into diagnostics.
 ///

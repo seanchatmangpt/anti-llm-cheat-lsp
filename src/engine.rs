@@ -1,21 +1,23 @@
-use crate::config::{AntiLlmConfig, ForbiddenPattern};
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
-use crate::parsers::{
-    cargo_lock, cargo_toml, contract, fitness_report, ggen_toml, json_rpc, markdown_claims,
-    receipt_json, refgraph, rust_tree_sitter, tera_template, typescript, typescript_ast,
-};
-use crate::rules::{
-    authority, claims, complexity, contract as contract_rules, dead_alt, declare_laws, determinism,
-    ggen, hedge, hollow, lsp318, mutation, ocel_rules, oracle, placeholder, receipts,
-    refgraph as refgraph_rules, routes, rust_smells, surface, test, trace, typescript as ts_rules,
-    typescript_ast as ts_ast_rules, version,
-};
+use std::{fs, path::Path, sync::OnceLock};
+
 use aho_corasick::AhoCorasick;
 use regex::Regex;
-use std::fs;
-use std::path::Path;
-use std::sync::OnceLock;
+
+use crate::{
+    config::{AntiLlmConfig, ForbiddenPattern},
+    diagnostics::AntiLlmDiagnostic,
+    observations::Observation,
+    parsers::{
+        cargo_lock, cargo_toml, contract, fitness_report, ggen_toml, json_rpc, markdown_claims,
+        receipt_json, refgraph, rust_tree_sitter, tera_template, typescript, typescript_ast,
+    },
+    rules::{
+        authority, claims, complexity, contract as contract_rules, dead_alt, declare_laws,
+        determinism, ggen, hedge, hollow, lsp318, mutation, ocel_rules, oracle, placeholder,
+        receipts, refgraph as refgraph_rules, routes, rust_smells, surface, test, trace,
+        typescript as ts_rules, typescript_ast as ts_ast_rules, version,
+    },
+};
 
 // ── Line index — O(n) build, O(log n) lookup ──────────────────────────────────
 
@@ -163,10 +165,7 @@ pub fn scan_file(filepath: &str) -> Vec<Observation> {
         Err(_) => return obs,
     };
 
-    let filename = path
-        .file_name()
-        .and_then(|f| f.to_str())
-        .unwrap_or_default();
+    let filename = path.file_name().and_then(|f| f.to_str()).unwrap_or_default();
 
     // Skip self-references (engine.rs / lsp318.rs define some of these strings as data)
     let is_self_excluded = filepath.ends_with("src/rules/lsp318.rs")
@@ -218,12 +217,7 @@ pub fn scan_file(filepath: &str) -> Vec<Observation> {
     //    Domain-term exemptions are applied later in evaluate_diagnostics.
     if !is_self_excluded {
         // Pass empty domain_terms — exemptions apply at evaluate time.
-        obs.extend(claims::scan_for_victory(
-            filepath,
-            &content,
-            "raw_text",
-            &[],
-        ));
+        obs.extend(claims::scan_for_victory(filepath, &content, "raw_text", &[]));
     }
 
     // 3. Test-file checks
@@ -537,25 +531,14 @@ pub fn evaluate_diagnostics_with_config(
     diags.extend(dead_alt::evaluate(obs, config));
 
     let has_non_victory_errors = diags.iter().any(|d| d.code != "ANTI-LLM-CLAIM-004");
-    diags.extend(claims::evaluate(
-        obs,
-        &config.claim.domain_terms,
-        has_non_victory_errors,
-    ));
+    diags.extend(claims::evaluate(obs, &config.claim.domain_terms, has_non_victory_errors));
 
     // Config-driven forbidden_string_patterns → diagnostics
     for o in obs.iter().filter(|o| o.kind == "config_pattern") {
         // Look up the pattern definition by construct name to get blocking flag and code/message
-        let fp_def = config
-            .forbidden_string_patterns
-            .iter()
-            .find(|fp| fp.name == o.construct);
+        let fp_def = config.forbidden_string_patterns.iter().find(|fp| fp.name == o.construct);
         let (code, message, blocking) = if let Some(fp) = fp_def {
-            (
-                fp.code.clone(),
-                fp.message.clone(),
-                fp.blocking.unwrap_or(true),
-            )
+            (fp.code.clone(), fp.message.clone(), fp.blocking.unwrap_or(true))
         } else {
             ("ANTI-LLM-CONFIG-001".to_string(), o.message.clone(), true)
         };

@@ -111,70 +111,14 @@ fn surface_table() -> Vec<MethodSurface> {
             Wired,
             ClientRequest,
         ),
-        (
-            "initialized",
-            "",
-            "",
-            "initialized_positive.jsonl",
-            Wired,
-            ClientNotification,
-        ),
-        (
-            "shutdown",
-            "",
-            "",
-            "shutdown_positive.jsonl",
-            Wired,
-            ClientRequest,
-        ),
-        (
-            "exit",
-            "",
-            "",
-            "exit_positive.jsonl",
-            Absent,
-            ClientNotification,
-        ),
-        (
-            "$/cancelRequest",
-            "",
-            "",
-            "_cancelRequest_positive.jsonl",
-            Absent,
-            General,
-        ),
-        (
-            "$/progress",
-            "window.workDoneProgress",
-            "",
-            "_progress_positive.jsonl",
-            Wired,
-            General,
-        ),
-        (
-            "$/setTrace",
-            "",
-            "",
-            "_setTrace_positive.jsonl",
-            Wired,
-            General,
-        ),
-        (
-            "$/logTrace",
-            "",
-            "",
-            "_logTrace_positive.jsonl",
-            Wired,
-            General,
-        ),
-        (
-            "client/registerCapability",
-            "*.dynamicRegistration",
-            "",
-            "",
-            Wired,
-            ServerRequest,
-        ),
+        ("initialized", "", "", "initialized_positive.jsonl", Wired, ClientNotification),
+        ("shutdown", "", "", "shutdown_positive.jsonl", Wired, ClientRequest),
+        ("exit", "", "", "exit_positive.jsonl", Absent, ClientNotification),
+        ("$/cancelRequest", "", "", "_cancelRequest_positive.jsonl", Absent, General),
+        ("$/progress", "window.workDoneProgress", "", "_progress_positive.jsonl", Wired, General),
+        ("$/setTrace", "", "", "_setTrace_positive.jsonl", Wired, General),
+        ("$/logTrace", "", "", "_logTrace_positive.jsonl", Wired, General),
+        ("client/registerCapability", "*.dynamicRegistration", "", "", Wired, ServerRequest),
         (
             "client/unregisterCapability",
             "*.dynamicRegistration",
@@ -183,14 +127,7 @@ fn surface_table() -> Vec<MethodSurface> {
             Wired,
             ServerRequest,
         ),
-        (
-            "telemetry/event",
-            "",
-            "",
-            "telemetry_event_positive.jsonl",
-            Wired,
-            ServerNotification,
-        ),
+        ("telemetry/event", "", "", "telemetry_event_positive.jsonl", Wired, ServerNotification),
         // ── Text document synchronization ─────────────────────────────────
         (
             "textDocument/didOpen",
@@ -900,10 +837,7 @@ fn artifact_exists(workspace_root: &str, subdir: &str, basename: &str) -> bool {
     }
     let candidates = [
         format!("{}/{}/{}", workspace_root, subdir, basename),
-        format!(
-            "{}/examples/anti-llm-cheat-lsp/{}/{}",
-            workspace_root, subdir, basename
-        ),
+        format!("{}/examples/anti-llm-cheat-lsp/{}/{}", workspace_root, subdir, basename),
     ];
     candidates.iter().any(|p| Path::new(p).exists())
 }
@@ -961,8 +895,7 @@ pub fn compute_coverage(workspace_root: &str) -> Vec<CoverageRow> {
             let receipt_basename = if m.transcript_basename.is_empty() {
                 String::new()
             } else {
-                m.transcript_basename
-                    .replace("_positive.jsonl", "_receipt.json")
+                m.transcript_basename.replace("_positive.jsonl", "_receipt.json")
             };
             let receipt_present = artifact_exists(workspace_root, "receipts", &receipt_basename);
             let status = derive_status(m.handler, transcript_present, receipt_present);
@@ -993,10 +926,7 @@ pub struct ConformanceSummary {
 }
 
 pub fn conformance_summary(rows: &[CoverageRow]) -> ConformanceSummary {
-    let mut s = ConformanceSummary {
-        total: rows.len(),
-        ..Default::default()
-    };
+    let mut s = ConformanceSummary { total: rows.len(), ..Default::default() };
     for r in rows {
         match r.transcript_axis {
             AxisState::Admitted => s.admitted += 1,

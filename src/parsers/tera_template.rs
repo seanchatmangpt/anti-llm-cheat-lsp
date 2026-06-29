@@ -1,6 +1,6 @@
+use std::{collections::HashSet, path::Path};
+
 use crate::observations::Observation;
-use std::collections::HashSet;
-use std::path::Path;
 
 /// Parse a `.tera` template file and detect TPL-001: template consumes a variable
 /// that the paired SPARQL SELECT does not produce.
@@ -95,11 +95,7 @@ fn extract_tera_variables(content: &str) -> Vec<(String, usize)> {
                 let root = expr.split(['.', ' ', '|']).next().unwrap_or("").trim();
                 if !root.is_empty()
                     && root.chars().all(|c| c.is_alphanumeric() || c == '_')
-                    && !root
-                        .chars()
-                        .next()
-                        .map(|c| c.is_ascii_digit())
-                        .unwrap_or(false)
+                    && !root.chars().next().map(|c| c.is_ascii_digit()).unwrap_or(false)
                 {
                     vars.push((root.to_string(), line_num));
                 }
@@ -131,10 +127,7 @@ fn extract_sparql_select_vars(content: &str) -> HashSet<String> {
         return vars;
     }
 
-    let where_pos = after_select
-        .to_uppercase()
-        .find("WHERE")
-        .unwrap_or(after_select.len());
+    let where_pos = after_select.to_uppercase().find("WHERE").unwrap_or(after_select.len());
     let projection = &after_select[..where_pos];
 
     for token in projection.split_whitespace() {

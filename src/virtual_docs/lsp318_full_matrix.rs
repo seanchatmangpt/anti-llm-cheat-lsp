@@ -33,21 +33,9 @@ handler is `UNKNOWN`; a wired handler with a transcript reaches \
             "| {} | {} | {} | {} | {} | {} | {} |\n",
             r.method,
             r.direction,
-            if r.client_capability_path.is_empty() {
-                "—"
-            } else {
-                &r.client_capability_path
-            },
-            if r.server_capability_path.is_empty() {
-                "—"
-            } else {
-                &r.server_capability_path
-            },
-            if r.transcript_present {
-                "present"
-            } else {
-                "NONE"
-            },
+            if r.client_capability_path.is_empty() { "—" } else { &r.client_capability_path },
+            if r.server_capability_path.is_empty() { "—" } else { &r.server_capability_path },
+            if r.transcript_present { "present" } else { "NONE" },
             if r.receipt_present { "present" } else { "OPEN" },
             r.status,
         ));

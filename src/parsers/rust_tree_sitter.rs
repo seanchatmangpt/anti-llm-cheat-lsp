@@ -1,5 +1,6 @@
-use crate::observations::Observation;
 use tree_sitter::{Node, Parser};
+
+use crate::observations::Observation;
 
 // ── Known paper oracle float ranges (A8 forensic signal) ─────────────────────
 // Each range is (lo, hi) exclusive. Values from breed threat model + paper fixtures.
@@ -67,10 +68,8 @@ fn walk_fn_body(
         }
         "match_expression" => {
             metrics.branch_count += 1;
-            let arm_count = node
-                .children(&mut node.walk())
-                .filter(|c| c.kind() == "match_arm")
-                .count();
+            let arm_count =
+                node.children(&mut node.walk()).filter(|c| c.kind() == "match_arm").count();
             if arm_count > metrics.max_match_arms {
                 metrics.max_match_arms = arm_count;
             }
@@ -101,9 +100,7 @@ fn walk_fn_body(
         }
         "string_literal" | "raw_string_literal" => {
             metrics.literal_count += 1;
-            metrics
-                .distinct_operands
-                .insert(text.chars().take(40).collect());
+            metrics.distinct_operands.insert(text.chars().take(40).collect());
         }
         "identifier" => {
             metrics.leaf_count += 1;
@@ -119,11 +116,7 @@ fn walk_fn_body(
     if kind == "call_expression" {
         if let Some(fn_node) = node.child(0) {
             if let Ok(callee_text) = fn_node.utf8_text(source) {
-                let bare = callee_text
-                    .rsplit("::")
-                    .next()
-                    .unwrap_or(callee_text)
-                    .trim();
+                let bare = callee_text.rsplit("::").next().unwrap_or(callee_text).trim();
                 if !bare.is_empty() && bare.chars().all(|c| c.is_ascii_alphanumeric() || c == '_') {
                     metrics.callee_names.insert(bare.to_string());
                 }
@@ -175,9 +168,7 @@ fn walk_fn_body(
     }
 
     // Distinct operator tracking for Halstead
-    let op_kinds = [
-        "+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "!", "=",
-    ];
+    let op_kinds = ["+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "!", "="];
     if op_kinds.contains(&kind) {
         metrics.distinct_operators.insert(kind.to_string());
     }
@@ -187,11 +178,8 @@ fn walk_fn_body(
         metrics.leaf_count += 1;
     }
 
-    let new_closure_depth = if kind == "closure_expression" {
-        closure_depth + 1
-    } else {
-        closure_depth
-    };
+    let new_closure_depth =
+        if kind == "closure_expression" { closure_depth + 1 } else { closure_depth };
     let next_depth = match kind {
         "if_expression" | "while_expression" | "for_expression" | "loop_expression"
         | "match_expression" | "block" | "closure_expression" => depth + 1,
@@ -201,13 +189,7 @@ fn walk_fn_body(
     let mut cursor = node.walk();
     if cursor.goto_first_child() {
         loop {
-            walk_fn_body(
-                cursor.node(),
-                source,
-                next_depth,
-                new_closure_depth,
-                metrics,
-            );
+            walk_fn_body(cursor.node(), source, next_depth, new_closure_depth, metrics);
             if !cursor.goto_next_sibling() {
                 break;
             }
@@ -280,10 +262,7 @@ fn collect_fn_metrics(node: Node, source: &[u8], filepath: &str) -> Vec<Observat
 
     // METRIC-001: fat function
     if loc > 80 {
-        obs.push(make(
-            "fn_too_long",
-            format!("Function '{}' is {} LOC (threshold 80)", name, loc),
-        ));
+        obs.push(make("fn_too_long", format!("Function '{}' is {} LOC (threshold 80)", name, loc)));
     }
     // METRIC-002: high cyclomatic
     if metrics.branch_count > 10 {
@@ -300,10 +279,7 @@ fn collect_fn_metrics(node: Node, source: &[u8], filepath: &str) -> Vec<Observat
     if metrics.max_depth > 4 {
         obs.push(make(
             "fn_deep_nesting",
-            format!(
-                "Function '{}' max nesting depth {} (threshold 4)",
-                name, metrics.max_depth
-            ),
+            format!("Function '{}' max nesting depth {} (threshold 4)", name, metrics.max_depth),
         ));
     }
     // METRIC-004: literal-dense (blocking — oracle lookup table signal)
@@ -342,10 +318,7 @@ fn collect_fn_metrics(node: Node, source: &[u8], filepath: &str) -> Vec<Observat
     if metrics.has_transmute {
         obs.push(make(
             "transmute_cast",
-            format!(
-                "Function '{}' uses mem::transmute or raw pointer cast",
-                name
-            ),
+            format!("Function '{}' uses mem::transmute or raw pointer cast", name),
         ));
     }
     // ORACLE-004: env var in prod
@@ -359,20 +332,14 @@ fn collect_fn_metrics(node: Node, source: &[u8], filepath: &str) -> Vec<Observat
     if metrics.has_lazy_static_env {
         obs.push(make(
             "lazy_static_env_init",
-            format!(
-                "Function '{}' initializes lazy_static from env (oracle injection)",
-                name
-            ),
+            format!("Function '{}' initializes lazy_static from env (oracle injection)", name),
         ));
     }
     // ORACLE-003: global hashmap literal
     if metrics.has_global_hashmap_literal {
         obs.push(make(
             "global_hashmap_literal",
-            format!(
-                "Function '{}' builds HashMap from string literal keys (memo oracle)",
-                name
-            ),
+            format!("Function '{}' builds HashMap from string literal keys (memo oracle)", name),
         ));
     }
     // ORACLE-006: known paper float
@@ -400,10 +367,7 @@ fn collect_fn_metrics(node: Node, source: &[u8], filepath: &str) -> Vec<Observat
     }
 
     // HALSTEAD metrics (only for named core functions)
-    if matches!(
-        name.as_str(),
-        "run" | "compute" | "infer" | "execute" | "evaluate"
-    ) {
+    if matches!(name.as_str(), "run" | "compute" | "infer" | "execute" | "evaluate") {
         if halstead_vocab < 10 && metrics.leaf_count > 5 {
             obs.push(make(
                 "halstead_low_volume",
@@ -493,9 +457,7 @@ pub fn parse_rust_ast(filepath: &str, content: &str) -> Vec<Observation> {
 
     // Seed extraction for the bounded reference-graph factor lives in
     // `parsers::refgraph` so this AST file stays within the size bound.
-    observations.extend(crate::parsers::refgraph::extract_unwitnessed_seeds(
-        filepath, content,
-    ));
+    observations.extend(crate::parsers::refgraph::extract_unwitnessed_seeds(filepath, content));
 
     observations
 }
@@ -697,9 +659,8 @@ fn traverse_node(node: Node, source: &[u8], filepath: &str, obs: &mut Vec<Observ
             loop {
                 let child = cursor.node();
                 if child.kind() == "function_item" {
-                    if let Some(body) = child
-                        .children(&mut child.walk())
-                        .find(|c| c.kind() == "block")
+                    if let Some(body) =
+                        child.children(&mut child.walk()).find(|c| c.kind() == "block")
                     {
                         let stmt_count = body
                             .children(&mut body.walk())

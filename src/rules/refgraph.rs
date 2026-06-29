@@ -6,8 +6,7 @@
 //! only on explicit reverse-reachability within the stated depth bound, so a
 //! site with no chain to a seed is never flagged.
 
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
     let mut diags = Vec::new();

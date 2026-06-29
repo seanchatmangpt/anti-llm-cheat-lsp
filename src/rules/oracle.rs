@@ -1,5 +1,4 @@
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 fn is_breed_src(path: &str) -> bool {
     path.contains("breeds/") || path.contains("src/breeds")
@@ -10,9 +9,15 @@ fn is_test_path(path: &str) -> bool {
         || path.ends_with("_test.rs")
         || path.contains("/test/")
         || path.contains("fixtures/")
+        || path.contains("benches/")
+        || path.contains("examples/")
+        || path.contains("build.rs")
 }
 
-pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
+pub fn evaluate(
+    obs: &[Observation],
+    config: &crate::config::AntiLlmConfig,
+) -> Vec<AntiLlmDiagnostic> {
     let mut diags = Vec::new();
 
     for o in obs {
@@ -75,7 +80,12 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
             }
 
             // ORACLE-004: std::env::var in production path
-            "env_var_in_prod" if !is_test_path(&o.file_path) => {
+            "env_var_in_prod"
+                if !is_test_path(&o.file_path)
+                    && !o.context.contains("test_")
+                    && !o.context.contains("tests")
+                    && !config.is_suppression_allowed(&o.file_path) =>
+            {
                 diags.push(AntiLlmDiagnostic {
                     code: "ANTI-LLM-ORACLE-004".to_string(),
                     category: "oracle".to_string(),

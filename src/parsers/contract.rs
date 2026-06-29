@@ -1,14 +1,12 @@
-use crate::observations::Observation;
 use std::collections::{HashMap, HashSet};
+
+use crate::observations::Observation;
 
 /// Extract breed_id from a file path containing `breeds/<breed_id>`.
 fn extract_breed_id(path: &str) -> Option<&str> {
     let idx = path.find("breeds/")?;
     let after = &path[idx + "breeds/".len()..];
-    let end = after
-        .find('/')
-        .or_else(|| after.find(".rs"))
-        .unwrap_or(after.len());
+    let end = after.find('/').or_else(|| after.find(".rs")).unwrap_or(after.len());
     Some(&after[..end])
 }
 
@@ -17,7 +15,13 @@ fn is_src_path(path: &str) -> bool {
 }
 
 fn is_test_path(path: &str) -> bool {
-    path.contains("tests/") || path.ends_with("_test.rs") || path.contains("/test/")
+    path.contains("tests/")
+        || path.ends_with("_test.rs")
+        || path.contains("/test/")
+        || path.contains("fixtures/")
+        || path.contains("benches/")
+        || path.contains("examples/")
+        || path.contains("build.rs")
 }
 
 /// Cross-file contract schism detection (A9).
@@ -28,10 +32,7 @@ pub fn detect_contract_schism(all_obs: &[Observation]) -> Vec<Observation> {
     let mut obs = Vec::new();
 
     // Collect fn_definition observations
-    let fn_defs: Vec<&Observation> = all_obs
-        .iter()
-        .filter(|o| o.kind == "fn_definition")
-        .collect();
+    let fn_defs: Vec<&Observation> = all_obs.iter().filter(|o| o.kind == "fn_definition").collect();
 
     // Group by breed_id × (src vs test)
     let mut breed_src_fns: HashMap<&str, HashSet<&str>> = HashMap::new();
@@ -41,16 +42,10 @@ pub fn detect_contract_schism(all_obs: &[Observation]) -> Vec<Observation> {
     for o in &fn_defs {
         if let Some(breed_id) = extract_breed_id(&o.file_path) {
             if is_src_path(&o.file_path) {
-                breed_src_fns
-                    .entry(breed_id)
-                    .or_default()
-                    .insert(&o.construct);
+                breed_src_fns.entry(breed_id).or_default().insert(&o.construct);
                 breed_src_path.entry(breed_id).or_insert(&o.file_path);
             } else if is_test_path(&o.file_path) {
-                breed_test_fns
-                    .entry(breed_id)
-                    .or_default()
-                    .insert(&o.construct);
+                breed_test_fns.entry(breed_id).or_default().insert(&o.construct);
             }
         }
     }

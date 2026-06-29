@@ -39,10 +39,7 @@ const T_PROPERTY: u32 = 7;
 
 /// The legend advertised in `SemanticTokensOptions`.
 pub fn legend() -> SemanticTokensLegend {
-    SemanticTokensLegend {
-        token_types: TOKEN_TYPES.to_vec(),
-        token_modifiers: Vec::new(),
-    }
+    SemanticTokensLegend { token_types: TOKEN_TYPES.to_vec(), token_modifiers: Vec::new() }
 }
 
 /// Classify a syntax-tree leaf into a legend index, or `None` if it carries no
@@ -154,22 +151,18 @@ fn encode(tokens: Vec<(Range, u32)>) -> SemanticTokens {
         prev_line = line;
         prev_char = ch;
     }
-    SemanticTokens {
-        result_id: None,
-        data,
-    }
+    SemanticTokens { result_id: None, data }
 }
 
 #[cfg(test)]
 mod witness {
-    use super::*;
     use tree_sitter::Parser;
+
+    use super::*;
 
     fn doc(src: &str) -> Document {
         let mut parser = Parser::new();
-        parser
-            .set_language(&tree_sitter_rust::LANGUAGE.into())
-            .expect("rust grammar");
+        parser.set_language(&tree_sitter_rust::LANGUAGE.into()).expect("rust grammar");
         let tree = parser.parse(src, None).expect("parse");
         Document::new(src.to_string(), tree, None)
     }
@@ -199,10 +192,7 @@ mod witness {
         let d = doc("const N: u32 = 7;\n");
         let toks = build_tokens(&d);
         let types: Vec<u32> = toks.data.iter().map(|t| t.token_type).collect();
-        assert!(
-            types.contains(&T_KEYWORD),
-            "`const` must classify as keyword"
-        );
+        assert!(types.contains(&T_KEYWORD), "`const` must classify as keyword");
         assert!(types.contains(&T_NUMBER), "`7` must classify as number");
         assert!(types.contains(&T_TYPE), "`u32` must classify as type");
     }

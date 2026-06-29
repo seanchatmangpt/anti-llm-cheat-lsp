@@ -9,11 +9,14 @@
 //! Receipt written by `just bench-admit`. This file produces the measurements;
 //! the receipt script hashes the output and stamps the boundary.
 
+use std::{
+    sync::{Arc, Mutex, OnceLock},
+    thread,
+};
+
 use aho_corasick::{AhoCorasick, AhoCorasickBuilder, MatchKind};
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
 use regex::Regex;
-use std::sync::{Arc, Mutex, OnceLock};
-use std::thread;
 
 // ── Shared corpus ─────────────────────────────────────────────────────────────
 
@@ -72,9 +75,7 @@ fn bench_b1_regex_onclock(c: &mut Criterion) {
         b.iter(|| fresh_regex_compile(black_box(CORPUS)))
     });
 
-    group.bench_function("onclock_compiled_once", |b| {
-        b.iter(|| onclock_regex(black_box(CORPUS)))
-    });
+    group.bench_function("onclock_compiled_once", |b| b.iter(|| onclock_regex(black_box(CORPUS))));
 
     group.finish();
 }
@@ -88,10 +89,7 @@ fn sequential_contains(input: &str) -> usize {
 fn aho_corasick_scan(input: &str) -> usize {
     static AC: OnceLock<AhoCorasick> = OnceLock::new();
     let ac = AC.get_or_init(|| {
-        AhoCorasickBuilder::new()
-            .match_kind(MatchKind::LeftmostLongest)
-            .build(PATTERNS)
-            .unwrap()
+        AhoCorasickBuilder::new().match_kind(MatchKind::LeftmostLongest).build(PATTERNS).unwrap()
     });
     ac.find_iter(input).count()
 }
@@ -122,26 +120,11 @@ struct LawEntry {
 
 fn law_table_alloc() -> Vec<LawEntry> {
     vec![
-        LawEntry {
-            id: "diag-uninitialized",
-            gate_id: "gate-state-check",
-        },
-        LawEntry {
-            id: "diag-missing-receipt",
-            gate_id: "gate-receipt-check",
-        },
-        LawEntry {
-            id: "diag-auth-violation",
-            gate_id: "gate-auth-check",
-        },
-        LawEntry {
-            id: "diag-powl-conformance",
-            gate_id: "gate-powl-conformance",
-        },
-        LawEntry {
-            id: "diag-snapshot-drift",
-            gate_id: "gate-snapshot-check",
-        },
+        LawEntry { id: "diag-uninitialized", gate_id: "gate-state-check" },
+        LawEntry { id: "diag-missing-receipt", gate_id: "gate-receipt-check" },
+        LawEntry { id: "diag-auth-violation", gate_id: "gate-auth-check" },
+        LawEntry { id: "diag-powl-conformance", gate_id: "gate-powl-conformance" },
+        LawEntry { id: "diag-snapshot-drift", gate_id: "gate-snapshot-check" },
     ]
 }
 
@@ -149,26 +132,11 @@ fn law_table_static() -> &'static [LawEntry] {
     static TABLE: OnceLock<Vec<LawEntry>> = OnceLock::new();
     TABLE.get_or_init(|| {
         vec![
-            LawEntry {
-                id: "diag-uninitialized",
-                gate_id: "gate-state-check",
-            },
-            LawEntry {
-                id: "diag-missing-receipt",
-                gate_id: "gate-receipt-check",
-            },
-            LawEntry {
-                id: "diag-auth-violation",
-                gate_id: "gate-auth-check",
-            },
-            LawEntry {
-                id: "diag-powl-conformance",
-                gate_id: "gate-powl-conformance",
-            },
-            LawEntry {
-                id: "diag-snapshot-drift",
-                gate_id: "gate-snapshot-check",
-            },
+            LawEntry { id: "diag-uninitialized", gate_id: "gate-state-check" },
+            LawEntry { id: "diag-missing-receipt", gate_id: "gate-receipt-check" },
+            LawEntry { id: "diag-auth-violation", gate_id: "gate-auth-check" },
+            LawEntry { id: "diag-powl-conformance", gate_id: "gate-powl-conformance" },
+            LawEntry { id: "diag-snapshot-drift", gate_id: "gate-snapshot-check" },
         ]
     })
 }
@@ -179,24 +147,14 @@ fn bench_b3_law_table(c: &mut Criterion) {
     group.bench_function("vec_alloc_per_call", |b| {
         b.iter(|| {
             let table = law_table_alloc();
-            black_box(
-                table
-                    .iter()
-                    .filter(|e| e.gate_id.starts_with("gate"))
-                    .count(),
-            )
+            black_box(table.iter().filter(|e| e.gate_id.starts_with("gate")).count())
         })
     });
 
     group.bench_function("static_slice_onclock", |b| {
         b.iter(|| {
             let table = law_table_static();
-            black_box(
-                table
-                    .iter()
-                    .filter(|e| e.gate_id.starts_with("gate"))
-                    .count(),
-            )
+            black_box(table.iter().filter(|e| e.gate_id.starts_with("gate")).count())
         })
     });
 
@@ -244,9 +202,8 @@ fn bench_b4_rwlock_vs_mutex(c: &mut Criterion) {
         BenchmarkId::new("parking_lot_rwlock_reads", READER_THREADS),
         &READER_THREADS,
         |b, &n| {
-            let map: Arc<parking_lot::RwLock<Vec<String>>> = Arc::new(parking_lot::RwLock::new(
-                (0..100).map(|i| format!("doc-{i}")).collect(),
-            ));
+            let map: Arc<parking_lot::RwLock<Vec<String>>> =
+                Arc::new(parking_lot::RwLock::new((0..100).map(|i| format!("doc-{i}")).collect()));
             b.iter(|| {
                 let handles: Vec<_> = (0..n)
                     .map(|_| {
@@ -272,10 +229,7 @@ fn bench_b4_rwlock_vs_mutex(c: &mut Criterion) {
 // ── B5: Line index vs repeated lines().count() ───────────────────────────────
 
 fn line_count_naive(content: &str, offsets: &[usize]) -> Vec<usize> {
-    offsets
-        .iter()
-        .map(|&idx| content[..idx].lines().count() + 1)
-        .collect()
+    offsets.iter().map(|&idx| content[..idx].lines().count() + 1).collect()
 }
 
 fn line_count_indexed(content: &[u8], offsets: &[usize]) -> Vec<usize> {
@@ -285,10 +239,7 @@ fn line_count_indexed(content: &[u8], offsets: &[usize]) -> Vec<usize> {
     for pos in memchr::memchr_iter(b'\n', content) {
         line_starts.push(pos + 1);
     }
-    offsets
-        .iter()
-        .map(|&byte| line_starts.partition_point(|&s| s <= byte))
-        .collect()
+    offsets.iter().map(|&byte| line_starts.partition_point(|&s| s <= byte)).collect()
 }
 
 fn bench_b5_line_index(c: &mut Criterion) {
@@ -324,8 +275,9 @@ fn bench_b5_line_index(c: &mut Criterion) {
 // ── B6: FxHashMap vs std::HashMap for short string keys ──────────────────────
 
 fn bench_b6_fxhashmap(c: &mut Criterion) {
-    use rustc_hash::FxHashMap;
     use std::collections::HashMap;
+
+    use rustc_hash::FxHashMap;
 
     let methods: Vec<&'static str> = vec![
         "initialize",

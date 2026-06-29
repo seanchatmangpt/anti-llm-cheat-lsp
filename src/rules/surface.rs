@@ -1,6 +1,4 @@
-use crate::config::AntiLlmConfig;
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{config::AntiLlmConfig, diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 pub fn evaluate(obs: &[Observation], config: &AntiLlmConfig) -> Vec<AntiLlmDiagnostic> {
     let mut diags = Vec::new();

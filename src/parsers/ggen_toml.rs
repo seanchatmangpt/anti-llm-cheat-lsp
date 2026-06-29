@@ -10,22 +10,10 @@ use crate::observations::Observation;
 pub fn parse_ggen_toml(filepath: &str, content: &str) -> Vec<Observation> {
     let mut obs = Vec::new();
 
-    const SECOND_CLASS_SEGMENTS: &[&str] = &[
-        "/generated/",
-        "/output/",
-        "/gen/",
-        "\\generated\\",
-        "\\output\\",
-        "\\gen\\",
-    ];
-    const SECOND_CLASS_SUFFIXES: &[&str] = &[
-        "/generated",
-        "/output",
-        "/gen",
-        "\\generated",
-        "\\output",
-        "\\gen",
-    ];
+    const SECOND_CLASS_SEGMENTS: &[&str] =
+        &["/generated/", "/output/", "/gen/", "\\generated\\", "\\output\\", "\\gen\\"];
+    const SECOND_CLASS_SUFFIXES: &[&str] =
+        &["/generated", "/output", "/gen", "\\generated", "\\output", "\\gen"];
 
     for (line_idx, line) in content.lines().enumerate() {
         let line_num = line_idx + 1;
@@ -164,9 +152,7 @@ pub fn detect_competing_authority(all_obs: &[Observation]) -> Vec<Observation> {
 
     for o in all_obs {
         if o.kind == "ggen_output_file" {
-            seen.entry(o.construct.clone())
-                .or_default()
-                .push((o.file_path.clone(), o.line));
+            seen.entry(o.construct.clone()).or_default().push((o.file_path.clone(), o.line));
         }
     }
 
@@ -243,8 +229,6 @@ output_file = "src/fresh_names.rs"
         let all: Vec<_> = a.into_iter().chain(b).collect();
         let conflicts = detect_competing_authority(&all);
         assert_eq!(conflicts.len(), 2, "both manifests should be flagged");
-        assert!(conflicts
-            .iter()
-            .all(|o| o.construct == "ggen_competing_authority"));
+        assert!(conflicts.iter().all(|o| o.construct == "ggen_competing_authority"));
     }
 }

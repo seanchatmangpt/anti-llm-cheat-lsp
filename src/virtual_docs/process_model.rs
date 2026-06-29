@@ -8,8 +8,9 @@
 //! Action" (2nd ed., 2016). The DFG is the simplest discovery primitive — two
 //! activities A and B are connected by an arc A → B with frequency count f(A→B).
 
-use crate::diagnostics::AntiLlmDiagnostic;
 use std::collections::HashMap;
+
+use crate::diagnostics::AntiLlmDiagnostic;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Activity extraction
@@ -42,10 +43,7 @@ fn activity_of(d: &AntiLlmDiagnostic) -> &'static str {
 fn build_traces(diagnostics: &[AntiLlmDiagnostic]) -> HashMap<String, Vec<String>> {
     let mut case_activities: HashMap<String, Vec<String>> = HashMap::new();
     for d in diagnostics {
-        case_activities
-            .entry(d.file_path.clone())
-            .or_default()
-            .push(activity_of(d).to_string());
+        case_activities.entry(d.file_path.clone()).or_default().push(activity_of(d).to_string());
     }
     // Append ScanComplete to every case — the normative terminal activity.
     for activities in case_activities.values_mut() {
@@ -83,9 +81,7 @@ fn build_dfg(traces: &HashMap<String, Vec<String>>) -> Dfg {
             continue;
         }
         *start_activities.entry(trace[0].clone()).or_insert(0) += 1;
-        *end_activities
-            .entry(trace[trace.len() - 1].clone())
-            .or_insert(0) += 1;
+        *end_activities.entry(trace[trace.len() - 1].clone()).or_insert(0) += 1;
         for act in trace {
             *nodes.entry(act.clone()).or_insert(0) += 1;
         }
@@ -93,12 +89,7 @@ fn build_dfg(traces: &HashMap<String, Vec<String>>) -> Dfg {
             *edges.entry((pair[0].clone(), pair[1].clone())).or_insert(0) += 1;
         }
     }
-    Dfg {
-        nodes,
-        edges,
-        start_activities,
-        end_activities,
-    }
+    Dfg { nodes, edges, start_activities, end_activities }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -115,9 +106,7 @@ fn check_conformance(traces: &HashMap<String, Vec<String>>) -> Vec<Violation> {
     let mut violations = Vec::new();
     for (case_id, trace) in traces {
         // responded_existence(CheatDetected*, ScanComplete)
-        let has_cheat = trace
-            .iter()
-            .any(|a| a.ends_with("Detected") && a != "ScanComplete");
+        let has_cheat = trace.iter().any(|a| a.ends_with("Detected") && a != "ScanComplete");
         if has_cheat && !trace.contains(&"ScanComplete".to_string()) {
             violations.push(Violation {
                 constraint: "responded_existence(Detected, ScanComplete)",
@@ -143,15 +132,7 @@ fn check_conformance(traces: &HashMap<String, Vec<String>>) -> Vec<Violation> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 fn mermaid_id(name: &str) -> String {
-    name.chars()
-        .map(|c| {
-            if c.is_alphanumeric() || c == '_' {
-                c
-            } else {
-                '_'
-            }
-        })
-        .collect()
+    name.chars().map(|c| if c.is_alphanumeric() || c == '_' { c } else { '_' }).collect()
 }
 
 fn render_mermaid(dfg: &Dfg) -> String {
@@ -160,11 +141,7 @@ fn render_mermaid(dfg: &Dfg) -> String {
     let mut nodes: Vec<(&String, &usize)> = dfg.nodes.iter().collect();
     nodes.sort_by_key(|(n, _)| n.as_str());
     for (name, count) in &nodes {
-        md.push_str(&format!(
-            "  {}[\"{}\\n(n={count})\"]\n",
-            mermaid_id(name),
-            name
-        ));
+        md.push_str(&format!("  {}[\"{}\\n(n={count})\"]\n", mermaid_id(name), name));
     }
 
     let mut starts: Vec<(&String, &usize)> = dfg.start_activities.iter().collect();
@@ -182,11 +159,7 @@ fn render_mermaid(dfg: &Dfg) -> String {
     let mut edges: Vec<(&(String, String), &usize)> = dfg.edges.iter().collect();
     edges.sort_by_key(|((a, b), _)| (a.as_str(), b.as_str()));
     for ((from, to), freq) in &edges {
-        md.push_str(&format!(
-            "  {} -->|{freq}| {}\n",
-            mermaid_id(from),
-            mermaid_id(to)
-        ));
+        md.push_str(&format!("  {} -->|{freq}| {}\n", mermaid_id(from), mermaid_id(to)));
     }
 
     md.push_str("```\n");
@@ -216,18 +189,11 @@ pub fn render(diagnostics: &[AntiLlmDiagnostic]) -> String {
     let violating_cases: std::collections::HashSet<&str> =
         violations.iter().map(|v| v.case_id.as_str()).collect();
     let conformant_cases = case_count.saturating_sub(violating_cases.len());
-    let fitness = if case_count == 0 {
-        1.0_f64
-    } else {
-        conformant_cases as f64 / case_count as f64
-    };
+    let fitness =
+        if case_count == 0 { 1.0_f64 } else { conformant_cases as f64 / case_count as f64 };
     let fitness_pct = (fitness * 100.0).round() as u32;
 
-    let conformance_status = if violations.is_empty() {
-        "CANDIDATE"
-    } else {
-        "PARTIAL"
-    };
+    let conformance_status = if violations.is_empty() { "CANDIDATE" } else { "PARTIAL" };
 
     let mut md = format!(
         "# Anti-LLM Detection Process Model\n\n\
@@ -260,10 +226,7 @@ pub fn render(diagnostics: &[AntiLlmDiagnostic]) -> String {
         md.push_str("|---|---|---|\n");
         for v in &violations {
             let short_case = v.case_id.split('/').next_back().unwrap_or(&v.case_id);
-            md.push_str(&format!(
-                "| `{}` | `{}` | {} |\n",
-                v.constraint, short_case, v.detail
-            ));
+            md.push_str(&format!("| `{}` | `{}` | {} |\n", v.constraint, short_case, v.detail));
         }
         md.push('\n');
     }

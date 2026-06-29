@@ -1,6 +1,4 @@
-use crate::config::AntiLlmConfig;
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{config::AntiLlmConfig, diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 /// Suffixes that mark a function as a "correct alternative" that should replace
 /// the primary but may have been left dead (never called).
@@ -33,9 +31,8 @@ pub fn scan_for_dead_alt(filepath: &str, content: &str) -> Vec<Observation> {
         };
 
         // Check if the name ends with one of the alt suffixes
-        let has_alt_suffix = ALT_SUFFIXES
-            .iter()
-            .any(|suffix| fn_name == *suffix || fn_name.ends_with(suffix));
+        let has_alt_suffix =
+            ALT_SUFFIXES.iter().any(|suffix| fn_name == *suffix || fn_name.ends_with(suffix));
         if !has_alt_suffix {
             continue;
         }
@@ -112,9 +109,7 @@ fn extract_fn_name(trimmed: &str) -> Option<&str> {
     s = s["fn ".len()..].trim_start();
 
     // The function name is the identifier up to the first non-identifier character.
-    let end = s
-        .find(|c: char| !c.is_alphanumeric() && c != '_')
-        .unwrap_or(s.len());
+    let end = s.find(|c: char| !c.is_alphanumeric() && c != '_').unwrap_or(s.len());
     if end == 0 {
         return None;
     }
@@ -212,7 +207,9 @@ fn main() {
 
     #[test]
     fn detects_alt_suffix_variants() {
-        for suffix in &["_alt", "_correct", "_real", "_proper", "_fixed", "_working", "_new", "_better", "_v3"] {
+        for suffix in &[
+            "_alt", "_correct", "_real", "_proper", "_fixed", "_working", "_new", "_better", "_v3",
+        ] {
             let fn_name = format!("do_thing{}", suffix);
             let src = format!("fn {}() {{}}\nfn main() {{}}", fn_name);
             let obs = scan_for_dead_alt("example.rs", &src);

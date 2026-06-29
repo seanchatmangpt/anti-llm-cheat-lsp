@@ -1,6 +1,6 @@
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
 use serde::{Deserialize, Serialize};
+
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Lsp318Feature {
@@ -245,15 +245,12 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
         let is_laundering = o
             .construct
             .contains("ChangelogCoverage(15 rows) => SpecCoverage(LSP 3.18)")
-            || o.construct
-                .contains("ChangelogCoverage(15 rows) \u{21d2} SpecCoverage(LSP 3.18)")
+            || o.construct.contains("ChangelogCoverage(15 rows) \u{21d2} SpecCoverage(LSP 3.18)")
             || o.construct.contains(
                 "15-row changelog matrix is being treated as full LSP 3.18 combinatorial coverage",
             )
-            || o.context
-                .contains("ChangelogCoverage(15 rows) => SpecCoverage(LSP 3.18)")
-            || o.context
-                .contains("ChangelogCoverage(15 rows) \u{21d2} SpecCoverage(LSP 3.18)")
+            || o.context.contains("ChangelogCoverage(15 rows) => SpecCoverage(LSP 3.18)")
+            || o.context.contains("ChangelogCoverage(15 rows) \u{21d2} SpecCoverage(LSP 3.18)")
             || o.context.contains(
                 "15-row changelog matrix is being treated as full LSP 3.18 combinatorial coverage",
             );

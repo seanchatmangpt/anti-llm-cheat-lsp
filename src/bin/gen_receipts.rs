@@ -10,8 +10,7 @@
 //! Run from the example directory:
 //!   cargo run -p anti-llm-cheat-lsp --bin gen_receipts
 
-use std::fs;
-use std::path::Path;
+use std::{fs, path::Path};
 
 const NOTEBOOK_REFUSAL_STATEMENT: &str =
     "notebookDocumentSync capability is not advertised; notebook document \
@@ -80,9 +79,7 @@ fn main() {
     }
 
     // Notebook refusal receipt — no transcript; digest attests the refusal text.
-    let refusal_digest = blake3::hash(NOTEBOOK_REFUSAL_STATEMENT.as_bytes())
-        .to_hex()
-        .to_string();
+    let refusal_digest = blake3::hash(NOTEBOOK_REFUSAL_STATEMENT.as_bytes()).to_hex().to_string();
     write_receipt(
         &receipts_dir,
         "notebook_refusal_receipt.json",

@@ -136,10 +136,7 @@ pub struct LsifSummary {
 }
 
 pub fn lsif_summary(rows: &[LsifCoverageRow]) -> LsifSummary {
-    let mut s = LsifSummary {
-        total: rows.len(),
-        ..Default::default()
-    };
+    let mut s = LsifSummary { total: rows.len(), ..Default::default() };
     for r in rows {
         if r.kind == "vertex" {
             s.vertices += 1;

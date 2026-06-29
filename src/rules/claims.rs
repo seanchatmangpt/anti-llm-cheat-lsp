@@ -1,5 +1,5 @@
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use std::sync::OnceLock;
+
 /// CLAIM-004: Victory language and overclaim detection.
 ///
 /// All victory vocabulary lives here as the single source of truth.
@@ -8,7 +8,8 @@ use crate::observations::Observation;
 /// applies domain-term exemptions from per-repo config before emitting
 /// diagnostics.
 use regex::Regex;
-use std::sync::OnceLock;
+
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 /// Canonical victory / overclaim terms — the single source of truth.
 ///
@@ -57,11 +58,7 @@ const VICTORY_CONTEXT_PATTERNS: &[&str] = &[
 fn victory_re() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
     RE.get_or_init(|| {
-        let terms = VICTORY_TERMS
-            .iter()
-            .map(|t| regex::escape(t))
-            .collect::<Vec<_>>()
-            .join("|");
+        let terms = VICTORY_TERMS.iter().map(|t| regex::escape(t)).collect::<Vec<_>>().join("|");
         Regex::new(&format!(r"(?i)\b({})\b", terms)).expect("victory regex compile")
     })
 }
@@ -69,11 +66,8 @@ fn victory_re() -> &'static Regex {
 fn context_re() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
     RE.get_or_init(|| {
-        let terms = VICTORY_CONTEXT_PATTERNS
-            .iter()
-            .map(|t| regex::escape(t))
-            .collect::<Vec<_>>()
-            .join("|");
+        let terms =
+            VICTORY_CONTEXT_PATTERNS.iter().map(|t| regex::escape(t)).collect::<Vec<_>>().join("|");
         Regex::new(&format!(r"(?i)\b({})\b", terms)).expect("context regex compile")
     })
 }
@@ -83,9 +77,7 @@ fn context_re() -> &'static Regex {
 /// not overclaims.
 fn is_domain_exempt(term: &str, domain_terms: &[String]) -> bool {
     let term_lower = term.to_lowercase();
-    domain_terms
-        .iter()
-        .any(|d| term_lower.contains(d.to_lowercase().as_str()))
+    domain_terms.iter().any(|d| term_lower.contains(d.to_lowercase().as_str()))
 }
 
 /// Check whether `construct` (the raw matched text) or `context` (surrounding

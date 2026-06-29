@@ -1,5 +1,4 @@
-use anti_llm_cheat_lsp::diagnostics::AntiLlmDiagnostic;
-use anti_llm_cheat_lsp::engine;
+use anti_llm_cheat_lsp::{diagnostics::AntiLlmDiagnostic, engine};
 
 #[test]
 fn test_victory_language_detected() {

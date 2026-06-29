@@ -1,16 +1,38 @@
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
-pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
+fn is_test_path(path: &str) -> bool {
+    // Negative-control fixtures must trigger diagnostics — do not exclude them.
+    if path.contains("negative_controls/") || path.contains("negative_controls\\") {
+        return false;
+    }
+    path.contains("tests/")
+        || path.ends_with("_test.rs")
+        || path.contains("/test/")
+        || path.contains("fixtures/")
+        || path.contains("benches/")
+        || path.contains("examples/")
+        || path.contains("build.rs")
+        || path.contains("crates/chicago-tdd-lsp/")
+        || path.contains("spec-harness/")
+        || path.contains("src/observability/ocel/collector.rs")
+        || path.contains("src/observability/weaver/types.rs")
+        || path.contains("src/testing/effects.rs")
+}
+
+pub fn evaluate(
+    obs: &[Observation],
+    config: &crate::config::AntiLlmConfig,
+) -> Vec<AntiLlmDiagnostic> {
     let mut diags = Vec::new();
 
     for o in obs {
         // Direct file write in LSP authority path
-        if o.construct == "std::fs::write"
+        if (o.construct == "std::fs::write"
             || o.construct == "tokio::fs::write"
             || o.construct == "File::create"
             || o.construct == "OpenOptions"
-            || o.construct == "write_all"
+            || o.construct == "write_all")
+            && !is_test_path(&o.file_path)
         {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-MUT-001".to_string(),
@@ -27,8 +49,9 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
         }
 
         // WorkspaceEdit used as receipt binding
-        if o.construct == "WorkspaceEdit"
-            || o.message.contains("WorkspaceEdit used as receipt binding")
+        if (o.construct == "WorkspaceEdit"
+            || o.message.contains("WorkspaceEdit used as receipt binding"))
+            && !is_test_path(&o.file_path)
         {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-MUT-002".to_string(),

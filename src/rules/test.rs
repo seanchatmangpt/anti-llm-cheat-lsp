@@ -1,14 +1,18 @@
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
-pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
+pub fn evaluate(
+    obs: &[Observation],
+    config: &crate::config::AntiLlmConfig,
+) -> Vec<AntiLlmDiagnostic> {
     let mut diags = Vec::new();
 
     for o in obs {
         // assert_contains_string: .contains("literal") — Display/string cheat
         // assert_contains: unknown receiver type — flag conservatively
         // assert_contains_structural: .contains(&EnumVariant) — acceptable, no diagnostic
-        if o.construct == "assert_contains_string" || o.construct == "assert_contains" {
+        if (o.construct == "assert_contains_string" || o.construct == "assert_contains")
+            && !config.test_is_structural_path(&o.file_path)
+        {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-TEST-001".to_string(),
                 category: "test".to_string(),
@@ -35,7 +39,7 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
         // but no CHEAT diagnostic fires.
 
         // TEST-002: assert!(expr.is_ok()) with no value extraction.
-        if o.construct == "assert_is_ok_only" {
+        if o.construct == "assert_is_ok_only" && !config.test_is_structural_path(&o.file_path) {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-TEST-002".to_string(),
                 category: "test".to_string(),
@@ -59,7 +63,8 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
         }
 
         // TEST-004: error-swallowing unwrap_or_default() / unwrap_or() in test code.
-        if o.construct == "test_unwrap_or_swallow" {
+        if o.construct == "test_unwrap_or_swallow" && !config.test_is_structural_path(&o.file_path)
+        {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-TEST-004".to_string(),
                 category: "test".to_string(),
@@ -82,7 +87,9 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
         }
 
         // TEST-005: count-match assertion assert_eq!(X.len(), N).
-        if o.construct.starts_with("assert_len_literal_") {
+        if o.construct.starts_with("assert_len_literal_")
+            && !config.test_is_structural_path(&o.file_path)
+        {
             let n = o.construct.trim_start_matches("assert_len_literal_");
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-TEST-005".to_string(),

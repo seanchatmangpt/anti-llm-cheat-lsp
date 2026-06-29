@@ -1,5 +1,6 @@
-use crate::observations::Observation;
 use serde_json::Value;
+
+use crate::observations::Observation;
 
 pub fn parse_json_rpc_transcript(filepath: &str, content: &str) -> Vec<Observation> {
     let mut obs = Vec::new();
@@ -18,9 +19,8 @@ pub fn parse_json_rpc_transcript(filepath: &str, content: &str) -> Vec<Observati
                     let mut has_3_18_capabilities = false;
 
                     // Check if client capabilities advertise 3.18 inlineCompletion or textDocumentContent
-                    if let Some(text_doc) = params
-                        .get("capabilities")
-                        .and_then(|c| c.get("textDocument"))
+                    if let Some(text_doc) =
+                        params.get("capabilities").and_then(|c| c.get("textDocument"))
                     {
                         if text_doc.get("inlineCompletion").is_some()
                             || text_doc.get("foldingRange").is_some()

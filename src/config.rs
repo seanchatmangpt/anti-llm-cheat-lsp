@@ -1,3 +1,5 @@
+use std::path::Path;
+
 /// Per-repo configuration for the anti-llm-cheat-lsp scanner.
 ///
 /// Loaded from `anti-llm.toml` in the scanned directory root. All fields
@@ -23,7 +25,6 @@
 /// structural_check_paths = ["tests/strict_contracts.rs"]
 /// ```
 use serde::{Deserialize, Serialize};
-use std::path::Path;
 
 /// A user-defined forbidden string pattern loaded from `anti.toml`.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -46,6 +47,8 @@ pub struct AntiLlmConfig {
     pub test: TestConfig,
     #[serde(default)]
     pub forbidden_string_patterns: Vec<ForbiddenPattern>,
+    #[serde(default)]
+    pub allowed_suppression_paths: Vec<String>,
 }
 
 /// Configuration for CLAIM-004 victory language detection.
@@ -115,9 +118,11 @@ impl AntiLlmConfig {
     /// Returns true if `file_path` matches any configured structural-check
     /// suppression path. Used by TEST-001 to suppress residual false positives.
     pub fn test_is_structural_path(&self, file_path: &str) -> bool {
-        self.test
-            .structural_check_paths
-            .iter()
-            .any(|prefix| file_path.contains(prefix.as_str()))
+        self.test.structural_check_paths.iter().any(|prefix| file_path.contains(prefix.as_str()))
+    }
+
+    /// Returns true if `file_path` matches any configured allowed suppression paths.
+    pub fn is_suppression_allowed(&self, file_path: &str) -> bool {
+        self.allowed_suppression_paths.iter().any(|path| file_path.contains(path))
     }
 }

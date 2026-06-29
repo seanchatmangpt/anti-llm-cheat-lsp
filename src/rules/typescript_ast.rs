@@ -3,8 +3,7 @@
 // Maps observations from parsers::typescript_ast to AntiLlmDiagnostic structs.
 // Each rule maps one observation kind to one diagnostic code.
 
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
     let mut diags = Vec::new();

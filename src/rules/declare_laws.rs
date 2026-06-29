@@ -14,8 +14,7 @@
 //! | Every wired handler needs a transcript     | `Response(handler_wired, transcript_created)` |
 //! | Every diagnostic needs an OCEL event       | `Response(diagnostic_emitted, ocel_event_created)` |
 
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 /// Declare constraint template variants.
 #[derive(Debug, Clone, PartialEq)]
@@ -23,15 +22,9 @@ pub enum DeclareTemplate {
     /// This activity must NEVER occur in the log.
     Absence { activity: &'static str },
     /// If `trigger` occurs, `required_after` must occur somewhere after it.
-    Response {
-        trigger: &'static str,
-        required_after: &'static str,
-    },
+    Response { trigger: &'static str, required_after: &'static str },
     /// `activity` must not occur unless `required_before` occurred before it.
-    Precedence {
-        required_before: &'static str,
-        activity: &'static str,
-    },
+    Precedence { required_before: &'static str, activity: &'static str },
     /// `a` and `b` must NOT both occur in the same trace.
     NotCoexistence { a: &'static str, b: &'static str },
     /// If `a` occurs, `b` must NOT occur after it.
@@ -168,11 +161,7 @@ pub fn extract_traces(obs: &[Observation]) -> Vec<ObservationTrace> {
 
     by_file
         .into_iter()
-        .map(|(file_path, activities)| ObservationTrace {
-            line: 1,
-            activities,
-            file_path,
-        })
+        .map(|(file_path, activities)| ObservationTrace { line: 1, activities, file_path })
         .collect()
 }
 
@@ -187,10 +176,7 @@ pub fn check_constraint(
 
     let violated = match &law.template {
         DeclareTemplate::Absence { activity } => acts.iter().any(|a| a == activity),
-        DeclareTemplate::Response {
-            trigger,
-            required_after,
-        } => {
+        DeclareTemplate::Response { trigger, required_after } => {
             // If trigger occurs, required_after must appear somewhere after the first trigger.
             if let Some(trigger_pos) = acts.iter().position(|a| a == trigger) {
                 !acts[trigger_pos + 1..].iter().any(|a| a == required_after)
@@ -198,10 +184,7 @@ pub fn check_constraint(
                 false // trigger never occurred — constraint satisfied vacuously
             }
         }
-        DeclareTemplate::Precedence {
-            required_before,
-            activity,
-        } => {
+        DeclareTemplate::Precedence { required_before, activity } => {
             // activity must not occur before required_before has occurred.
             if let Some(act_pos) = acts.iter().position(|a| a == activity) {
                 !acts[..act_pos].iter().any(|a| a == required_before)

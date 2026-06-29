@@ -37,8 +37,9 @@
 //! aliasing, dynamic dispatch, macro-expanded calls, FFI) is **OPEN** and is not
 //! claimed here.
 
-use crate::observations::Observation;
 use std::collections::{HashMap, HashSet, VecDeque};
+
+use crate::observations::Observation;
 
 /// Extract failset seeds from a Rust source body.
 ///

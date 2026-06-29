@@ -14,10 +14,12 @@
 // Each observation is fed into rules::typescript_ast::evaluate() which emits
 // AntiLlmDiagnostic structs for the LSP diagnostics layer.
 
-use crate::observations::Observation;
-use regex::Regex;
 use std::sync::OnceLock;
+
+use regex::Regex;
 use tree_sitter::{Node, Parser};
+
+use crate::observations::Observation;
 
 // ── Compiled-once patterns ────────────────────────────────────────────────────
 
@@ -76,19 +78,14 @@ fn traverse(node: Node, source: &[u8], filepath: &str, is_test: bool, obs: &mut 
             kind: "ast_ts_sha256".to_string(),
             construct: "sha256_literal".to_string(),
             context: text.chars().take(120).collect(),
-            message: format!(
-                "SHA-256 algorithm literal '{}' — must migrate to BLAKE3",
-                text
-            ),
+            message: format!("SHA-256 algorithm literal '{}' — must migrate to BLAKE3", text),
         });
     }
 
     // STRANGE-013: Math.random() / Date.now() in non-test files
     if !is_test && kind == "call_expression" {
-        let callee = node
-            .child_by_field_name("function")
-            .map(|n| node_text(n, source))
-            .unwrap_or_default();
+        let callee =
+            node.child_by_field_name("function").map(|n| node_text(n, source)).unwrap_or_default();
         if callee == "Math.random" || callee == "Date.now" || callee == "new Date" {
             obs.push(Observation {
                 file_path: filepath.to_string(),
@@ -109,10 +106,8 @@ fn traverse(node: Node, source: &[u8], filepath: &str, is_test: bool, obs: &mut 
 
     // STRANGE-014: vi.mock / jest.mock outside test files
     if !is_test && kind == "call_expression" {
-        let callee = node
-            .child_by_field_name("function")
-            .map(|n| node_text(n, source))
-            .unwrap_or_default();
+        let callee =
+            node.child_by_field_name("function").map(|n| node_text(n, source)).unwrap_or_default();
         if callee == "vi.mock"
             || callee == "jest.mock"
             || callee.ends_with(".mock")
@@ -172,10 +167,8 @@ fn traverse(node: Node, source: &[u8], filepath: &str, is_test: bool, obs: &mut 
 
     // STRANGE-017: crypto.subtle.digest('SHA-256', ...) call
     if kind == "call_expression" {
-        let callee = node
-            .child_by_field_name("function")
-            .map(|n| node_text(n, source))
-            .unwrap_or_default();
+        let callee =
+            node.child_by_field_name("function").map(|n| node_text(n, source)).unwrap_or_default();
         if callee.contains("digest") {
             let args_text = node
                 .child_by_field_name("arguments")
@@ -199,10 +192,8 @@ fn traverse(node: Node, source: &[u8], filepath: &str, is_test: bool, obs: &mut 
 
     // STRANGE-018: console.log in server routes (data leak surface)
     if is_server_route(filepath) && kind == "call_expression" {
-        let callee = node
-            .child_by_field_name("function")
-            .map(|n| node_text(n, source))
-            .unwrap_or_default();
+        let callee =
+            node.child_by_field_name("function").map(|n| node_text(n, source)).unwrap_or_default();
         if callee == "console.log" || callee == "console.error" || callee == "console.warn" {
             obs.push(Observation {
                 file_path: filepath.to_string(),
@@ -251,12 +242,6 @@ pub fn parse_typescript_ast(filepath: &str, content: &str) -> Vec<Observation> {
     };
 
     let is_test = is_test_file(filepath);
-    traverse(
-        tree.root_node(),
-        content.as_bytes(),
-        filepath,
-        is_test,
-        &mut obs,
-    );
+    traverse(tree.root_node(), content.as_bytes(), filepath, is_test, &mut obs);
     obs
 }

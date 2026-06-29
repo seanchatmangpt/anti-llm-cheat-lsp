@@ -1,40 +1,22 @@
-use crate::diagnostics::AntiLlmDiagnostic;
+use std::{collections::BTreeMap, fs, path::Path};
+
 use serde_json::{json, Value};
-use std::collections::BTreeMap;
-use std::fs;
-use std::path::Path;
 use wasm4pm_compat::ocel::{
     OCELEvent, OCELEventAttribute, OCELObject, OCELRelationship, OCELType, OCEL,
 };
+
+use crate::diagnostics::AntiLlmDiagnostic;
 
 /// Object type registry for the ANTI-LLM OCEL 2.0 schema.
 /// Six object types — each is a distinct dimension of cheat evidence.
 pub fn ocel_object_types() -> Vec<OCELType> {
     vec![
-        OCELType {
-            name: "CaseFile".to_string(),
-            attributes: vec![],
-        },
-        OCELType {
-            name: "DetectionCode".to_string(),
-            attributes: vec![],
-        },
-        OCELType {
-            name: "LawAxis".to_string(),
-            attributes: vec![],
-        },
-        OCELType {
-            name: "Receipt".to_string(),
-            attributes: vec![],
-        },
-        OCELType {
-            name: "Gate".to_string(),
-            attributes: vec![],
-        },
-        OCELType {
-            name: "CodeSymbol".to_string(),
-            attributes: vec![],
-        },
+        OCELType { name: "CaseFile".to_string(), attributes: vec![] },
+        OCELType { name: "DetectionCode".to_string(), attributes: vec![] },
+        OCELType { name: "LawAxis".to_string(), attributes: vec![] },
+        OCELType { name: "Receipt".to_string(), attributes: vec![] },
+        OCELType { name: "Gate".to_string(), attributes: vec![] },
+        OCELType { name: "CodeSymbol".to_string(), attributes: vec![] },
     ]
 }
 
@@ -107,29 +89,16 @@ pub fn detections_to_ocel(diagnostics: &[AntiLlmDiagnostic]) -> OCEL {
     objects.extend(law_axes.into_values());
 
     let event_types = vec![
-        OCELType {
-            name: "CheatDetected".to_string(),
-            attributes: vec![],
-        },
-        OCELType {
-            name: "ScanComplete".to_string(),
-            attributes: vec![],
-        },
+        OCELType { name: "CheatDetected".to_string(), attributes: vec![] },
+        OCELType { name: "ScanComplete".to_string(), attributes: vec![] },
     ];
 
-    OCEL {
-        event_types,
-        object_types: ocel_object_types(),
-        events,
-        objects,
-    }
+    OCEL { event_types, object_types: ocel_object_types(), events, objects }
 }
 
 /// Slugify a string to a valid identifier fragment (alphanumeric + underscore).
 fn slug(s: &str) -> String {
-    s.chars()
-        .map(|c| if c.is_alphanumeric() { c } else { '_' })
-        .collect()
+    s.chars().map(|c| if c.is_alphanumeric() { c } else { '_' }).collect()
 }
 
 /// Legacy stub kept for backward compatibility — delegates to `detections_to_ocel(&[])`.
@@ -138,13 +107,9 @@ pub fn generate_anti_llm_ocel_log() -> OCEL {
     let objects = vec![
         OCELObject::new("repo_lsp_max".to_string(), "Repository")
             .with_attribute(OCELEventAttribute::string("name", "lsp-max".to_string()))
-            .with_attribute(OCELEventAttribute::string(
-                "path",
-                "/Users/sac/lsp-max".to_string(),
-            )),
-        OCELObject::new("crate_anti_llm_cheat_lsp".to_string(), "Crate").with_attribute(
-            OCELEventAttribute::string("name", "anti-llm-cheat-lsp".to_string()),
-        ),
+            .with_attribute(OCELEventAttribute::string("path", "/Users/sac/lsp-max".to_string())),
+        OCELObject::new("crate_anti_llm_cheat_lsp".to_string(), "Crate")
+            .with_attribute(OCELEventAttribute::string("name", "anti-llm-cheat-lsp".to_string())),
         OCELObject::new("file_server_rs".to_string(), "File").with_attribute(
             OCELEventAttribute::string(
                 "path",
@@ -158,27 +123,20 @@ pub fn generate_anti_llm_ocel_log() -> OCEL {
             ))
             .with_attribute(OCELEventAttribute::integer("line", 42)),
         OCELObject::new("cp_ocel_compat_001".to_string(), "Checkpoint")
-            .with_attribute(OCELEventAttribute::string(
-                "name",
-                "OCEL-COMPAT-001".to_string(),
-            ))
+            .with_attribute(OCELEventAttribute::string("name", "OCEL-COMPAT-001".to_string()))
             .with_attribute(OCELEventAttribute::string(
                 "status",
                 "PROCESS_EVIDENCE_COMPLETE".to_string(),
             )),
-        OCELObject::new("diag_code_ocel_001".to_string(), "DiagnosticCode").with_attribute(
-            OCELEventAttribute::string("code", "ANTI-LLM-OCEL-001".to_string()),
-        ),
+        OCELObject::new("diag_code_ocel_001".to_string(), "DiagnosticCode")
+            .with_attribute(OCELEventAttribute::string("code", "ANTI-LLM-OCEL-001".to_string())),
         OCELObject::new("forbidden_imp_ocel_001".to_string(), "ForbiddenImplication")
             .with_attribute(OCELEventAttribute::string(
                 "implication",
                 "DiagnosticEmitted => ProcessEvidenceRecorded".to_string(),
             )),
         OCELObject::new("diag_instance_1".to_string(), "Diagnostic")
-            .with_attribute(OCELEventAttribute::string(
-                "code",
-                "ANTI-LLM-OCEL-001".to_string(),
-            ))
+            .with_attribute(OCELEventAttribute::string("code", "ANTI-LLM-OCEL-001".to_string()))
             .with_attribute(OCELEventAttribute::string(
                 "message",
                 "Diagnostic emitted without corresponding OCEL process event".to_string(),
@@ -190,22 +148,16 @@ pub fn generate_anti_llm_ocel_log() -> OCEL {
             ),
         ),
         OCELObject::new("digest_ocel_json".to_string(), "Digest")
-            .with_attribute(OCELEventAttribute::string(
-                "algorithm",
-                "BLAKE3".to_string(),
-            ))
+            .with_attribute(OCELEventAttribute::string("algorithm", "BLAKE3".to_string()))
             .with_attribute(OCELEventAttribute::string("value", "temp_val".to_string())),
         OCELObject::new("feature_row_001".to_string(), "Lsp318FeatureRow").with_attribute(
             OCELEventAttribute::string("name", "lsp318-feature-row-001".to_string()),
         ),
-        OCELObject::new(
-            "fixture_changelog_laundering".to_string(),
-            "NegativeControlFixture",
-        )
-        .with_attribute(OCELEventAttribute::string(
-            "name",
-            "fixture-changelog-laundering".to_string(),
-        )),
+        OCELObject::new("fixture_changelog_laundering".to_string(), "NegativeControlFixture")
+            .with_attribute(OCELEventAttribute::string(
+                "name",
+                "fixture-changelog-laundering".to_string(),
+            )),
     ];
 
     // 2. Create Events with E2O relationships embedded
@@ -231,11 +183,8 @@ pub fn generate_anti_llm_ocel_log() -> OCEL {
             .qualified("code"),
     );
     ev_diag_emit.relationships.push(
-        OCELRelationship::new(
-            "ev_diag_emit".to_string(),
-            "forbidden_imp_ocel_001".to_string(),
-        )
-        .qualified("forbidden_implication"),
+        OCELRelationship::new("ev_diag_emit".to_string(), "forbidden_imp_ocel_001".to_string())
+            .qualified("forbidden_implication"),
     );
     ev_diag_emit.relationships.push(
         OCELRelationship::new("ev_diag_emit".to_string(), "cp_ocel_compat_001".to_string())
@@ -244,22 +193,16 @@ pub fn generate_anti_llm_ocel_log() -> OCEL {
 
     let mut ev_receipt_val = OCELEvent::new("ev_receipt_val".to_string(), "ReceiptValidated");
     ev_receipt_val.relationships.push(
-        OCELRelationship::new(
-            "ev_receipt_val".to_string(),
-            "receipt_ocel_json".to_string(),
-        )
-        .qualified("receipt"),
+        OCELRelationship::new("ev_receipt_val".to_string(), "receipt_ocel_json".to_string())
+            .qualified("receipt"),
     );
     ev_receipt_val.relationships.push(
         OCELRelationship::new("ev_receipt_val".to_string(), "digest_ocel_json".to_string())
             .qualified("digest"),
     );
     ev_receipt_val.relationships.push(
-        OCELRelationship::new(
-            "ev_receipt_val".to_string(),
-            "cp_ocel_compat_001".to_string(),
-        )
-        .qualified("checkpoint"),
+        OCELRelationship::new("ev_receipt_val".to_string(), "cp_ocel_compat_001".to_string())
+            .qualified("checkpoint"),
     );
 
     let mut ev_lsp318 = OCELEvent::new("ev_lsp318".to_string(), "Lsp318FeatureExercised");
@@ -292,84 +235,27 @@ pub fn generate_anti_llm_ocel_log() -> OCEL {
 
     OCEL {
         event_types: vec![
-            OCELType {
-                name: "RepositoryScanned".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "FileObserved".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "DiagnosticEmitted".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "ReceiptValidated".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "Lsp318FeatureExercised".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "NegativeControlExecuted".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "FailsetUpdated".to_string(),
-                attributes: vec![],
-            },
+            OCELType { name: "RepositoryScanned".to_string(), attributes: vec![] },
+            OCELType { name: "FileObserved".to_string(), attributes: vec![] },
+            OCELType { name: "DiagnosticEmitted".to_string(), attributes: vec![] },
+            OCELType { name: "ReceiptValidated".to_string(), attributes: vec![] },
+            OCELType { name: "Lsp318FeatureExercised".to_string(), attributes: vec![] },
+            OCELType { name: "NegativeControlExecuted".to_string(), attributes: vec![] },
+            OCELType { name: "FailsetUpdated".to_string(), attributes: vec![] },
         ],
         object_types: vec![
-            OCELType {
-                name: "Repository".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "Crate".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "File".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "FileRange".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "Checkpoint".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "DiagnosticCode".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "ForbiddenImplication".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "Diagnostic".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "Receipt".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "Digest".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "Lsp318FeatureRow".to_string(),
-                attributes: vec![],
-            },
-            OCELType {
-                name: "NegativeControlFixture".to_string(),
-                attributes: vec![],
-            },
+            OCELType { name: "Repository".to_string(), attributes: vec![] },
+            OCELType { name: "Crate".to_string(), attributes: vec![] },
+            OCELType { name: "File".to_string(), attributes: vec![] },
+            OCELType { name: "FileRange".to_string(), attributes: vec![] },
+            OCELType { name: "Checkpoint".to_string(), attributes: vec![] },
+            OCELType { name: "DiagnosticCode".to_string(), attributes: vec![] },
+            OCELType { name: "ForbiddenImplication".to_string(), attributes: vec![] },
+            OCELType { name: "Diagnostic".to_string(), attributes: vec![] },
+            OCELType { name: "Receipt".to_string(), attributes: vec![] },
+            OCELType { name: "Digest".to_string(), attributes: vec![] },
+            OCELType { name: "Lsp318FeatureRow".to_string(), attributes: vec![] },
+            OCELType { name: "NegativeControlFixture".to_string(), attributes: vec![] },
         ],
         events,
         objects,
@@ -394,10 +280,7 @@ pub fn write_ocel_outputs(dir: &str) -> Result<(), Box<dyn std::error::Error>> {
 
     // Write Gap Report
     let gap_report_path = base_dir.join("ocel_gap_report.md");
-    fs::write(
-        &gap_report_path,
-        "# OCEL Gap Report\n\nNo gaps found. All systems functional.",
-    )?;
+    fs::write(&gap_report_path, "# OCEL Gap Report\n\nNo gaps found. All systems functional.")?;
 
     // Write Receipt — digest covers the exact bytes written to the OCEL JSON file.
     let receipt_path = base_dir.join("anti_llm_cheat_lsp_ocel.receipt.json");

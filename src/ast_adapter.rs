@@ -18,9 +18,7 @@ pub struct RustAstAdapter {
 impl RustAstAdapter {
     /// Create a new Rust AST adapter.
     pub fn new() -> Self {
-        Self {
-            adapter: AutoLspAdapter::new_default(),
-        }
+        Self { adapter: AutoLspAdapter::new_default() }
     }
 
     /// Return true if the URI refers to a Rust file.
@@ -31,16 +29,14 @@ impl RustAstAdapter {
     /// Forward did_open to adapter if it's a Rust file.
     pub fn handle_did_open(&self, params: DidOpenTextDocumentParams) {
         if Self::is_rust_file(&params.text_document.uri) {
-            self.adapter
-                .handle_did_open(params, tree_sitter_rust::LANGUAGE.into());
+            self.adapter.handle_did_open(params, tree_sitter_rust::LANGUAGE.into());
         }
     }
 
     /// Forward did_change to adapter if it's a Rust file.
     pub fn handle_did_change(&self, params: DidChangeTextDocumentParams) {
         if Self::is_rust_file(&params.text_document.uri) {
-            self.adapter
-                .handle_did_change(params, tree_sitter_rust::LANGUAGE.into());
+            self.adapter.handle_did_change(params, tree_sitter_rust::LANGUAGE.into());
         }
     }
 
@@ -87,9 +83,7 @@ impl RustAstAdapter {
         uri: &DocumentUri,
         range: lsp_max::lsp_types::Range,
     ) -> Option<lsp_max::lsp_types::SemanticTokens> {
-        self.get_document(uri, |doc| {
-            crate::semantic::build_tokens_in_range(doc, range)
-        })
+        self.get_document(uri, |doc| crate::semantic::build_tokens_in_range(doc, range))
     }
 }
 

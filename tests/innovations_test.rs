@@ -13,10 +13,7 @@ use anti_llm_cheat_lsp::innovations::{
 #[test]
 fn receipt_boundaries_catches_unclosed_begin() {
     let content = "-----BEGIN RECEIPT-----\ndigest: abc123\n";
-    assert_eq!(
-        check_receipt_boundaries(content),
-        Some(ANTI_RECEIPT_MISSING_BOUNDARY)
-    );
+    assert_eq!(check_receipt_boundaries(content), Some(ANTI_RECEIPT_MISSING_BOUNDARY));
 }
 
 #[test]
@@ -37,19 +34,13 @@ fn receipt_boundaries_clean_when_no_markers() {
 fn mesh_unknown_collapse_catches_admitted_within_window() {
     // .unknown. followed by .admitted within 200 chars is a law violation.
     let content = "vector.unknown.iter().map(|x| x.admitted).collect()";
-    assert_eq!(
-        check_mesh_unknown_collapse(content),
-        Some(ANTI_MESH_UNKNOWN_COLLAPSED)
-    );
+    assert_eq!(check_mesh_unknown_collapse(content), Some(ANTI_MESH_UNKNOWN_COLLAPSED));
 }
 
 #[test]
 fn mesh_unknown_collapse_catches_refused_within_window() {
     let content = "vector.unknown.iter().map(|x| x.refused).collect()";
-    assert_eq!(
-        check_mesh_unknown_collapse(content),
-        Some(ANTI_MESH_UNKNOWN_COLLAPSED)
-    );
+    assert_eq!(check_mesh_unknown_collapse(content), Some(ANTI_MESH_UNKNOWN_COLLAPSED));
 }
 
 #[test]
@@ -87,10 +78,7 @@ fn stream_receipt_clean_when_receipt_present() {
 #[test]
 fn intent_declaration_catches_missing_declare_call() {
     let content = "let kind = IntentKind::FileWrite; do_write(path);";
-    assert_eq!(
-        check_intent_declaration(content),
-        Some(ANTI_INTENT_NO_DECLARATION)
-    );
+    assert_eq!(check_intent_declaration(content), Some(ANTI_INTENT_NO_DECLARATION));
 }
 
 #[test]
@@ -104,10 +92,7 @@ fn intent_declaration_clean_when_declare_present() {
 #[test]
 fn explain_law_axis_catches_unanchored_explain() {
     let content = "fn explain_result() { /* some explanation */ }";
-    assert_eq!(
-        check_explain_law_axis(content),
-        Some(ANTI_EXPLAIN_NO_LAW_AXIS)
-    );
+    assert_eq!(check_explain_law_axis(content), Some(ANTI_EXPLAIN_NO_LAW_AXIS));
 }
 
 #[test]
@@ -121,10 +106,7 @@ fn explain_law_axis_clean_when_law_axis_present() {
 #[test]
 fn run_all_checks_returns_empty_for_clean_content() {
     let content = "fn compute(x: u32) -> u32 { x + 1 }";
-    assert!(
-        run_all_checks(content).is_empty(),
-        "clean content must produce no violations"
-    );
+    assert!(run_all_checks(content).is_empty(), "clean content must produce no violations");
 }
 
 #[test]

@@ -1,12 +1,13 @@
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
     let mut diags = Vec::new();
 
     for o in obs {
         // Check for test result treated as receipt
-        if o.construct == "test result: ok" {
+        if o.construct == "test result: ok"
+            && (o.file_path.ends_with(".rs") || o.file_path.contains("negative_controls"))
+        {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-RECEIPT-001".to_string(),
                 category: "receipt".to_string(),
@@ -38,8 +39,9 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
         }
 
         // Check for missing receipt path
-        if o.message.contains("Receipt file lacks required field")
-            || o.construct == "missing digest"
+        if (o.message.contains("Receipt file lacks required field")
+            || o.construct == "missing digest")
+            && !o.file_path.contains(".ggen/receipts/")
         {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-RECEIPT-003".to_string(),

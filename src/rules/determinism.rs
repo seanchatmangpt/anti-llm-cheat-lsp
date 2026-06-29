@@ -1,5 +1,4 @@
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 fn is_test_path(path: &str) -> bool {
     // Negative-control fixtures must trigger diagnostics — do not exclude them.
@@ -10,9 +9,15 @@ fn is_test_path(path: &str) -> bool {
         || path.ends_with("_test.rs")
         || path.contains("/test/")
         || path.contains("fixtures/")
+        || path.contains("benches/")
+        || path.contains("examples/")
+        || path.contains("build.rs")
 }
 
-pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
+pub fn evaluate(
+    obs: &[Observation],
+    config: &crate::config::AntiLlmConfig,
+) -> Vec<AntiLlmDiagnostic> {
     let mut diags = Vec::new();
 
     for o in obs {
@@ -94,7 +99,10 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
         }
 
         // STRANGE-010: #[allow(...)] suppression cheat (not in test paths)
-        if o.kind == "ast_node" && o.construct == "allow_cheat_attr" && !is_test_path(&o.file_path)
+        if o.kind == "ast_node"
+            && o.construct == "allow_cheat_attr"
+            && !is_test_path(&o.file_path)
+            && !config.is_suppression_allowed(&o.file_path)
         {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-STRANGE-010".to_string(),
@@ -114,6 +122,7 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
         if o.kind == "ast_node"
             && matches!(o.construct.as_str(), "unsafe_block" | "unsafe_fn_or_impl")
             && !is_test_path(&o.file_path)
+            && !config.is_suppression_allowed(&o.file_path)
         {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-STRANGE-011".to_string(),

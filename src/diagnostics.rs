@@ -26,18 +26,13 @@ impl AntiLlmDiagnostic {
             (self.column.saturating_sub(1) + 10) as u32,
         );
 
-        let severity = if self.blocking {
-            DiagnosticSeverity::ERROR
-        } else {
-            DiagnosticSeverity::WARNING
-        };
+        let severity =
+            if self.blocking { DiagnosticSeverity::ERROR } else { DiagnosticSeverity::WARNING };
 
         Diagnostic {
             range: Range::new(start_pos, end_pos),
             severity: Some(severity),
-            code: Some(lsp_max::lsp_types::NumberOrString::String(
-                self.code.clone(),
-            )),
+            code: Some(lsp_max::lsp_types::NumberOrString::String(self.code.clone())),
             source: Some("anti-llm-cheat-lsp".to_string()),
             message: format!(
                 "{}\nForbidden Implication: {}\nRequired Correction: {}\nRequired Next Proof: {}",

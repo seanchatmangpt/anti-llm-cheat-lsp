@@ -58,10 +58,7 @@ fn normalize_uri(uri: &str) -> String {
     let trimmed = trimmed.strip_suffix('/').unwrap_or(trimmed);
     // Strip the transport scheme so on-disk vs virtual transports collapse to
     // one symbol identity; the ontology authority+path is the symbol.
-    let symbol = trimmed
-        .split_once("://")
-        .map(|(_scheme, rest)| rest)
-        .unwrap_or(trimmed);
+    let symbol = trimmed.split_once("://").map(|(_scheme, rest)| rest).unwrap_or(trimmed);
     symbol.to_string()
 }
 
@@ -95,9 +92,7 @@ pub struct Receipt {
 pub fn render(ontology_uri: &str) -> RenderedVirtualDoc {
     let moniker = moniker_object_id(ontology_uri);
     let rows = project_ontology(EMBEDDED_ONTOLOGY);
-    let text = EMBEDDED_TEMPLATE
-        .replace("{ontology_uri}", ontology_uri)
-        .replace("{rows}", &rows);
+    let text = EMBEDDED_TEMPLATE.replace("{ontology_uri}", ontology_uri).replace("{rows}", &rows);
 
     let digest = blake3::hash(text.as_bytes()).to_hex().to_string();
     let receipt = Receipt {
@@ -110,11 +105,7 @@ pub fn render(ontology_uri: &str) -> RenderedVirtualDoc {
         status: "CANDIDATE".to_string(),
     };
 
-    RenderedVirtualDoc {
-        moniker,
-        text,
-        receipt,
-    }
+    RenderedVirtualDoc { moniker, text, receipt }
 }
 
 /// Deterministic projection of the embedded ontology into template rows.
@@ -131,11 +122,7 @@ fn project_ontology(ontology: &str) -> String {
         .collect();
     classes.sort_unstable();
     classes.dedup();
-    classes
-        .into_iter()
-        .map(|c| format!("class ex:{c}"))
-        .collect::<Vec<_>>()
-        .join("\n")
+    classes.into_iter().map(|c| format!("class ex:{c}")).collect::<Vec<_>>().join("\n")
 }
 
 /// Render the virtual document as the markdown surface served over LSP. Carries

@@ -10,8 +10,9 @@
 //! here — navigation reuses the caller's document URI — so the module carries
 //! no path-encoding assumptions.
 
-use crate::diagnostics::AntiLlmDiagnostic;
 use lsp_max::lsp_types::*;
+
+use crate::diagnostics::AntiLlmDiagnostic;
 
 /// Zero-based LSP line for a detection (engine lines are 1-based).
 fn line0(d: &AntiLlmDiagnostic) -> u32 {
@@ -46,37 +47,20 @@ pub fn hover(diags: &[AntiLlmDiagnostic], pos: Position) -> Option<Hover> {
     }
     let mut v = String::new();
     for d in hits {
-        v.push_str(&format!(
-            "### {} — {}\n\n{}\n\n",
-            d.code,
-            severity_word(d),
-            d.message
-        ));
+        v.push_str(&format!("### {} — {}\n\n{}\n\n", d.code, severity_word(d), d.message));
         if !d.forbidden_implication.is_empty() {
-            v.push_str(&format!(
-                "- **Forbidden implication:** {}\n",
-                d.forbidden_implication
-            ));
+            v.push_str(&format!("- **Forbidden implication:** {}\n", d.forbidden_implication));
         }
         if !d.required_correction.is_empty() {
-            v.push_str(&format!(
-                "- **Recommended correction:** {}\n",
-                d.required_correction
-            ));
+            v.push_str(&format!("- **Recommended correction:** {}\n", d.required_correction));
         }
         if !d.required_next_proof.is_empty() {
-            v.push_str(&format!(
-                "- **Required next proof:** {}\n",
-                d.required_next_proof
-            ));
+            v.push_str(&format!("- **Required next proof:** {}\n", d.required_next_proof));
         }
         v.push('\n');
     }
     Some(Hover {
-        contents: HoverContents::Markup(MarkupContent {
-            kind: MarkupKind::Markdown,
-            value: v,
-        }),
+        contents: HoverContents::Markup(MarkupContent { kind: MarkupKind::Markdown, value: v }),
         range: None,
     })
 }
@@ -167,11 +151,8 @@ pub fn repair_actions(diags: &[AntiLlmDiagnostic]) -> Vec<CodeActionOrCommand> {
 /// assumed. Returns every line in this document sharing a rule code with the
 /// cursor position.
 pub fn same_file_locations(diags: &[AntiLlmDiagnostic], uri: &Uri, pos: Position) -> Vec<Location> {
-    let codes: Vec<&str> = diags
-        .iter()
-        .filter(|d| line0(d) == pos.line)
-        .map(|d| d.code.as_str())
-        .collect();
+    let codes: Vec<&str> =
+        diags.iter().filter(|d| line0(d) == pos.line).map(|d| d.code.as_str()).collect();
     if codes.is_empty() {
         return Vec::new();
     }

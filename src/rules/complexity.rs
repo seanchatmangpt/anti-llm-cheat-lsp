@@ -1,5 +1,4 @@
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 fn is_breed_src(path: &str) -> bool {
     path.contains("breeds/") || path.contains("src/breeds")

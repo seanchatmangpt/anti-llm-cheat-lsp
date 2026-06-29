@@ -1,31 +1,39 @@
-use lsp_max::jsonrpc::{Error, ErrorCode, Result};
-use lsp_max::lsp_types::*;
-use lsp_max::max_protocol::{LawAxis, MaxDiagnostic};
+use std::{
+    str::FromStr,
+    sync::{Arc, Mutex},
+};
+
 use lsp_max::{
+    andon::{
+        analysis::AnalysisPipeline,
+        andon::{AndonBus, AndonEvent},
+        core::InvariantRegistry,
+        lsp::LspMaxAndonRaised,
+        patterns::{
+            build_brokered_command, build_empty_registry_invariant, build_marker_admission,
+            build_need_n_invariant, build_non_empty_check_set, build_receipt_required,
+            build_required_artifact_invariant,
+        },
+    },
+    jsonrpc::{Error, ErrorCode, Result},
+    lsp_types::*,
+    max_protocol::{LawAxis, MaxDiagnostic},
     ClassifiedFindings, Client, Finding, LanguageServer, RulePackServer, ValidatedRulePackSet,
     WorkspaceIndex,
 };
 use lsp_max_ast::AutoLspAdapter;
-use std::str::FromStr;
-use std::sync::{Arc, Mutex};
-use lsp_max::andon::core::InvariantRegistry;
-use lsp_max::andon::andon::{AndonBus, AndonEvent};
-use lsp_max::andon::analysis::AnalysisPipeline;
-use lsp_max::andon::lsp::LspMaxAndonRaised;
-use lsp_max::andon::patterns::{
-    build_empty_registry_invariant, build_required_artifact_invariant, build_marker_admission,
-    build_need_n_invariant, build_non_empty_check_set, build_brokered_command, build_receipt_required,
-};
 
 mod recommend;
 
-use crate::ast_adapter::RustAstAdapter;
-use crate::capabilities;
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::engine;
-use crate::virtual_docs::{
-    checkpoint_status, failset, forbidden_implications, ggen_render, lsif06_matrix,
-    lsp318_full_matrix, lsp318_matrix, ocel_export, process_model, receipt_ledger,
+use crate::{
+    ast_adapter::RustAstAdapter,
+    capabilities,
+    diagnostics::AntiLlmDiagnostic,
+    engine,
+    virtual_docs::{
+        checkpoint_status, failset, forbidden_implications, ggen_render, lsif06_matrix,
+        lsp318_full_matrix, lsp318_matrix, ocel_export, process_model, receipt_ledger,
+    },
 };
 
 pub struct AntiLlmServer {
@@ -74,15 +82,12 @@ impl AntiLlmServer {
         let obs = engine::scan_directory(&self.root_dir());
         let diags = engine::evaluate_diagnostics(&obs);
         let norm_uri = uri.to_string().replace("\\", "/");
-        diags
-            .into_iter()
-            .filter(|d| norm_uri.ends_with(&d.file_path.replace("\\", "/")))
-            .collect()
+        diags.into_iter().filter(|d| norm_uri.ends_with(&d.file_path.replace("\\", "/"))).collect()
     }
 
     async fn run_scan_and_publish(&self, uri: &Uri) {
         let anti_diags = self.file_diagnostics(uri);
-        
+
         let file_diags: Vec<Diagnostic> = anti_diags
             .iter()
             .map(|d| {
@@ -94,9 +99,7 @@ impl AntiLlmServer {
             })
             .collect();
 
-        self.client
-            .publish_diagnostics(uri.clone(), file_diags, None)
-            .await;
+        self.client.publish_diagnostics(uri.clone(), file_diags, None).await;
 
         let mut andon_events = {
             let registry = self.registry.lock().unwrap();
@@ -137,18 +140,21 @@ impl AntiLlmServer {
         let _ = self.client.send_notification::<LspMaxAndonRaised>(event.clone()).await;
 
         if event.requires_ack {
-            let _ = self.client.show_message_request(
-                MessageType::ERROR,
-                event.message.clone(),
-                Some(vec![MessageActionItem {
-                    title: "Acknowledge".to_string(),
-                    properties: std::collections::HashMap::new(),
-                }]),
-            ).await;
+            let _ = self
+                .client
+                .show_message_request(
+                    MessageType::ERROR,
+                    event.message.clone(),
+                    Some(vec![MessageActionItem {
+                        title: "Acknowledge".to_string(),
+                        properties: std::collections::HashMap::new(),
+                    }]),
+                )
+                .await;
         } else if event.blocking {
             self.client.show_message(MessageType::ERROR, event.message.clone()).await;
         }
-        
+
         let mut bus = self.andon_bus.lock().unwrap();
         bus.push(event);
     }
@@ -171,9 +177,7 @@ impl AntiLlmServer {
         let _ = self.client.inlay_hint_refresh().await;
         let _ = self.client.inline_value_refresh().await;
         let _ = self.client.workspace_diagnostic_refresh().await;
-        self.client
-            .telemetry_event(serde_json::json!({"scan": "PARTIAL"}))
-            .await;
+        self.client.telemetry_event(serde_json::json!({"scan": "PARTIAL"})).await;
     }
 }
 
@@ -203,16 +207,11 @@ impl LanguageServer for AntiLlmServer {
     }
 
     async fn initialized(&self, _: InitializedParams) {
-        self.client
-            .log_message(MessageType::INFO, "anti-llm-cheat-lsp server initialized")
-            .await;
+        self.client.log_message(MessageType::INFO, "anti-llm-cheat-lsp server initialized").await;
 
         // Wire window/showMessage
         self.client
-            .show_message(
-                MessageType::INFO,
-                "anti-llm-cheat-lsp detection surfaces active",
-            )
+            .show_message(MessageType::INFO, "anti-llm-cheat-lsp detection surfaces active")
             .await;
         // Wire workspace/configuration
         let _ = self
@@ -331,9 +330,7 @@ impl LanguageServer for AntiLlmServer {
             },
         ];
 
-        Ok(Some(InlineCompletionResponse::List(InlineCompletionList {
-            items,
-        })))
+        Ok(Some(InlineCompletionResponse::List(InlineCompletionList { items })))
     }
 
     async fn text_document_content(
@@ -437,9 +434,8 @@ impl LanguageServer for AntiLlmServer {
 
     async fn signature_help(&self, params: SignatureHelpParams) -> Result<Option<SignatureHelp>> {
         // Nullable activeParameter test support
-        let _active_param = params
-            .context
-            .and_then(|c| c.active_signature_help.and_then(|h| h.active_parameter));
+        let _active_param =
+            params.context.and_then(|c| c.active_signature_help.and_then(|h| h.active_parameter));
         Ok(Some(SignatureHelp {
             signatures: vec![SignatureInformation {
                 label: "anti_llm_rule_verify()".to_string(),
@@ -610,11 +606,7 @@ impl LanguageServer for AntiLlmServer {
     async fn references(&self, params: ReferenceParams) -> Result<Option<Vec<Location>>> {
         let uri = &params.text_document_position.text_document.uri;
         let pos = params.text_document_position.position;
-        Ok(Some(recommend::same_file_locations(
-            &self.file_diagnostics(uri),
-            uri,
-            pos,
-        )))
+        Ok(Some(recommend::same_file_locations(&self.file_diagnostics(uri), uri, pos)))
     }
 
     async fn document_symbol(
@@ -667,27 +659,21 @@ impl LanguageServer for AntiLlmServer {
         // The pull surface is the agent/CI-facing path: return the real
         // detections, not an empty report. An empty pull report while the push
         // path reports cheats would itself be a laundered claim.
-        let mut items: Vec<Diagnostic> = self
-            .file_diagnostics(&params.text_document.uri)
-            .iter()
-            .map(|d| d.to_lsp())
-            .collect();
+        let mut items: Vec<Diagnostic> =
+            self.file_diagnostics(&params.text_document.uri).iter().map(|d| d.to_lsp()).collect();
 
         // Layer in AST syntax errors for Rust files (Path B).
-        items.extend(
-            self.ast_adapter
-                .pull_ast_diagnostics(&params.text_document.uri),
-        );
+        items.extend(self.ast_adapter.pull_ast_diagnostics(&params.text_document.uri));
 
-        Ok(DocumentDiagnosticReportResult::Report(
-            DocumentDiagnosticReport::Full(RelatedFullDocumentDiagnosticReport {
+        Ok(DocumentDiagnosticReportResult::Report(DocumentDiagnosticReport::Full(
+            RelatedFullDocumentDiagnosticReport {
                 related_documents: None,
                 full_document_diagnostic_report: FullDocumentDiagnosticReport {
                     result_id: None,
                     items,
                 },
-            }),
-        ))
+            },
+        )))
     }
 
     async fn semantic_tokens_full(
@@ -782,10 +768,7 @@ impl LanguageServer for AntiLlmServer {
                     })
                     .next()
                     .unwrap_or_else(|| Range::new(*pos, *pos));
-                SelectionRange {
-                    range: matching,
-                    parent: None,
-                }
+                SelectionRange { range: matching, parent: None }
             })
             .collect();
         Ok(Some(ranges))
@@ -816,10 +799,7 @@ impl LanguageServer for AntiLlmServer {
                 )
             })
             .collect();
-        Ok(Some(LinkedEditingRanges {
-            ranges,
-            word_pattern: None,
-        }))
+        Ok(Some(LinkedEditingRanges { ranges, word_pattern: None }))
     }
 
     /// LLM identifier laundering: return a moniker keyed by diagnostic code so
@@ -888,11 +868,7 @@ impl LanguageServer for AntiLlmServer {
                         Position::new(d.line.saturating_sub(1) as u32, 0),
                         Position::new(d.line.saturating_sub(1) as u32, 10),
                     ),
-                    text: if d.blocking {
-                        "BLOCKED".to_string()
-                    } else {
-                        "CANDIDATE".to_string()
-                    },
+                    text: if d.blocking { "BLOCKED".to_string() } else { "CANDIDATE".to_string() },
                 })
             })
             .collect();
@@ -916,9 +892,7 @@ impl LanguageServer for AntiLlmServer {
         let uri = &params.text_document.uri;
         let pos = params.position;
         let diags = self.file_diagnostics(uri);
-        let has_violation = diags
-            .iter()
-            .any(|d| (d.line.saturating_sub(1) as u32) == pos.line);
+        let has_violation = diags.iter().any(|d| (d.line.saturating_sub(1) as u32) == pos.line);
         if has_violation {
             return Err(Error {
                 code: ErrorCode::InvalidRequest,
@@ -977,10 +951,7 @@ impl LanguageServer for AntiLlmServer {
         use std::collections::HashMap;
         let mut by_file: HashMap<String, Vec<Diagnostic>> = HashMap::new();
         for d in &all_diags {
-            by_file
-                .entry(d.file_path.clone())
-                .or_default()
-                .push(d.to_lsp());
+            by_file.entry(d.file_path.clone()).or_default().push(d.to_lsp());
         }
         let items: Vec<WorkspaceDocumentDiagnosticReport> = by_file
             .into_iter()
@@ -1002,9 +973,7 @@ impl LanguageServer for AntiLlmServer {
                     })
             })
             .collect();
-        Ok(WorkspaceDiagnosticReportResult::Report(
-            WorkspaceDiagnosticReport { items },
-        ))
+        Ok(WorkspaceDiagnosticReportResult::Report(WorkspaceDiagnosticReport { items }))
     }
 
     /// Fake call graphs detection surface: return detections on the cursor line
@@ -1201,51 +1170,35 @@ impl LanguageServer for AntiLlmServer {
     }
 
     async fn did_create_files(&self, _params: CreateFilesParams) {
-        self.client
-            .log_message(MessageType::INFO, "file create observed")
-            .await;
+        self.client.log_message(MessageType::INFO, "file create observed").await;
     }
 
     async fn did_rename_files(&self, _params: RenameFilesParams) {
-        self.client
-            .log_message(MessageType::INFO, "file rename observed")
-            .await;
+        self.client.log_message(MessageType::INFO, "file rename observed").await;
     }
 
     async fn did_delete_files(&self, _params: DeleteFilesParams) {
-        self.client
-            .log_message(MessageType::INFO, "file delete observed")
-            .await;
+        self.client.log_message(MessageType::INFO, "file delete observed").await;
     }
 
     async fn did_open_notebook_document(&self, _params: DidOpenNotebookDocumentParams) {
         self.client
-            .log_message(
-                MessageType::INFO,
-                "notebook opened: cell diagnostics not emitted",
-            )
+            .log_message(MessageType::INFO, "notebook opened: cell diagnostics not emitted")
             .await;
     }
 
     async fn did_change_notebook_document(&self, _params: DidChangeNotebookDocumentParams) {
         self.client
-            .log_message(
-                MessageType::INFO,
-                "notebook changed: cell diagnostics not emitted",
-            )
+            .log_message(MessageType::INFO, "notebook changed: cell diagnostics not emitted")
             .await;
     }
 
     async fn did_save_notebook_document(&self, _params: DidSaveNotebookDocumentParams) {
-        self.client
-            .log_message(MessageType::INFO, "notebook saved")
-            .await;
+        self.client.log_message(MessageType::INFO, "notebook saved").await;
     }
 
     async fn did_close_notebook_document(&self, _params: DidCloseNotebookDocumentParams) {
-        self.client
-            .log_message(MessageType::INFO, "notebook closed")
-            .await;
+        self.client.log_message(MessageType::INFO, "notebook closed").await;
     }
 
     async fn work_done_progress_cancel(&self, _params: WorkDoneProgressCancelParams) {

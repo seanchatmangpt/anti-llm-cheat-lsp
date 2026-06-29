@@ -1,11 +1,13 @@
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 fn is_test_path(path: &str) -> bool {
     path.contains("tests/")
         || path.ends_with("_test.rs")
         || path.contains("/test/")
         || path.contains("fixtures/")
+        || path.contains("benches/")
+        || path.contains("examples/")
+        || path.contains("build.rs")
 }
 
 pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {

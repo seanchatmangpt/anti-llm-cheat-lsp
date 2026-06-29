@@ -1,5 +1,4 @@
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 /// Patterns that indicate a hollow implementation masquerading as real code.
 /// Each entry: (pattern, diagnostic_code, message, blocking)
@@ -15,30 +14,15 @@ const HOLLOW_PATTERNS: &[(&str, &str, &str, bool)] = &[
         "unimplemented!() is a placeholder — hollow by law",
         true,
     ),
-    (
-        "todo!()",
-        "ANTI-LLM-HOLLOW-002",
-        "todo!() is a placeholder — hollow by law",
-        true,
-    ),
-    (
-        "todo!(\"",
-        "ANTI-LLM-HOLLOW-002",
-        "todo!() is a placeholder — hollow by law",
-        true,
-    ),
+    ("todo!()", "ANTI-LLM-HOLLOW-002", "todo!() is a placeholder — hollow by law", true),
+    ("todo!(\"", "ANTI-LLM-HOLLOW-002", "todo!() is a placeholder — hollow by law", true),
     (
         "panic!(\"not implemented\")",
         "ANTI-LLM-HOLLOW-003",
         "panic-as-stub detected — hollow by law",
         true,
     ),
-    (
-        "panic!(\"TODO\")",
-        "ANTI-LLM-HOLLOW-003",
-        "panic-as-stub detected — hollow by law",
-        true,
-    ),
+    ("panic!(\"TODO\")", "ANTI-LLM-HOLLOW-003", "panic-as-stub detected — hollow by law", true),
     (
         "// TODO:",
         "ANTI-LLM-HOLLOW-004",
@@ -51,12 +35,7 @@ const HOLLOW_PATTERNS: &[(&str, &str, &str, bool)] = &[
         "FIXME comment is a placeholder — implement or formally refuse",
         true,
     ),
-    (
-        "// PLACEHOLDER",
-        "ANTI-LLM-HOLLOW-006",
-        "PLACEHOLDER comment — hollow by law",
-        true,
-    ),
+    ("// PLACEHOLDER", "ANTI-LLM-HOLLOW-006", "PLACEHOLDER comment — hollow by law", true),
     // CANDIDATE (non-blocking): legitimate LSP handlers return these for optional results.
     (
         "Ok(Some(vec![]))",
@@ -115,7 +94,10 @@ pub fn scan_for_hollow(filepath: &str, content: &str) -> Vec<Observation> {
     obs
 }
 
-pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
+pub fn evaluate(
+    obs: &[Observation],
+    config: &crate::config::AntiLlmConfig,
+) -> Vec<AntiLlmDiagnostic> {
     let mut diags = Vec::new();
 
     for o in obs {
@@ -125,7 +107,9 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
         }
 
         for (pattern, code, msg, blocking) in HOLLOW_PATTERNS {
-            if o.context.contains(pattern) || o.construct.contains(pattern) {
+            if (o.context.contains(pattern) || o.construct.contains(pattern))
+                && !config.is_suppression_allowed(&o.file_path)
+            {
                 diags.push(AntiLlmDiagnostic {
                     code: code.to_string(),
                     category: "hollow_implementation".to_string(),

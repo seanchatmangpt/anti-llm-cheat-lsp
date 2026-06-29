@@ -1,7 +1,8 @@
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
-use regex::Regex;
 use std::sync::OnceLock;
+
+use regex::Regex;
+
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 fn hardcoded_score_re() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
@@ -76,7 +77,10 @@ pub fn scan_for_fake_alignment(filepath: &str, content: &str) -> Vec<Observation
     obs
 }
 
-pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
+pub fn evaluate(
+    obs: &[Observation],
+    config: &crate::config::AntiLlmConfig,
+) -> Vec<AntiLlmDiagnostic> {
     let mut diags = Vec::new();
 
     for o in obs {
@@ -85,7 +89,8 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
             continue;
         }
 
-        if hardcoded_score_re().is_match(&o.context) {
+        if hardcoded_score_re().is_match(&o.context) && !config.is_suppression_allowed(&o.file_path)
+        {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-PLACEHOLDER-001".to_string(),
                 category: "fake_alignment".to_string(),
@@ -101,7 +106,7 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
             });
         }
 
-        if fake_assert_re().is_match(&o.context) {
+        if fake_assert_re().is_match(&o.context) && !config.is_suppression_allowed(&o.file_path) {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-PLACEHOLDER-002".to_string(),
                 category: "fake_alignment".to_string(),
@@ -119,7 +124,9 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
         }
 
         // admitted: true in Rust source (not in JSONL test fixtures) is suspicious.
-        if hardcoded_admitted_re().is_match(&o.context) {
+        if hardcoded_admitted_re().is_match(&o.context)
+            && !config.is_suppression_allowed(&o.file_path)
+        {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-PLACEHOLDER-003".to_string(),
                 category: "fake_alignment".to_string(),

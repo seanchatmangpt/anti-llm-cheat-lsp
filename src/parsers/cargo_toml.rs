@@ -6,9 +6,7 @@ fn is_calver(version: &str) -> bool {
     if parts.len() != 3 {
         return false;
     }
-    parts
-        .iter()
-        .all(|p| !p.is_empty() && p.chars().all(|c| c.is_ascii_digit()))
+    parts.iter().all(|p| !p.is_empty() && p.chars().all(|c| c.is_ascii_digit()))
         && parts[0].len() == 2
         && parts[1].len() <= 2
         && parts[2].len() <= 2

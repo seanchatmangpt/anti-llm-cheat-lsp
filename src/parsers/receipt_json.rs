@@ -1,5 +1,6 @@
-use crate::observations::Observation;
 use serde_json::Value;
+
+use crate::observations::Observation;
 
 pub fn parse_receipt_json(filepath: &str, content: &str) -> Vec<Observation> {
     let mut obs = Vec::new();

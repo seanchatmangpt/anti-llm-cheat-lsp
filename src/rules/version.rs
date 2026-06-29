@@ -3,17 +3,20 @@
 //! the live `CARGO_PKG_VERSION` and rejects SemVer-shaped strings, see
 //! `examples/calver_law_explained.rs` (`cargo run --example calver_law_explained`).
 
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
-pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
+pub fn evaluate(
+    obs: &[Observation],
+    config: &crate::config::AntiLlmConfig,
+) -> Vec<AntiLlmDiagnostic> {
     let mut diags = Vec::new();
 
     for o in obs {
         // v1.0.0 or version = "1.0.0" found
-        if o.construct == "version = \"1.0.0\""
+        if (o.construct == "version = \"1.0.0\""
             || o.context.contains("v1.0.0")
-            || o.context.contains("1.0.0")
+            || o.context.contains("1.0.0"))
+            && !config.is_suppression_allowed(&o.file_path)
         {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-VERSION-001".to_string(),
@@ -30,7 +33,9 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
         }
 
         // PATH-DEP with explicit non-CalVer version
-        if o.construct == "path_dep_with_semver_version" {
+        if o.construct == "path_dep_with_semver_version"
+            && !config.is_suppression_allowed(&o.file_path)
+        {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-VERSION-002".to_string(),
                 category: "version".to_string(),
@@ -46,7 +51,8 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
         }
 
         // [workspace.package] with non-CalVer version
-        if o.construct == "workspace_semver_version" {
+        if o.construct == "workspace_semver_version" && !config.is_suppression_allowed(&o.file_path)
+        {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-VERSION-003".to_string(),
                 category: "version".to_string(),

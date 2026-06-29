@@ -1,6 +1,8 @@
-use crate::observations::Observation;
-use regex::Regex;
 use std::sync::OnceLock;
+
+use regex::Regex;
+
+use crate::observations::Observation;
 
 // ── Compiled-once regex statics ───────────────────────────────────────────────
 
@@ -89,10 +91,7 @@ pub fn parse_typescript(filepath: &str, content: &str) -> Vec<Observation> {
                 kind: "ts_smell".to_string(),
                 construct: mat.as_str().to_string(),
                 context: line.to_string(),
-                message: format!(
-                    "Unimplemented stub or placeholder '{}' detected",
-                    mat.as_str()
-                ),
+                message: format!("Unimplemented stub or placeholder '{}' detected", mat.as_str()),
             });
         }
 
@@ -106,10 +105,7 @@ pub fn parse_typescript(filepath: &str, content: &str) -> Vec<Observation> {
                 kind: "ts_claim".to_string(),
                 construct: mat.as_str().to_string(),
                 context: line.to_string(),
-                message: format!(
-                    "Forbidden claim word '{}' found on TS surface",
-                    mat.as_str()
-                ),
+                message: format!("Forbidden claim word '{}' found on TS surface", mat.as_str()),
             });
         }
 
