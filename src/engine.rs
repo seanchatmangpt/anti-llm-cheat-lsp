@@ -6,8 +6,8 @@ use crate::parsers::{
     receipt_json, refgraph, rust_tree_sitter, tera_template, typescript, typescript_ast,
 };
 use crate::rules::{
-    authority, claims, complexity, contract as contract_rules, declare_laws, determinism, ggen,
-    hollow, lsp318, mutation, ocel_rules, oracle, placeholder, receipts,
+    authority, claims, complexity, contract as contract_rules, dead_alt, declare_laws, determinism,
+    ggen, hedge, hollow, lsp318, mutation, ocel_rules, oracle, placeholder, receipts,
     refgraph as refgraph_rules, routes, rust_smells, surface, test, trace, typescript as ts_rules,
     typescript_ast as ts_ast_rules, version,
 };
@@ -359,6 +359,7 @@ pub fn scan_file(filepath: &str) -> Vec<Observation> {
             obs.extend(hollow::scan_for_hollow(filepath, &content));
             obs.extend(placeholder::scan_for_fake_alignment(filepath, &content));
         }
+        obs.extend(dead_alt::scan_for_dead_alt(filepath, &content));
     } else if filename.ends_with(".md") {
         obs.extend(markdown_claims::parse_markdown_claims(filepath, &content));
     } else if filename.ends_with(".json") || filename.ends_with(".jsonl") {
@@ -387,6 +388,9 @@ pub fn scan_file(filepath: &str) -> Vec<Observation> {
     {
         obs.extend(fitness_report::parse_fitness_report(filepath, &content));
     }
+
+    // hedge runs on all file types (catches hedge comments in any language)
+    obs.extend(hedge::scan_for_hedge(filepath, &content));
 
     obs
 }
@@ -511,24 +515,26 @@ pub fn evaluate_diagnostics_with_config(
     diags.extend(authority::evaluate(obs));
     diags.extend(receipts::evaluate(obs));
     diags.extend(routes::evaluate(obs));
-    diags.extend(mutation::evaluate(obs));
-    diags.extend(version::evaluate(obs));
-    diags.extend(test::evaluate(obs));
+    diags.extend(mutation::evaluate(obs, config));
+    diags.extend(version::evaluate(obs, config));
+    diags.extend(test::evaluate(obs, config));
     diags.extend(rust_smells::evaluate(obs));
-    diags.extend(determinism::evaluate(obs));
+    diags.extend(determinism::evaluate(obs, config));
     diags.extend(lsp318::evaluate(obs));
     diags.extend(ocel_rules::evaluate(obs));
     diags.extend(ts_rules::evaluate(obs));
     diags.extend(ts_ast_rules::evaluate(obs));
     diags.extend(ggen::evaluate(obs));
     diags.extend(complexity::evaluate(obs));
-    diags.extend(oracle::evaluate(obs));
+    diags.extend(oracle::evaluate(obs, config));
     diags.extend(trace::evaluate(obs));
     diags.extend(contract_rules::evaluate(obs));
     diags.extend(refgraph_rules::evaluate(obs));
     diags.extend(declare_laws::evaluate(obs));
-    diags.extend(hollow::evaluate(obs));
-    diags.extend(placeholder::evaluate(obs));
+    diags.extend(hollow::evaluate(obs, config));
+    diags.extend(placeholder::evaluate(obs, config));
+    diags.extend(hedge::evaluate(obs, config));
+    diags.extend(dead_alt::evaluate(obs, config));
 
     let has_non_victory_errors = diags.iter().any(|d| d.code != "ANTI-LLM-CLAIM-004");
     diags.extend(claims::evaluate(
