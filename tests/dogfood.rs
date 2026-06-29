@@ -964,3 +964,19 @@ fn detects_unfalsifiable_assert() {
     let diags = engine::evaluate_diagnostics(&obs);
     check_diag_code(&diags, "ANTI-LLM-PLACEHOLDER-002");
 }
+
+#[test]
+fn test_hedge_negative_control_fires() {
+    let path = find_file_path("fixtures/negative_controls/hedge_smell.rs");
+    let obs = engine::scan_file(&path.to_string_lossy());
+    let diags = engine::evaluate_diagnostics_with_config(&obs, &Default::default());
+    check_diag_code(&diags, "ANTI-LLM-HEDGE-001");
+}
+
+#[test]
+fn test_dead_alt_negative_control_fires() {
+    let path = find_file_path("fixtures/negative_controls/dead_alt_smell.rs");
+    let obs = engine::scan_file(&path.to_string_lossy());
+    let diags = engine::evaluate_diagnostics_with_config(&obs, &Default::default());
+    check_diag_code(&diags, "ANTI-LLM-DEAD-ALT-001");
+}

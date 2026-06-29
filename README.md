@@ -15,6 +15,13 @@ The canary monitors files and uses a multi-layered detector stack to produce dia
 5. **JSON-RPC Transcript Parser:** Validates initialize capability transcripts to verify that client capabilities explicitly request LSP 3.18 features rather than relying on plain LSP fallback.
 6. **Receipt JSON Validator:** Inspects BLAKE3 cryptographically signed receipts to verify that mutations are accompanied by real admission proof.
 
+### Rule Index
+
+| Rule ID | What it detects |
+|---------|-----------------|
+| ANTI-LLM-DEAD-ALT-001 | Dead alternative functions (`_v2`/`_alt`/`_correct`/`_fixed`/`_working`) defined but never called |
+| ANTI-LLM-HEDGE-001 | Hedge comments admitting incomplete implementation ("In a real implementation…", "For now…") |
+
 ### Centralized Victory Vocabulary
 
 All forbidden victory-claim terms are defined in `src/config.rs` as the single source of truth. The engine (`engine.rs`) and all rule modules reference this list — no rule hand-rolls its own term list. This prevents drift where one rule detects "done" but another silently misses "fully admitted".

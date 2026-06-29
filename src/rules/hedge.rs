@@ -110,3 +110,33 @@ pub fn evaluate(
 
     diags
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn detects_in_a_real_implementation() {
+        let obs = scan_for_hedge("test.rs", "// In a real implementation, we would do X");
+        assert_eq!(obs.len(), 1);
+        assert_eq!(obs[0].kind, "hedge_smell");
+    }
+
+    #[test]
+    fn detects_for_now_phrase() {
+        let obs = scan_for_hedge("test.rs", "// For now, we'll use a stub");
+        assert_eq!(obs.len(), 1);
+    }
+
+    #[test]
+    fn does_not_fire_on_non_comment() {
+        let obs = scan_for_hedge("test.rs", r#"let msg = "in a real implementation";"#);
+        assert_eq!(obs.len(), 0, "Should not fire on string literals");
+    }
+
+    #[test]
+    fn does_not_fire_on_clean_code() {
+        let obs = scan_for_hedge("test.rs", "pub fn compute(x: u32) -> u32 { x * 2 }");
+        assert_eq!(obs.len(), 0);
+    }
+}
