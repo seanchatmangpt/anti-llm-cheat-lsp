@@ -1,6 +1,6 @@
 [package]
 name = "anti-llm-cheat-lsp"
-version = "26.6.18"
+version = "26.6.30"
 authors = ["Eyal Kalderon <ebkalderon@gmail.com>"]
 edition = "2021"
 rust-version = "1.82.0"
@@ -45,8 +45,8 @@ aho-corasick = "1"
 ignore = "0.4"
 memchr = "2.5"
 rustc-hash = "2"
-lsp-max = { path = "../lsp-max", version = "26.6.18" }
-lsp-max-ast = { path = "../lsp-max/crates/lsp-max-adapters/lsp-max-ast", version = "26.6.18" }
+lsp-max = { path = "../lsp-max", version = "26.6.28" }
+lsp-max-ast = { path = "../lsp-max/crates/lsp-max-adapters/lsp-max-ast", version = "26.6.28" }
 
 
 parking_lot = "0.12.5"

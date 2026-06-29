@@ -1,7 +1,8 @@
-use crate::diagnostics::AntiLlmDiagnostic;
-use crate::observations::Observation;
-use regex::Regex;
 use std::sync::OnceLock;
+
+use regex::Regex;
+
+use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
 fn hedge_re() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();

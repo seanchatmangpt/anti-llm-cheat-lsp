@@ -1,7 +1,9 @@
-use anti_llm_cheat_lsp::engine;
-use anti_llm_cheat_lsp::rules::lsp318::{get_feature_matrix, Lsp318Feature};
-use std::fs;
-use std::path::PathBuf;
+use std::{fs, path::PathBuf};
+
+use anti_llm_cheat_lsp::{
+    engine,
+    rules::lsp318::{get_feature_matrix, Lsp318Feature},
+};
 
 fn find_file_path(suffix: &str) -> PathBuf {
     let p1 = PathBuf::from(suffix);
@@ -347,16 +349,8 @@ fn lsp318_no_basic_lsp_substitution() {
             panic!("Receipt digest mismatch for feature {}", f.feature_id);
         }
 
-        if val
-            .get("digest_algorithm")
-            .and_then(|a| a.as_str())
-            .unwrap()
-            != "BLAKE3"
-        {
-            panic!(
-                "Expected digest algorithm BLAKE3 for feature {}",
-                f.feature_id
-            );
+        if val.get("digest_algorithm").and_then(|a| a.as_str()).unwrap() != "BLAKE3" {
+            panic!("Expected digest algorithm BLAKE3 for feature {}", f.feature_id);
         }
 
         if val.get("boundary").and_then(|b| b.as_str()).is_none() {
@@ -416,11 +410,7 @@ fn ocel_002_receipt_binds_to_ocel_object() {
         .find(|ev| ev.get("type").and_then(|t| t.as_str()) == Some("ReceiptValidated"))
         .expect("Should have ReceiptValidated event");
 
-    let rels = receipt_val_event
-        .get("relationships")
-        .unwrap()
-        .as_array()
-        .unwrap();
+    let rels = receipt_val_event.get("relationships").unwrap().as_array().unwrap();
     assert!(rels
         .iter()
         .any(|r| r.get("objectId").and_then(|o| o.as_str()) == Some("receipt_ocel_json")));
@@ -447,11 +437,7 @@ fn ocel_003_lsp318_feature_row_binds_to_ocel_event() {
         .find(|ev| ev.get("type").and_then(|t| t.as_str()) == Some("Lsp318FeatureExercised"))
         .expect("Should have Lsp318FeatureExercised event");
 
-    let rels = feature_ex_event
-        .get("relationships")
-        .unwrap()
-        .as_array()
-        .unwrap();
+    let rels = feature_ex_event.get("relationships").unwrap().as_array().unwrap();
     assert!(rels
         .iter()
         .any(|r| r.get("objectId").and_then(|o| o.as_str()) == Some("feature_row_001")));
@@ -472,11 +458,7 @@ fn ocel_004_negative_control_binds_to_ocel_event() {
         .find(|ev| ev.get("type").and_then(|t| t.as_str()) == Some("NegativeControlExecuted"))
         .expect("Should have NegativeControlExecuted event");
 
-    let rels = neg_control_event
-        .get("relationships")
-        .unwrap()
-        .as_array()
-        .unwrap();
+    let rels = neg_control_event.get("relationships").unwrap().as_array().unwrap();
     assert!(rels.iter().any(
         |r| r.get("objectId").and_then(|o| o.as_str()) == Some("fixture_changelog_laundering")
     ));
@@ -553,18 +535,9 @@ fn ocel_010_receipts_ocel_export_digest() {
 
     let digest = val.get("digest").unwrap().as_str().unwrap();
     assert_eq!(digest, expected_hash);
-    assert_eq!(
-        val.get("digest_algorithm").unwrap().as_str().unwrap(),
-        "BLAKE3"
-    );
-    assert_eq!(
-        val.get("boundary").unwrap().as_str().unwrap(),
-        "crates/anti-llm-cheat-lsp/ocel"
-    );
-    assert_eq!(
-        val.get("checkpoint").unwrap().as_str().unwrap(),
-        "OCEL-COMPAT-001"
-    );
+    assert_eq!(val.get("digest_algorithm").unwrap().as_str().unwrap(), "BLAKE3");
+    assert_eq!(val.get("boundary").unwrap().as_str().unwrap(), "crates/anti-llm-cheat-lsp/ocel");
+    assert_eq!(val.get("checkpoint").unwrap().as_str().unwrap(), "OCEL-COMPAT-001");
 }
 
 #[test]
@@ -694,11 +667,8 @@ fn refgraph_positive_dependent_is_flagged() {
 
     check_diag_code(&diags, "ANTI-LLM-REFGRAPH-001");
 
-    let flagged: std::collections::HashSet<&str> = obs
-        .iter()
-        .filter(|o| o.kind == "failset_member")
-        .map(|o| o.construct.as_str())
-        .collect();
+    let flagged: std::collections::HashSet<&str> =
+        obs.iter().filter(|o| o.kind == "failset_member").map(|o| o.construct.as_str()).collect();
     assert!(
         flagged.contains("compute_fitness"),
         "direct dependent compute_fitness must be in the failset, got {:?}",
@@ -729,11 +699,8 @@ fn refgraph_negative_independent_never_trips() {
     let obs = engine::scan_directory(&dir.to_string_lossy());
     let diags = engine::evaluate_diagnostics(&obs);
 
-    let flagged: std::collections::HashSet<&str> = obs
-        .iter()
-        .filter(|o| o.kind == "failset_member")
-        .map(|o| o.construct.as_str())
-        .collect();
+    let flagged: std::collections::HashSet<&str> =
+        obs.iter().filter(|o| o.kind == "failset_member").map(|o| o.construct.as_str()).collect();
 
     for sym in ["add_one", "independent_pure", "independent_caller"] {
         assert!(
@@ -803,10 +770,7 @@ fn lsp318_receipts_axis_is_closed_with_admitted_rows() {
 
     // Verify receipts exist for the primary methods
     let with_receipts: Vec<_> = rows.iter().filter(|r| r.receipt_present).collect();
-    assert!(
-        !with_receipts.is_empty(),
-        "receipts must be present (axis closed)"
-    );
+    assert!(!with_receipts.is_empty(), "receipts must be present (axis closed)");
 
     // Verify some rows are ADMITTED (Wired + Transcript + Receipt)
     let admitted: Vec<_> = rows.iter().filter(|r| r.status == "ADMITTED").collect();
@@ -817,11 +781,7 @@ fn lsp318_receipts_axis_is_closed_with_admitted_rows() {
 
     // Every ADMITTED row must have a receipt and handler
     for r in &admitted {
-        assert!(
-            r.receipt_present,
-            "{} is ADMITTED but receipt_present is false",
-            r.method
-        );
+        assert!(r.receipt_present, "{} is ADMITTED but receipt_present is false", r.method);
     }
 }
 
@@ -833,14 +793,8 @@ fn lsp318_conformance_summary_preserves_unknown_axis() {
     let s = conformance_summary(&rows);
     assert_eq!(s.total, rows.len());
     assert_eq!(s.admitted + s.refused + s.unknown, s.total);
-    assert!(
-        s.unknown > 0,
-        "unknown axis must be non-empty and distinct from admitted/refused"
-    );
-    assert!(
-        s.receipts_present > 0,
-        "receipt axis is closed: receipts must be present on disk"
-    );
+    assert!(s.unknown > 0, "unknown axis must be non-empty and distinct from admitted/refused");
+    assert!(s.receipts_present > 0, "receipt axis is closed: receipts must be present on disk");
 }
 
 #[test]
@@ -873,8 +827,7 @@ fn lsif06_surface_is_full_and_example_coverage_is_open() {
 
 #[test]
 fn ocel_012_live_detections_produce_ocel_events() {
-    use anti_llm_cheat_lsp::diagnostics::AntiLlmDiagnostic;
-    use anti_llm_cheat_lsp::ocel::detections_to_ocel;
+    use anti_llm_cheat_lsp::{diagnostics::AntiLlmDiagnostic, ocel::detections_to_ocel};
 
     let diags = vec![AntiLlmDiagnostic {
         code: "ANTI-LLM-SURFACE-001".to_string(),
@@ -889,14 +842,8 @@ fn ocel_012_live_detections_produce_ocel_events() {
         required_next_proof: "verify no tower-lsp refs".to_string(),
     }];
     let log = detections_to_ocel(&diags);
-    assert!(
-        !log.events.is_empty(),
-        "live detections must produce OCEL events"
-    );
-    assert!(
-        !log.objects.is_empty(),
-        "live detections must produce OCEL objects"
-    );
+    assert!(!log.events.is_empty(), "live detections must produce OCEL events");
+    assert!(!log.objects.is_empty(), "live detections must produce OCEL objects");
     // Every CheatDetected event must have at least one relationship binding
     for event in &log.events {
         if event.event_type == "CheatDetected" {
@@ -932,10 +879,8 @@ fn declare_001_absence_tower_lsp_fires() {
         agents_md_laws, check_constraint, ObservationTrace,
     };
 
-    let law = agents_md_laws()
-        .into_iter()
-        .find(|l| l.diagnostic_code == "ANTI-LLM-DECLARE-001")
-        .unwrap();
+    let law =
+        agents_md_laws().into_iter().find(|l| l.diagnostic_code == "ANTI-LLM-DECLARE-001").unwrap();
     let trace_violating = ObservationTrace {
         activities: vec!["tower_lsp_reference".to_string()],
         file_path: "Cargo.toml".to_string(),
@@ -962,20 +907,15 @@ fn declare_002_response_handler_transcript_missing() {
         agents_md_laws, check_constraint, ObservationTrace,
     };
 
-    let law = agents_md_laws()
-        .into_iter()
-        .find(|l| l.diagnostic_code == "ANTI-LLM-DECLARE-007")
-        .unwrap();
+    let law =
+        agents_md_laws().into_iter().find(|l| l.diagnostic_code == "ANTI-LLM-DECLARE-007").unwrap();
     let trace_missing = ObservationTrace {
         activities: vec!["handler_wired".to_string()], // wired but no transcript
         file_path: "server.rs".to_string(),
         line: 1,
     };
     let trace_ok = ObservationTrace {
-        activities: vec![
-            "handler_wired".to_string(),
-            "transcript_created".to_string(),
-        ],
+        activities: vec!["handler_wired".to_string(), "transcript_created".to_string()],
         file_path: "server.rs".to_string(),
         line: 1,
     };
