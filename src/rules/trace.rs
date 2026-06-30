@@ -91,6 +91,25 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
                 });
             }
 
+            // TRACE-005: constant string push to inference trace field aliases
+            "trace_alias_constant_push" if !is_test_path(&o.file_path) => {
+                diags.push(AntiLlmDiagnostic {
+                    code: "ANTI-LLM-TRACE-005".to_string(),
+                    category: "trace".to_string(),
+                    file_path: o.file_path.clone(),
+                    line: o.line,
+                    column: o.column,
+                    message: format!(
+                        "Trace alias field push with constant string in '{}' — fabricated trace evidence via alias (reasoning_log, steps, chain, derivation, audit_trail, explanation_steps).",
+                        o.context
+                    ),
+                    forbidden_implication: "AliasTraceEntry => ComputedEvidence".to_string(),
+                    blocking: true,
+                    required_correction: "Replace constant string trace entries with dynamically constructed messages including computed values (rule IDs, confidence scores, matched predicates). Field name aliases do not exempt from the no-static-trace law.".to_string(),
+                    required_next_proof: "Trace alias entries include computed values; entries vary with algorithm inputs.".to_string(),
+                });
+            }
+
             _ => {}
         }
     }

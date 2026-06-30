@@ -43,6 +43,19 @@ pub const VICTORY_TERMS: &[&str] = &[
     "fully admitted",
     "path is clear",
     "routing to packplan",
+    // CLAIM-007: Victory language paraphrases — common LLM circumlocutions
+    "implementation is complete",
+    "fully implemented",
+    "all passing",
+    "no remaining issues",
+    "everything is resolved",
+    "working correctly",
+    "no blockers",
+    "work is complete",
+    "all tests pass",
+    "no issues found",
+    "all checks pass",
+    "all requirements met",
 ];
 
 /// Context patterns (checked against the surrounding line, not just the
@@ -106,6 +119,34 @@ pub fn evaluate(
     let mut diags = Vec::new();
 
     for o in obs {
+        // CHANGELOG-001: delta changelog presented as full spec coverage.
+        if o.kind == "changelog_laundering" {
+            diags.push(AntiLlmDiagnostic {
+                code: "ANTI-LLM-CHANGELOG-001".to_string(),
+                category: "claim".to_string(),
+                file_path: o.file_path.clone(),
+                line: o.line,
+                column: o.column,
+                message: format!(
+                    "Changelog laundering detected: '{}'. A delta changelog is not \
+                     combinatorial spec coverage.",
+                    o.context.chars().take(80).collect::<String>()
+                ),
+                forbidden_implication:
+                    "ChangelogCoverage => SpecCoverage(LSP 3.18)".to_string(),
+                blocking: true,
+                required_correction:
+                    "Remove claim that changelog matrix constitutes full LSP 3.18 \
+                     combinatorial coverage. Implement a spec extractor."
+                        .to_string(),
+                required_next_proof:
+                    "Changelog and spec coverage are tracked separately; \
+                     no CHANGELOG-001 diagnostic fires."
+                        .to_string(),
+            });
+            continue;
+        }
+
         if is_victory(&o.construct, &o.context, domain_terms) {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-CLAIM-004".to_string(),

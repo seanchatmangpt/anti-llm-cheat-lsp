@@ -354,6 +354,41 @@ pub fn scan_file(filepath: &str) -> Vec<Observation> {
             obs.extend(placeholder::scan_for_fake_alignment(filepath, &content));
         }
         obs.extend(dead_alt::scan_for_dead_alt(filepath, &content));
+        // ORACLE-007 / DECLARE-006: detect .unknown.clear() and
+        // .unknown = HashSet::new() on ConformanceVector-shaped structs.
+        // These patterns collapse Unknown to empty — a DECLARE-006 violation.
+        if !is_self_excluded {
+            let line_index = build_line_index(content.as_bytes());
+            for (line_idx, line) in content.lines().enumerate() {
+                let trimmed = line.trim();
+                let is_unknown_collapse = trimmed.contains(".unknown.clear()")
+                    || (trimmed.contains(".unknown") && trimmed.contains("= HashSet::new()"))
+                    || (trimmed.contains(".unknown") && trimmed.contains("= Default::default()"));
+                if is_unknown_collapse {
+                    let byte_off = content
+                        .lines()
+                        .take(line_idx)
+                        .map(|l| l.len() + 1)
+                        .sum::<usize>();
+                    let _ = byte_to_line(&line_index, byte_off); // keep index warm
+                    obs.push(Observation {
+                        file_path: filepath.to_string(),
+                        start_byte: byte_off,
+                        end_byte: byte_off + line.len(),
+                        line: line_idx + 1,
+                        column: 1,
+                        kind: "ast_node".to_string(),
+                        construct: "unknown_axis_cleared".to_string(),
+                        context: trimmed.chars().take(120).collect(),
+                        message: format!(
+                            "ConformanceVector.unknown cleared at line {} — Unknown must not \
+                             be silently collapsed to empty",
+                            line_idx + 1
+                        ),
+                    });
+                }
+            }
+        }
     } else if filename.ends_with(".md") {
         obs.extend(markdown_claims::parse_markdown_claims(filepath, &content));
     } else if filename.ends_with(".json") || filename.ends_with(".jsonl") {

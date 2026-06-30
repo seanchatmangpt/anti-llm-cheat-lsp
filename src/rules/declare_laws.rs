@@ -155,7 +155,25 @@ pub fn extract_traces(obs: &[Observation]) -> Vec<ObservationTrace> {
             "receipt_json" | "receipt_artifact" => activities.push("receipt_artifact".to_string()),
             "diagnostic_emitted" => activities.push("diagnostic_emitted".to_string()),
             "ocel_event" => activities.push("ocel_event_created".to_string()),
-            _ => {}
+            // DECLARE-006: unknown_axis → admitted_axis succession
+            // An `unknown_axis` activity is recorded when code clears/reads the
+            // unknown set of a ConformanceVector-shaped struct.
+            "unknown_axis_cleared" | "unknown_axis_read" => {
+                activities.push("unknown_axis".to_string())
+            }
+            // admitted_axis fires on patterns that hard-code Admitted status while
+            // an unknown axis is still present — the canonical DECLARE-006 violation.
+            "hardcoded_admitted" | "unknown_collapsed_to_admitted" => {
+                activities.push("admitted_axis".to_string())
+            }
+            _ => {
+                // Contextual heuristic: observation construct contains "admitted" and
+                // its context mentions "unknown" — treat as admitted_axis.
+                if o.construct.contains("admitted") && o.context.to_lowercase().contains("unknown")
+                {
+                    activities.push("admitted_axis".to_string());
+                }
+            }
         }
     }
 

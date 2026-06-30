@@ -141,6 +141,33 @@ pub fn evaluate(
                 });
             }
 
+            // ORACLE-007: ConformanceVector.unknown explicitly cleared
+            // This collapses Unknown to empty without resolving the underlying
+            // axis — a DECLARE-006 violation expressed at the code level.
+            "unknown_axis_cleared" => {
+                diags.push(AntiLlmDiagnostic {
+                    code: "ANTI-LLM-ORACLE-007".to_string(),
+                    category: "oracle".to_string(),
+                    file_path: o.file_path.clone(),
+                    line: o.line,
+                    column: o.column,
+                    message: format!(
+                        "ConformanceVector.unknown explicitly cleared in '{}' — Unknown must \
+                         remain distinct until all law axes are resolved.",
+                        o.context.chars().take(80).collect::<String>()
+                    ),
+                    forbidden_implication: "UnknownCleared => UnknownAxisResolved".to_string(),
+                    blocking: true,
+                    required_correction: "Remove .unknown.clear() / = HashSet::new(). \
+                        Unknown axis entries must be resolved by evidence, not silenced."
+                        .to_string(),
+                    required_next_proof:
+                        "ConformanceVector shows distinct admitted/refused/unknown sets; \
+                         DECLARE-006 constraint passes."
+                            .to_string(),
+                });
+            }
+
             _ => {}
         }
     }

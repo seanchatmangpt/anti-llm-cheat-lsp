@@ -40,6 +40,8 @@ struct FnMetrics {
     has_lazy_static_env: bool,
     has_global_hashmap_literal: bool,
     trace_push_strings: Vec<String>,
+    /// TRACE-005: constant-string pushes to inference trace field aliases
+    trace_alias_push_strings: Vec<String>,
     trace_len_asserts: usize,
     cfg_test_run_fn: bool,
     /// Callee identifiers referenced inside this fn body — the outgoing
@@ -149,15 +151,31 @@ fn walk_fn_body(
         }
     }
 
-    // Detect inference_trace.push(string_literal)
+    // TRACE-001: inference_trace.push(string_literal)
     if kind == "call_expression"
         && (text.contains("inference_trace.push") || text.contains("trace.push"))
     {
-        // Check if the argument is a pure string literal (no {})
         if let Some(arg_node) = node.child(1) {
             let arg = arg_node.utf8_text(source).unwrap_or_default();
             if (arg.starts_with('"') || arg.starts_with("r\"")) && !arg.contains('{') {
                 metrics.trace_push_strings.push(arg.to_string());
+            }
+        }
+    }
+    // TRACE-005: inference trace field aliases with constant string push
+    const TRACE_FIELD_ALIASES: &[&str] = &[
+        "reasoning_log.push",
+        "steps.push",
+        "chain.push",
+        "derivation.push",
+        "audit_trail.push",
+        "explanation_steps.push",
+    ];
+    if kind == "call_expression" && TRACE_FIELD_ALIASES.iter().any(|alias| text.contains(alias)) {
+        if let Some(arg_node) = node.child(1) {
+            let arg = arg_node.utf8_text(source).unwrap_or_default();
+            if (arg.starts_with('"') || arg.starts_with("r\"")) && !arg.contains('{') {
+                metrics.trace_alias_push_strings.push(arg.to_string());
             }
         }
     }
@@ -229,6 +247,7 @@ fn collect_fn_metrics(node: Node, source: &[u8], filepath: &str) -> Vec<Observat
         has_lazy_static_env: false,
         has_global_hashmap_literal: false,
         trace_push_strings: Vec::new(),
+        trace_alias_push_strings: Vec::new(),
         trace_len_asserts: 0,
         cfg_test_run_fn: false,
         callee_names: std::collections::HashSet::new(),
@@ -355,6 +374,17 @@ fn collect_fn_metrics(node: Node, source: &[u8], filepath: &str) -> Vec<Observat
                 "Function '{}' pushes {} constant string(s) to inference_trace",
                 name,
                 metrics.trace_push_strings.len()
+            ),
+        ));
+    }
+    // TRACE-005: constant string push to inference trace field aliases
+    if !metrics.trace_alias_push_strings.is_empty() {
+        obs.push(make(
+            "trace_alias_constant_push",
+            format!(
+                "Function '{}' pushes {} constant string(s) to trace alias field(s)",
+                name,
+                metrics.trace_alias_push_strings.len()
             ),
         ));
     }
