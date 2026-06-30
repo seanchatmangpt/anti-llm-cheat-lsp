@@ -59,6 +59,48 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
                         .to_string(),
             });
         }
+
+        // RECEIPT-004: obviously fabricated digest
+        if o.construct == "fabricated_digest" {
+            diags.push(AntiLlmDiagnostic {
+                code: "ANTI-LLM-RECEIPT-004".to_string(),
+                category: "receipt".to_string(),
+                file_path: o.file_path.clone(),
+                line: o.line,
+                column: o.column,
+                message: format!(
+                    "Receipt digest is obviously fabricated: {}",
+                    o.context
+                ),
+                forbidden_implication: "ReceiptDigest => MeasuredHash".to_string(),
+                blocking: true,
+                required_correction:
+                    "Replace the placeholder digest with the actual BLAKE3/SHA-256 hash of the artifact.".to_string(),
+                required_next_proof:
+                    "Recompute the digest from the artifact and store the result.".to_string(),
+            });
+        }
+
+        // RECEIPT-005: self-referential receipt
+        if o.construct == "self_referential_receipt" {
+            diags.push(AntiLlmDiagnostic {
+                code: "ANTI-LLM-RECEIPT-005".to_string(),
+                category: "receipt".to_string(),
+                file_path: o.file_path.clone(),
+                line: o.line,
+                column: o.column,
+                message: format!(
+                    "Receipt 'path' field references the receipt file itself: {}",
+                    o.context
+                ),
+                forbidden_implication: "ReceiptPath => ExternalArtifact".to_string(),
+                blocking: true,
+                required_correction:
+                    "Set 'path' to the artifact being receipted, not the receipt file itself.".to_string(),
+                required_next_proof:
+                    "Verify 'path' resolves to the audited artifact, not this receipt JSON.".to_string(),
+            });
+        }
     }
 
     diags

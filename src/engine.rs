@@ -65,6 +65,13 @@ const RAW_SMELL_PATTERNS: &[&str] = &[
     "ANTI-LLM-OCEL-002-TRIGGER",  // 18
     "\"bypassed_compat\": true",  // 19
     "use wasm4pm::",              // 20
+    // ANTI-LLM-OCEL-006: bypass-comment smells — intent to skip the compat boundary
+    "// direct wasm4pm",          // 21
+    "// bypass compat",           // 22
+    "// skip compat",             // 23
+    "// compat not needed",       // 24
+    "// wasm4pm directly",        // 25
+    "// direct use of wasm4pm",   // 26
 ];
 
 fn raw_smell_ac() -> &'static AhoCorasick {
@@ -339,6 +346,27 @@ pub fn scan_file(filepath: &str) -> Vec<Observation> {
                     message: "Standard test references negative controls directory".to_string(),
                 });
             }
+
+            // TEST-006: snapshot-as-spec — assert_snapshot! / assert_yaml_snapshot!
+            // with no assert_eq!/assert_ne! on the same binding creates circular specs
+            // where LLM output becomes the expected value.
+            if trimmed.contains("assert_snapshot!(") || trimmed.contains("assert_yaml_snapshot!(")
+            {
+                obs.push(Observation {
+                    file_path: filepath.to_string(),
+                    start_byte: 0,
+                    end_byte: 0,
+                    line: line_num,
+                    column: 1,
+                    kind: "test_smell".to_string(),
+                    construct: "assert_snapshot_no_eq".to_string(),
+                    context: line.to_string(),
+                    message: "assert_snapshot!/assert_yaml_snapshot! without structural \
+                        assert_eq!/assert_ne! creates a circular spec — LLM output \
+                        becomes the expected value"
+                        .to_string(),
+                });
+            }
         }
     }
 
@@ -354,6 +382,42 @@ pub fn scan_file(filepath: &str) -> Vec<Observation> {
             obs.extend(placeholder::scan_for_fake_alignment(filepath, &content));
         }
         obs.extend(dead_alt::scan_for_dead_alt(filepath, &content));
+
+        // STRANGE-008: println! in non-test production .rs code (debug output left in)
+        // STRANGE-009: #[cfg(test)] wrapping production logic (law evasion)
+        if !is_self_excluded && !is_rule_or_parser_src && !is_test_file {
+            for (line_idx, line) in content.lines().enumerate() {
+                let line_num = line_idx + 1;
+                let trimmed = line.trim();
+                if trimmed.contains("println!(") && !trimmed.starts_with("//") {
+                    obs.push(Observation {
+                        file_path: filepath.to_string(),
+                        start_byte: 0,
+                        end_byte: 0,
+                        line: line_num,
+                        column: 1,
+                        kind: "rust_strange".to_string(),
+                        construct: "println_in_production".to_string(),
+                        context: line.to_string(),
+                        message: format!("println! on line {} in production code", line_num),
+                    });
+                }
+                if trimmed.starts_with("#[cfg(test)]") {
+                    obs.push(Observation {
+                        file_path: filepath.to_string(),
+                        start_byte: 0,
+                        end_byte: 0,
+                        line: line_num,
+                        column: 1,
+                        kind: "rust_strange".to_string(),
+                        construct: "cfg_test_in_production".to_string(),
+                        context: line.to_string(),
+                        message: format!("#[cfg(test)] on line {} outside a test file", line_num),
+                    });
+                }
+            }
+        }
+
         // ORACLE-007 / DECLARE-006: detect .unknown.clear() and
         // .unknown = HashSet::new() on ConformanceVector-shaped structs.
         // These patterns collapse Unknown to empty — a DECLARE-006 violation.
@@ -408,10 +472,12 @@ pub fn scan_file(filepath: &str) -> Vec<Observation> {
     {
         obs.extend(typescript::parse_typescript(filepath, &content));
         obs.extend(typescript_ast::parse_typescript_ast(filepath, &content));
+        obs.extend(hollow::scan_for_hollow_ts(filepath, &content));
     } else if filename == "ggen.toml" {
         obs.extend(ggen_toml::parse_ggen_toml(filepath, &content));
     } else if filename.ends_with(".tera") {
         obs.extend(tera_template::parse_tera_template(filepath, &content));
+        obs.extend(hollow::scan_for_hollow_tera(filepath, &content));
     } else if filename.ends_with(".json")
         && (filepath.contains("ocel/reports") || filepath.contains("fitness_reports"))
     {
@@ -420,6 +486,13 @@ pub fn scan_file(filepath: &str) -> Vec<Observation> {
 
     // hedge runs on all file types (catches hedge comments in any language)
     obs.extend(hedge::scan_for_hedge(filepath, &content));
+
+    // VERSION-004 / VERSION-005: CalVer range and placeholder scan — runs on
+    // all text files (Cargo.toml, .rs, .md, .json, etc.) because LLM-generated
+    // placeholder versions can appear in any file type.
+    if !is_self_excluded {
+        obs.extend(version::scan_for_calver_violations(filepath, &content));
+    }
 
     obs
 }

@@ -78,11 +78,49 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
                 required_next_proof: "Verify utilizing tree-sitter or JSON-TOML deserializers.".to_string(),
             });
         }
-    }
 
-    // Check for warnings emitted for non-error states
-    // In our diagnostic rules, warning states should not be emitted for non-error states
-    // but this is mostly handled by custom checks on the diagnostic severity.
+        // STRANGE-008: println! left in production code
+        if o.construct == "println_in_production" {
+            diags.push(AntiLlmDiagnostic {
+                code: "ANTI-LLM-STRANGE-008".to_string(),
+                category: "strange-code".to_string(),
+                file_path: o.file_path.clone(),
+                line: o.line,
+                column: o.column,
+                message: "println! found in non-test production code — debug output left in"
+                    .to_string(),
+                forbidden_implication: "DebugPrint => ProductionCode".to_string(),
+                blocking: true,
+                required_correction:
+                    "Remove println! or replace with tracing::debug!/info! for structured logging."
+                        .to_string(),
+                required_next_proof: "Verify no unintended debug output in production paths."
+                    .to_string(),
+            });
+        }
+
+        // STRANGE-009: #[cfg(test)] in a non-test file — law evasion by hiding code in test cfg
+        if o.construct == "cfg_test_in_production" {
+            diags.push(AntiLlmDiagnostic {
+                code: "ANTI-LLM-STRANGE-009".to_string(),
+                category: "strange-code".to_string(),
+                file_path: o.file_path.clone(),
+                line: o.line,
+                column: o.column,
+                message:
+                    "#[cfg(test)] in a non-test file — production logic must not be gated by test cfg"
+                        .to_string(),
+                forbidden_implication: "CfgTest => ProductionLogicEvasion".to_string(),
+                blocking: true,
+                required_correction:
+                    "Move test-only code to a dedicated test file or tests/ directory."
+                        .to_string(),
+                required_next_proof:
+                    "Verify that all #[cfg(test)] blocks are in test files only."
+                        .to_string(),
+            });
+        }
+    }
 
     diags
 }

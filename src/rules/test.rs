@@ -114,6 +114,35 @@ pub fn evaluate(
             });
         }
 
+        // TEST-006: snapshot-as-spec — assert_snapshot! / assert_yaml_snapshot!
+        // without a structural assert_eq!/assert_ne! on the same binding creates
+        // circular specs where LLM output is promoted to expected value.
+        if o.construct == "assert_snapshot_no_eq" && !config.test_is_structural_path(&o.file_path)
+        {
+            diags.push(AntiLlmDiagnostic {
+                code: "ANTI-LLM-TEST-006".to_string(),
+                category: "test".to_string(),
+                file_path: o.file_path.clone(),
+                line: o.line,
+                column: o.column,
+                message: "assert_snapshot!/assert_yaml_snapshot! without a structural \
+                    assert_eq!/assert_ne! creates a circular spec: the LLM's own output \
+                    becomes the expected value, making the test unfalsifiable."
+                    .to_string(),
+                forbidden_implication: "SnapshotAccepted => OutputCorrect".to_string(),
+                blocking: true,
+                required_correction:
+                    "Add assert_eq!(binding, ExpectedType::Variant) alongside the snapshot \
+                    call, or replace the snapshot entirely with a structural assertion that \
+                    would fail if the SUT returned a wrong-but-serializable value."
+                        .to_string(),
+                required_next_proof:
+                    "Injecting a wrong value into the SUT causes the structural assertion \
+                    to fail even though the snapshot would still match."
+                        .to_string(),
+            });
+        }
+
         if o.construct == "negative_control_reference" {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-TEST-003".to_string(),

@@ -100,6 +100,35 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
             });
         }
 
+        // OCEL-006: inline comments signalling intent to bypass the wasm4pm-compat boundary
+        let bypass_comment_triggers = [
+            "// direct wasm4pm",
+            "// bypass compat",
+            "// skip compat",
+            "// compat not needed",
+            "// wasm4pm directly",
+            "// direct use of wasm4pm",
+        ];
+        if bypass_comment_triggers.iter().any(|t| o.context.contains(t) || o.construct.contains(t)) {
+            diags.push(AntiLlmDiagnostic {
+                code: "ANTI-LLM-OCEL-006".to_string(),
+                category: "process_evidence".to_string(),
+                file_path: o.file_path.clone(),
+                line: o.line,
+                column: o.column,
+                message: "Inline comment signals intent to bypass the wasm4pm-compat boundary."
+                    .to_string(),
+                forbidden_implication: "CompatBoundary => DirectWasm4pmAccess".to_string(),
+                blocking: true,
+                required_correction:
+                    "Remove the bypass comment and use only wasm4pm-compat typed APIs."
+                        .to_string(),
+                required_next_proof:
+                    "Verify no direct wasm4pm imports exist where compat boundary is required."
+                        .to_string(),
+            });
+        }
+
         if o.construct == "ocel_full_wasm4pm" || o.context.contains("use wasm4pm::") {
             diags.push(AntiLlmDiagnostic {
                 code: "ANTI-LLM-OCEL-004".to_string(),
@@ -115,6 +144,45 @@ pub fn evaluate(obs: &[Observation]) -> Vec<AntiLlmDiagnostic> {
                     .to_string(),
                 required_next_proof: "Check dependencies to ensure full wasm4pm is excluded."
                     .to_string(),
+            });
+        }
+
+        // ADMIT-004: fabricated run_id in fitness report
+        if o.construct == "fabricated_run_id" {
+            diags.push(AntiLlmDiagnostic {
+                code: "ANTI-LLM-ADMIT-004".to_string(),
+                category: "admission".to_string(),
+                file_path: o.file_path.clone(),
+                line: o.line,
+                column: o.column,
+                message: format!("Fitness report contains fabricated run_id: {}", o.context),
+                forbidden_implication: "RunId => MeasuredConformanceRun".to_string(),
+                blocking: true,
+                required_correction:
+                    "Replace the placeholder run_id with the UUID from an actual conformance execution log.".to_string(),
+                required_next_proof:
+                    "run_id must resolve to an entry in the OCEL audit trail.".to_string(),
+            });
+        }
+
+        // ADMIT-005: high-fitness admission without measured_by in provenance
+        if o.construct == "admitted_no_measured_by" {
+            diags.push(AntiLlmDiagnostic {
+                code: "ANTI-LLM-ADMIT-005".to_string(),
+                category: "admission".to_string(),
+                file_path: o.file_path.clone(),
+                line: o.line,
+                column: o.column,
+                message: format!(
+                    "High-fitness admission lacks provenance.measured_by: {}",
+                    o.context
+                ),
+                forbidden_implication: "AdmittedFitness => AttributedMeasurement".to_string(),
+                blocking: true,
+                required_correction:
+                    "Add 'measured_by' to the provenance block identifying the tool or agent that ran the conformance check.".to_string(),
+                required_next_proof:
+                    "provenance.measured_by resolves to a registered conformance runner.".to_string(),
             });
         }
     }

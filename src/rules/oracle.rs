@@ -141,6 +141,34 @@ pub fn evaluate(
                 });
             }
 
+            // ORACLE-008: extended benchmark oracle float in breed source
+            "const_extended_oracle_float" if is_breed_src(&o.file_path) => {
+                diags.push(AntiLlmDiagnostic {
+                    code: "ANTI-LLM-ORACLE-008".to_string(),
+                    category: "oracle".to_string(),
+                    file_path: o.file_path.clone(),
+                    line: o.line,
+                    column: o.column,
+                    message: format!(
+                        "Float literal in breed source matches known benchmark oracle value \
+                         (Van der Aalst fitness, NLP F1, Bayesian CPT, or BNLEARN standard). \
+                         Context: {}",
+                        o.context.chars().take(80).collect::<String>()
+                    ),
+                    forbidden_implication: "BenchmarkFloat => ComputedOutput".to_string(),
+                    blocking: true,
+                    required_correction:
+                        "Remove float literal matching known benchmark oracle value \
+                         (e.g. 0.8, 0.75, 0.95, 0.833, 0.912, 0.876, 0.333, 0.714, etc.). \
+                         The algorithm must compute this value from inputs, not embed it."
+                            .to_string(),
+                    required_next_proof:
+                        "After removal, hidden oracle test with non-standard inputs still \
+                         converges to the correct value via computation."
+                            .to_string(),
+                });
+            }
+
             // ORACLE-007: ConformanceVector.unknown explicitly cleared
             // This collapses Unknown to empty without resolving the underlying
             // axis — a DECLARE-006 violation expressed at the code level.

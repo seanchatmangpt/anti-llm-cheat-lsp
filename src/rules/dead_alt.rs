@@ -1,7 +1,5 @@
 use crate::{config::AntiLlmConfig, diagnostics::AntiLlmDiagnostic, observations::Observation};
 
-/// Suffixes that mark a function as a "correct alternative" that should replace
-/// the primary but may have been left dead (never called).
 const ALT_SUFFIXES: &[&str] = &[
     "_v2", "_v3", "_alt", "_correct", "_real", "_proper", "_fixed", "_working", "_new", "_better",
 ];

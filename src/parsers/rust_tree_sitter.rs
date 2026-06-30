@@ -20,6 +20,28 @@ fn is_oracle_float(s: &str) -> bool {
     }
 }
 
+// ── Extended oracle float list (ORACLE-008) ───────────────────────────────────
+// Exact known benchmark values: Van der Aalst fitness, NLP F1, Bayesian CPT,
+// BNLEARN standard. Matched with epsilon 1e-6.
+const ORACLE_FLOAT_EXACT: &[f64] = &[
+    // Van der Aalst benchmark fitness
+    0.8, 0.75, 0.95, 0.833,
+    // Classic NLP F1 scores
+    0.912, 0.876, 0.823, 0.942,
+    // Standard Bayesian network CPT convergence
+    0.333, 0.667, 0.5, 0.25,
+    // BNLEARN standard
+    0.714, 0.857, 0.429,
+];
+
+pub fn is_extended_oracle_float(s: &str) -> bool {
+    if let Ok(v) = s.parse::<f64>() {
+        ORACLE_FLOAT_EXACT.iter().any(|&known| (v - known).abs() < 1e-6)
+    } else {
+        false
+    }
+}
+
 // ── Per-function metric collection ───────────────────────────────────────────
 
 #[allow(dead_code)] // name/loc retained for metric provenance; not all fields are read by every rule
@@ -35,6 +57,7 @@ struct FnMetrics {
     distinct_operators: std::collections::HashSet<String>,
     distinct_operands: std::collections::HashSet<String>,
     has_oracle_float: bool,
+    has_extended_oracle_float: bool,
     has_transmute: bool,
     has_env_var: bool,
     has_lazy_static_env: bool,
@@ -98,6 +121,9 @@ fn walk_fn_body(
             metrics.distinct_operands.insert(text.to_string());
             if kind == "float_literal" && is_oracle_float(text) {
                 metrics.has_oracle_float = true;
+            }
+            if kind == "float_literal" && is_extended_oracle_float(text) {
+                metrics.has_extended_oracle_float = true;
             }
         }
         "string_literal" | "raw_string_literal" => {
@@ -242,6 +268,7 @@ fn collect_fn_metrics(node: Node, source: &[u8], filepath: &str) -> Vec<Observat
         distinct_operators: std::collections::HashSet::new(),
         distinct_operands: std::collections::HashSet::new(),
         has_oracle_float: false,
+        has_extended_oracle_float: false,
         has_transmute: false,
         has_env_var: false,
         has_lazy_static_env: false,
@@ -364,6 +391,17 @@ fn collect_fn_metrics(node: Node, source: &[u8], filepath: &str) -> Vec<Observat
     // ORACLE-006: known paper float
     if metrics.has_oracle_float {
         obs.push(make("const_suspicious_float", format!("Function '{}' contains float literal in known oracle value range (paper answer injection)", name)));
+    }
+    // ORACLE-008: extended benchmark oracle float
+    if metrics.has_extended_oracle_float {
+        obs.push(make(
+            "const_extended_oracle_float",
+            format!(
+                "Function '{}' contains float literal matching known benchmark oracle value \
+                 (Van der Aalst/NLP/Bayesian/BNLEARN)",
+                name
+            ),
+        ));
     }
 
     // TRACE-001: constant string trace push
@@ -675,6 +713,29 @@ fn traverse_node(node: Node, source: &[u8], filepath: &str, obs: &mut Vec<Observ
                     context: text.chars().take(120).collect(),
                     message: "Static/const item contains float in known oracle value range"
                         .to_string(),
+                });
+                break;
+            }
+        }
+    }
+
+    // ORACLE-008: extended oracle float list at static/const or float_literal level
+    if (kind == "const_item" || kind == "static_item" || kind == "float_literal")
+        && (text.contains('.') || text.contains('f'))
+    {
+        for word in text.split_whitespace() {
+            let clean = word.trim_end_matches(|c: char| !c.is_ascii_digit() && c != '.');
+            if is_extended_oracle_float(clean) {
+                obs.push(Observation {
+                    file_path: filepath.to_string(),
+                    start_byte: range.start_byte,
+                    end_byte: range.end_byte,
+                    line: range.start_point.row + 1,
+                    column: range.start_point.column + 1,
+                    kind: "ast_node".to_string(),
+                    construct: "const_extended_oracle_float".to_string(),
+                    context: text.chars().take(120).collect(),
+                    message: "Item contains float matching known benchmark oracle value".to_string(),
                 });
                 break;
             }

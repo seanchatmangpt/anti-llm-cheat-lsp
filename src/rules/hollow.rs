@@ -61,7 +61,113 @@ const HOLLOW_PATTERNS: &[(&str, &str, &str, bool)] = &[
         "Empty closure boxed as implementation — hollow by law",
         true,
     ),
+    // HOLLOW-013/014: false-success returns — empty vec/Some masked as valid LSP response (blocking)
+    (
+        "Ok(vec![])",
+        "ANTI-LLM-HOLLOW-013",
+        "LSP handler returning Ok(vec![]) — empty success is a false-success stub",
+        true,
+    ),
+    (
+        "Ok(Some(vec![]))",
+        "ANTI-LLM-HOLLOW-014",
+        "LSP handler returning Ok(Some(vec![])) — empty Some is a false-success stub",
+        true,
+    ),
 ];
+
+/// TypeScript/JS hollow patterns → ANTI-LLM-HOLLOW-011
+const TS_HOLLOW_PATTERNS: &[(&str, &str, bool)] = &[
+    (
+        "throw new Error('TODO')",
+        "TypeScript TODO throw — hollow by law",
+        true,
+    ),
+    (
+        "throw new Error(\"TODO\")",
+        "TypeScript TODO throw — hollow by law",
+        true,
+    ),
+    (
+        "throw new Error('not implemented')",
+        "TypeScript not-implemented throw — hollow by law",
+        true,
+    ),
+    (
+        "throw new Error(\"not implemented\")",
+        "TypeScript not-implemented throw — hollow by law",
+        true,
+    ),
+    (
+        "throw new Error('FIXME')",
+        "TypeScript FIXME throw — hollow by law",
+        true,
+    ),
+    (
+        "throw new Error(\"FIXME\")",
+        "TypeScript FIXME throw — hollow by law",
+        true,
+    ),
+    (
+        "// TODO: implement",
+        "TypeScript TODO comment — hollow by law",
+        true,
+    ),
+    (
+        "/* PLACEHOLDER */",
+        "TypeScript PLACEHOLDER comment — hollow by law",
+        true,
+    ),
+];
+
+/// Tera template hollow patterns → ANTI-LLM-HOLLOW-012
+const TERA_HOLLOW_PATTERNS: &[(&str, &str, bool)] = &[
+    ("{# TODO #}", "Tera TODO comment — hollow by law", true),
+    ("{# PLACEHOLDER #}", "Tera PLACEHOLDER comment — hollow by law", true),
+    ("{# FIXME #}", "Tera FIXME comment — hollow by law", true),
+];
+
+fn make_hollow_obs(filepath: &str, line_num: usize, pattern: &str, line: &str) -> Observation {
+    Observation {
+        file_path: filepath.to_string(),
+        start_byte: 0,
+        end_byte: 0,
+        line: line_num,
+        column: 1,
+        kind: "hollow_smell".to_string(),
+        construct: pattern.to_string(),
+        context: line.to_string(),
+        message: format!("Hollow pattern '{}' detected on line {}", pattern, line_num),
+    }
+}
+
+/// Scan TypeScript/JS files for HOLLOW-011 patterns.
+pub fn scan_for_hollow_ts(filepath: &str, content: &str) -> Vec<Observation> {
+    let mut obs = Vec::new();
+    for (line_idx, line) in content.lines().enumerate() {
+        let line_num = line_idx + 1;
+        for (pattern, _msg, _blocking) in TS_HOLLOW_PATTERNS {
+            if line.contains(pattern) {
+                obs.push(make_hollow_obs(filepath, line_num, pattern, line));
+            }
+        }
+    }
+    obs
+}
+
+/// Scan Tera template files for HOLLOW-012 patterns.
+pub fn scan_for_hollow_tera(filepath: &str, content: &str) -> Vec<Observation> {
+    let mut obs = Vec::new();
+    for (line_idx, line) in content.lines().enumerate() {
+        let line_num = line_idx + 1;
+        for (pattern, _msg, _blocking) in TERA_HOLLOW_PATTERNS {
+            if line.contains(pattern) {
+                obs.push(make_hollow_obs(filepath, line_num, pattern, line));
+            }
+        }
+    }
+    obs
+}
 
 /// Scan Rust source line-by-line for hollow implementation patterns.
 ///
@@ -101,33 +207,85 @@ pub fn evaluate(
     let mut diags = Vec::new();
 
     for o in obs {
-        // Only scan Rust source files — these patterns are Rust-specific.
-        if !o.file_path.ends_with(".rs") {
+        if config.is_suppression_allowed(&o.file_path) {
             continue;
         }
 
-        for (pattern, code, msg, blocking) in HOLLOW_PATTERNS {
-            if (o.context.contains(pattern) || o.construct.contains(pattern))
-                && !config.is_suppression_allowed(&o.file_path)
-            {
-                diags.push(AntiLlmDiagnostic {
-                    code: code.to_string(),
-                    category: "hollow_implementation".to_string(),
-                    file_path: o.file_path.clone(),
-                    line: o.line,
-                    column: o.column,
-                    message: msg.to_string(),
-                    forbidden_implication: format!(
-                        "Placeholder({}) => HollowAdmission",
-                        pattern.trim()
-                    ),
-                    blocking: *blocking,
-                    required_correction:
-                        "Replace with real implementation or formal Refuses-by-law declaration"
+        let is_ts = o.file_path.ends_with(".ts")
+            || o.file_path.ends_with(".tsx")
+            || o.file_path.ends_with(".js");
+        let is_tera = o.file_path.ends_with(".tera");
+        let is_rs = o.file_path.ends_with(".rs");
+
+        if is_rs {
+            for (pattern, code, msg, blocking) in HOLLOW_PATTERNS {
+                if o.context.contains(pattern) || o.construct.contains(pattern) {
+                    diags.push(AntiLlmDiagnostic {
+                        code: code.to_string(),
+                        category: "hollow_implementation".to_string(),
+                        file_path: o.file_path.clone(),
+                        line: o.line,
+                        column: o.column,
+                        message: msg.to_string(),
+                        forbidden_implication: format!(
+                            "Placeholder({}) => HollowAdmission",
+                            pattern.trim()
+                        ),
+                        blocking: *blocking,
+                        required_correction:
+                            "Replace with real implementation or formal Refuses-by-law declaration"
+                                .to_string(),
+                        required_next_proof: "Provide transcript + receipt showing real behavior"
                             .to_string(),
-                    required_next_proof: "Provide transcript + receipt showing real behavior"
-                        .to_string(),
-                });
+                    });
+                }
+            }
+        } else if is_ts {
+            for (pattern, msg, blocking) in TS_HOLLOW_PATTERNS {
+                if o.context.contains(pattern) || o.construct.contains(pattern) {
+                    diags.push(AntiLlmDiagnostic {
+                        code: "ANTI-LLM-HOLLOW-011".to_string(),
+                        category: "hollow_implementation".to_string(),
+                        file_path: o.file_path.clone(),
+                        line: o.line,
+                        column: o.column,
+                        message: msg.to_string(),
+                        forbidden_implication: format!(
+                            "TsPlaceholder({}) => HollowAdmission",
+                            pattern.trim()
+                        ),
+                        blocking: *blocking,
+                        required_correction:
+                            "Replace with real implementation or formal Refuses-by-law declaration"
+                                .to_string(),
+                        required_next_proof: "Provide transcript + receipt showing real behavior"
+                            .to_string(),
+                    });
+                }
+            }
+        } else if is_tera {
+            for (pattern, msg, blocking) in TERA_HOLLOW_PATTERNS {
+                if o.context.contains(pattern) || o.construct.contains(pattern) {
+                    diags.push(AntiLlmDiagnostic {
+                        code: "ANTI-LLM-HOLLOW-012".to_string(),
+                        category: "hollow_implementation".to_string(),
+                        file_path: o.file_path.clone(),
+                        line: o.line,
+                        column: o.column,
+                        message: msg.to_string(),
+                        forbidden_implication: format!(
+                            "TeraPlaceholder({}) => HollowAdmission",
+                            pattern.trim()
+                        ),
+                        blocking: *blocking,
+                        required_correction:
+                            "Replace with real Tera template content or formal Refuses-by-law declaration"
+                                .to_string(),
+                        required_next_proof:
+                            "Provide transcript + receipt showing real template behavior"
+                                .to_string(),
+                    });
+                }
             }
         }
     }

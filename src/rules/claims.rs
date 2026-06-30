@@ -2,16 +2,16 @@ use std::sync::OnceLock;
 
 /// CLAIM-004: Victory language and overclaim detection.
 ///
-/// All victory vocabulary lives here as the single source of truth.
-/// `engine.rs` feeds this rule via the raw-smell automaton (which is seeded
-/// from `VICTORY_TERMS` below) and the markdown claims parser. The rule then
+/// All victory vocabulary lives here as the single source of truth for this server.
+/// `engine.rs` feeds this rule via the raw-smell automaton (seeded from
+/// `VICTORY_TERMS` below) and the markdown claims parser. The rule then
 /// applies domain-term exemptions from per-repo config before emitting
 /// diagnostics.
 use regex::Regex;
 
 use crate::{diagnostics::AntiLlmDiagnostic, observations::Observation};
 
-/// Canonical victory / overclaim terms — the single source of truth.
+/// Canonical victory / overclaim terms — single source of truth for anti-llm-cheat-lsp.
 ///
 /// All entries are lowercased; matching is case-insensitive. Add new terms
 /// here; they are automatically picked up by the raw-smell automaton in
@@ -56,6 +56,16 @@ pub const VICTORY_TERMS: &[&str] = &[
     "no issues found",
     "all checks pass",
     "all requirements met",
+    // GAP-004: additional paraphrases common in LLM output
+    "tests are passing",
+    "everything works",
+    "fully working",
+    "complete and working",
+    "ready to ship",
+    "ready for review",
+    "all good",
+    "looks good",
+    "should be good",
 ];
 
 /// Context patterns (checked against the surrounding line, not just the
