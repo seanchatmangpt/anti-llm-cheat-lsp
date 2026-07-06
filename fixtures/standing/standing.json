@@ -1,0 +1,41 @@
+{
+  "release_id": "v26.7.4-fixture",
+  "generated_at_utc": "2026-07-06T00:00:00Z",
+  "generator": "hand-authored-fixture",
+  "standing_version": "1",
+  "artifacts": [
+    {
+      "id": "standing-demo-crate",
+      "kind": "rust_crate",
+      "path": "src/rules/standing_demo.rs",
+      "standing": ["DISCOVERED", "BUILDS", "TESTED", "PUBLISH_READY"],
+      "scope": "internal dry run only",
+      "ladder_level": 3,
+      "evidence": [],
+      "external_operator_side_effects": []
+    },
+    {
+      "id": "standing-fully-backed-crate",
+      "kind": "rust_crate",
+      "path": "src/parsers/standing_index.rs",
+      "standing": [
+        "DISCOVERED",
+        "BUILDS",
+        "TESTED",
+        "RECEIPTED",
+        "RECEIPT_VERIFIED",
+        "PRODUCTION_READY"
+      ],
+      "scope": "local deterministic validation",
+      "ladder_level": 8,
+      "evidence": [
+        {
+          "kind": "receipt",
+          "digest": "blake3:deadbeefcafef00d",
+          "path": "receipts/standing_fully_backed_crate.receipt.json"
+        }
+      ],
+      "external_operator_side_effects": []
+    }
+  ]
+}

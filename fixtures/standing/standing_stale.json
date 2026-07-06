@@ -1,0 +1,18 @@
+{
+  "release_id": "v26.7.4-fixture-stale",
+  "generated_at_utc": "2020-01-01T00:00:00Z",
+  "generator": "hand-authored-fixture",
+  "standing_version": "1",
+  "artifacts": [
+    {
+      "id": "standing-stale-crate",
+      "kind": "rust_crate",
+      "path": "src/rules/standing_stale_demo.rs",
+      "standing": ["DISCOVERED"],
+      "scope": null,
+      "ladder_level": 0,
+      "evidence": [],
+      "external_operator_side_effects": []
+    }
+  ]
+}

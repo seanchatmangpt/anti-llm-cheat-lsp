@@ -9,12 +9,13 @@ use crate::{
     observations::Observation,
     parsers::{
         cargo_lock, cargo_toml, contract, fitness_report, ggen_toml, json_rpc, markdown_claims,
-        receipt_json, refgraph, rust_tree_sitter, tera_template, typescript, typescript_ast,
+        receipt_json, refgraph, rust_tree_sitter, standing_index, tera_template, typescript,
+        typescript_ast,
     },
     rules::{
         authority, claims, complexity, contract as contract_rules, dead_alt, declare_laws,
         determinism, ggen, hedge, hollow, lsp318, mutation, ocel_rules, oracle, placeholder,
-        receipts, refgraph as refgraph_rules, routes, rust_smells, surface, test, trace,
+        receipts, refgraph as refgraph_rules, routes, rust_smells, standing, surface, test, trace,
         typescript as ts_rules, typescript_ast as ts_ast_rules, version,
     },
 };
@@ -637,6 +638,15 @@ pub fn evaluate_diagnostics_with_config(
     diags.extend(placeholder::evaluate(obs, config));
     diags.extend(hedge::evaluate(obs, config));
     diags.extend(dead_alt::evaluate(obs, config));
+
+    // Standing-index enforcement: loaded once per scan (mirrors ocel_rules
+    // consuming pre-computed observations) and gated entirely by
+    // `config.standing` — see `rules::standing` module docs.
+    let standing_idx = config
+        .standing
+        .as_ref()
+        .and_then(|s| standing_index::load_standing_index(Path::new(&s.index_path)));
+    diags.extend(standing::evaluate(obs, config, standing_idx.as_ref()));
 
     let has_non_victory_errors = diags.iter().any(|d| d.code != "ANTI-LLM-CLAIM-004");
     diags.extend(claims::evaluate(obs, &config.claim.domain_terms, has_non_victory_errors));

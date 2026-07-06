@@ -19,6 +19,7 @@ pub mod receipts;
 pub mod refgraph;
 pub mod routes;
 pub mod rust_smells;
+pub mod standing;
 pub mod surface;
 pub mod test;
 pub mod trace;

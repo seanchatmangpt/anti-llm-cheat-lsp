@@ -49,6 +49,14 @@ pub struct AntiLlmConfig {
     pub forbidden_string_patterns: Vec<ForbiddenPattern>,
     #[serde(default)]
     pub allowed_suppression_paths: Vec<String>,
+    /// Standing-index enforcement (`ANTI-LLM-STANDING-000..006`). `None` when
+    /// the repo has not opted in (no `[standing]` table in `anti.toml`) —
+    /// in that state the index is never loaded and `ANTI-LLM-STANDING-000`
+    /// never fires, matching the default-off convention used by every other
+    /// optional section in this file (`domain_terms`, `non_blocking_path_prefixes`,
+    /// `structural_check_paths` all default to an empty/inert state).
+    #[serde(default)]
+    pub standing: Option<StandingConfig>,
 }
 
 /// Configuration for CLAIM-004 victory language detection.
@@ -81,6 +89,38 @@ pub struct TestConfig {
     /// list paths here only when residual false positives remain.
     #[serde(default)]
     pub structural_check_paths: Vec<String>,
+}
+
+/// Configuration for `ANTI-LLM-STANDING-000..006` (claim-vs-standing-index
+/// enforcement). Only present in `AntiLlmConfig` when the repo's `anti.toml`
+/// has a `[standing]` table; absence means the check is off.
+#[derive(Debug, Clone, Deserialize)]
+pub struct StandingConfig {
+    /// Path (relative to the scan root) to the `praxis-standing.v1` JSON
+    /// document produced by the standing compiler (e.g. cargo-cicd).
+    #[serde(default = "default_standing_index_path")]
+    pub index_path: String,
+    /// Age, in seconds, after which a loaded index is considered stale
+    /// (`ANTI-LLM-STANDING-006`).
+    #[serde(default = "default_max_index_age_secs")]
+    pub max_index_age_secs: u64,
+}
+
+impl Default for StandingConfig {
+    fn default() -> Self {
+        Self {
+            index_path: default_standing_index_path(),
+            max_index_age_secs: default_max_index_age_secs(),
+        }
+    }
+}
+
+fn default_standing_index_path() -> String {
+    "target/praxis-standing/standing.json".to_string()
+}
+
+fn default_max_index_age_secs() -> u64 {
+    86_400
 }
 
 impl AntiLlmConfig {
@@ -124,5 +164,33 @@ impl AntiLlmConfig {
     /// Returns true if `file_path` matches any configured allowed suppression paths.
     pub fn is_suppression_allowed(&self, file_path: &str) -> bool {
         self.allowed_suppression_paths.iter().any(|path| file_path.contains(path))
+    }
+}
+
+#[cfg(test)]
+mod standing_config_tests {
+    use super::*;
+
+    #[test]
+    fn absent_standing_section_deserializes_to_none() {
+        let cfg: AntiLlmConfig = star_toml::from_str("").unwrap();
+        assert!(cfg.standing.is_none());
+    }
+
+    #[test]
+    fn empty_standing_table_uses_defaults() {
+        let cfg: AntiLlmConfig = star_toml::from_str("[standing]\n").unwrap();
+        let s = cfg.standing.expect("[standing] table should deserialize to Some");
+        assert_eq!(s.index_path, "target/praxis-standing/standing.json");
+        assert_eq!(s.max_index_age_secs, 86_400);
+    }
+
+    #[test]
+    fn standing_table_with_explicit_index_path() {
+        let cfg: AntiLlmConfig =
+            star_toml::from_str("[standing]\nindex_path = \"fixtures/standing/standing.json\"\n")
+                .unwrap();
+        let s = cfg.standing.expect("[standing] table should deserialize to Some");
+        assert_eq!(s.index_path, "fixtures/standing/standing.json");
     }
 }

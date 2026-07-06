@@ -1,6 +1,7 @@
 use std::{fs, path::PathBuf};
 
 use anti_llm_cheat_lsp::{
+    config::{AntiLlmConfig, StandingConfig},
     engine,
     rules::lsp318::{get_feature_matrix, Lsp318Feature},
 };
@@ -979,4 +980,91 @@ fn test_dead_alt_negative_control_fires() {
     let obs = engine::scan_file(&path.to_string_lossy());
     let diags = engine::evaluate_diagnostics_with_config(&obs, &Default::default());
     check_diag_code(&diags, "ANTI-LLM-DEAD-ALT-001");
+}
+
+// -------------------------------------------------------------
+// Standing-index enforcement — ANTI-LLM-STANDING-000..006
+// -------------------------------------------------------------
+
+/// Config pointing `[standing]` at the shared hand-authored fixture index,
+/// with `max_index_age_secs` widened so these claim-vs-index tests aren't
+/// incidentally tripped by ANTI-LLM-STANDING-006 (staleness is exercised by
+/// its own dedicated test/fixture below).
+fn standing_config_for(index_suffix: &str, max_index_age_secs: u64) -> AntiLlmConfig {
+    let index_path = find_file_path(index_suffix).to_string_lossy().to_string();
+    AntiLlmConfig {
+        standing: Some(StandingConfig { index_path, max_index_age_secs }),
+        ..Default::default()
+    }
+}
+
+#[test]
+fn detects_standing_unscoped_claim() {
+    let path = find_file_path("fixtures/negative_controls/standing_unscoped_claim.md");
+    let obs = engine::scan_file(&path.to_string_lossy());
+    // 001 is a purely textual scope check — no [standing] config required.
+    let diags = engine::evaluate_diagnostics_with_config(&obs, &Default::default());
+    check_diag_code(&diags, "ANTI-LLM-STANDING-001");
+}
+
+#[test]
+fn detects_standing_claim_outruns_index() {
+    let path = find_file_path("fixtures/negative_controls/standing_claim_outruns_index.md");
+    let obs = engine::scan_file(&path.to_string_lossy());
+    let config = standing_config_for("fixtures/standing/standing.json", 3_155_760_000);
+    let diags = engine::evaluate_diagnostics_with_config(&obs, &config);
+    check_diag_code(&diags, "ANTI-LLM-STANDING-002");
+}
+
+#[test]
+fn detects_standing_dry_run_as_publish() {
+    let path = find_file_path("fixtures/negative_controls/standing_dry_run_as_publish.md");
+    let obs = engine::scan_file(&path.to_string_lossy());
+    let config = standing_config_for("fixtures/standing/standing.json", 3_155_760_000);
+    let diags = engine::evaluate_diagnostics_with_config(&obs, &config);
+    check_diag_code(&diags, "ANTI-LLM-STANDING-003");
+}
+
+#[test]
+fn detects_standing_alive_without_receipt() {
+    let path = find_file_path("fixtures/negative_controls/standing_alive_without_receipt.md");
+    let obs = engine::scan_file(&path.to_string_lossy());
+    let config = standing_config_for("fixtures/standing/standing.json", 3_155_760_000);
+    let diags = engine::evaluate_diagnostics_with_config(&obs, &config);
+    check_diag_code(&diags, "ANTI-LLM-STANDING-004");
+}
+
+#[test]
+fn detects_standing_benchmark_without_artifact() {
+    let path = find_file_path("fixtures/negative_controls/standing_benchmark_without_artifact.md");
+    let obs = engine::scan_file(&path.to_string_lossy());
+    let config = standing_config_for("fixtures/standing/standing.json", 3_155_760_000);
+    let diags = engine::evaluate_diagnostics_with_config(&obs, &config);
+    check_diag_code(&diags, "ANTI-LLM-STANDING-005");
+}
+
+#[test]
+fn detects_standing_stale_index() {
+    let path = find_file_path("fixtures/negative_controls/standing_stale_index.md");
+    let obs = engine::scan_file(&path.to_string_lossy());
+    // Default max_index_age_secs (86400s) against a 2020-dated fixture index.
+    let config = standing_config_for("fixtures/standing/standing_stale.json", 86_400);
+    let diags = engine::evaluate_diagnostics_with_config(&obs, &config);
+    check_diag_code(&diags, "ANTI-LLM-STANDING-006");
+}
+
+#[test]
+fn standing_positive_control_stays_clean() {
+    let path = find_file_path("fixtures/positive_controls/standing_properly_backed.md");
+    let obs = engine::scan_file(&path.to_string_lossy());
+    let config = standing_config_for("fixtures/standing/standing.json", 3_155_760_000);
+    let diags = engine::evaluate_diagnostics_with_config(&obs, &config);
+    for d in &diags {
+        assert!(
+            !d.code.starts_with("ANTI-LLM-STANDING-"),
+            "properly-backed claim must not trigger any standing diagnostic, got {}: {}",
+            d.code,
+            d.message
+        );
+    }
 }

@@ -8,6 +8,7 @@ pub mod markdown_claims;
 pub mod receipt_json;
 pub mod refgraph;
 pub mod rust_tree_sitter;
+pub mod standing_index;
 pub mod tera_template;
 pub mod typescript;
 pub mod typescript_ast;
