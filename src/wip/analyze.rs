@@ -35,6 +35,8 @@ pub fn analyze(snapshot: &GitHubSnapshot, source_findings: Vec<SourceFinding>) -
     let dependency_index = dependency_dependents(snapshot);
 
     for repo in &snapshot.repositories {
+        let all_pr_numbers: BTreeSet<u64> =
+            repo.pull_requests.iter().map(|pr| pr.number).collect();
         let open_pr_numbers: BTreeSet<u64> = repo
             .pull_requests
             .iter()
@@ -119,7 +121,11 @@ pub fn analyze(snapshot: &GitHubSnapshot, source_findings: Vec<SourceFinding>) -
             wip.push(WipObject {
                 id: id.clone(),
                 repository: repo.full_name.clone(),
-                kind: if stale { WipKind::OrphanBranch } else { WipKind::Code },
+                kind: if stale {
+                    WipKind::OrphanBranch
+                } else {
+                    WipKind::Code
+                },
                 standing: Standing::PartialAlive,
                 title: format!("unmerged branch {}", branch.name),
                 origin: "github.branch".to_string(),
@@ -179,6 +185,13 @@ pub fn analyze(snapshot: &GitHubSnapshot, source_findings: Vec<SourceFinding>) -
                             .to_string(),
                     ],
                 });
+            } else if issue
+                .linked_pr
+                .is_some_and(|number| all_pr_numbers.contains(&number))
+            {
+                // A linked PR already represents this logical flow unit's exit.
+                // Do not inflate lambda by counting its issue projection again.
+                continue;
             } else if let (Some(created), Some(done)) =
                 (issue.created_at.clone(), issue.closed_at.clone())
             {
@@ -305,7 +318,7 @@ pub fn analyze(snapshot: &GitHubSnapshot, source_findings: Vec<SourceFinding>) -
         notes: vec![
             "GitHub activity is admitted only from the supplied snapshot; this module performs no network access."
                 .to_string(),
-            "Closure frontier entries are CONSTRUCTed intents, not DO authority; external bounded actuation and receipts remain required."
+            "Closure frontier entries are CONSTRUCT intents, not DO authority; external bounded actuation and receipts remain required."
                 .to_string(),
             "UNKNOWN is never promoted to ALIVE from absence of findings.".to_string(),
         ],
@@ -455,9 +468,7 @@ fn little_law_metrics(
     let mean_cycle = (!completion_cycles_days.is_empty()).then(|| {
         completion_cycles_days.iter().sum::<f64>() / completion_cycles_days.len() as f64
     });
-    let projected = throughput.and_then(|lambda| {
-        (lambda > 0.0).then(|| wip_l as f64 / lambda)
-    });
+    let projected = throughput.and_then(|lambda| (lambda > 0.0).then(|| wip_l as f64 / lambda));
     LittleLawMetrics {
         wip_l,
         throughput_lambda_per_day: throughput,
@@ -483,13 +494,19 @@ fn admit_completion(
 }
 
 fn aggregate_status(wip: &[WipObject]) -> Standing {
-    if wip.iter().any(|item| item.standing == Standing::BuildBroken) {
+    if wip
+        .iter()
+        .any(|item| item.standing == Standing::BuildBroken)
+    {
         Standing::BuildBroken
     } else if wip.iter().any(|item| item.standing == Standing::Blocked) {
         Standing::Blocked
     } else if wip.iter().any(|item| item.standing == Standing::Refused) {
         Standing::Refused
-    } else if wip.iter().any(|item| item.standing == Standing::Unsupported) {
+    } else if wip
+        .iter()
+        .any(|item| item.standing == Standing::Unsupported)
+    {
         Standing::Unsupported
     } else if wip.is_empty() {
         Standing::Unknown
