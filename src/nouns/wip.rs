@@ -117,3 +117,25 @@ pub fn source(dir: String, json: bool) -> Result<()> {
     }
     Ok(())
 }
+
+/// List the Tree-sitter grammars admitted by the source WIP scanner.
+#[verb]
+pub fn languages(json: bool) -> Result<()> {
+    let languages = wip::supported_tree_sitter_languages();
+    if json {
+        match serde_json::to_string_pretty(languages) {
+            Ok(rendered) => println!("{rendered}"),
+            Err(error) => {
+                eprintln!("WIP language serialization failed: {error}");
+                std::process::exit(3);
+            }
+        }
+    } else {
+        println!("--- Tree-sitter WIP Languages ---");
+        println!("Languages: {}", languages.len());
+        for language in languages {
+            println!("  - {language}");
+        }
+    }
+    Ok(())
+}
