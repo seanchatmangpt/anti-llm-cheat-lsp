@@ -267,10 +267,7 @@ mod tests {
 
     #[test]
     fn errc_mapping_preserves_create_as_closure_only() {
-        assert_eq!(
-            errc_lane(WipKind::DuplicateImplementation),
-            ErrcLane::Eliminate
-        );
+        assert_eq!(errc_lane(WipKind::DuplicateImplementation), ErrcLane::Eliminate);
         assert_eq!(errc_lane(WipKind::Code), ErrcLane::Reduce);
         assert_eq!(errc_lane(WipKind::Dependency), ErrcLane::Raise);
         assert_eq!(errc_lane(WipKind::Receipt), ErrcLane::Create);
