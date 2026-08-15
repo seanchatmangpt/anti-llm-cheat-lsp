@@ -1,7 +1,7 @@
 use anti_llm_cheat_lsp::wip::{
-    analyze, closure_priority, scan_source_wip, BranchSnapshot, ClosureActionKind, GitHubSnapshot,
-    IssueSnapshot, PullRequestSnapshot, RepositorySnapshot, Standing, WorkflowRunSnapshot,
-    WipKind, WIP_SNAPSHOT_SCHEMA,
+    analyze, closure_priority, load_snapshot, scan_source_wip, BranchSnapshot, ClosureActionKind,
+    GitHubSnapshot, IssueSnapshot, PullRequestSnapshot, RepositorySnapshot, Standing,
+    WorkflowRunSnapshot, WipKind, WIP_SNAPSHOT_SCHEMA,
 };
 use chrono::{DateTime, TimeZone, Utc};
 use std::fs;
@@ -198,4 +198,20 @@ fn utf8_source_evidence_is_scanned_without_byte_slicing() {
     let findings = scan_source_wip(dir.path());
     assert_eq!(findings.len(), 1);
     assert!(findings[0].message.ends_with('…'));
+}
+
+#[test]
+fn missing_snapshot_schema_is_refused() {
+    let dir = match tempfile::tempdir() {
+        Ok(dir) => dir,
+        Err(error) => panic!("temporary directory failed: {error}"),
+    };
+    let path = dir.path().join("snapshot.json");
+    assert!(fs::write(
+        &path,
+        r#"{"observed_at":"2026-08-15T00:00:00Z","repositories":[]}"#,
+    )
+    .is_ok());
+
+    assert!(load_snapshot(&path).is_err());
 }
