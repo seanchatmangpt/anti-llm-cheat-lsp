@@ -134,8 +134,7 @@ pub fn wip_impact(item: &WipObject) -> f64 {
         Standing::Alive => 0.0,
     };
     let age_weight = 0.05 * item.age_days.clamp(0.0, 90.0);
-    1.0
-        + standing_weight
+    1.0 + standing_weight
         + 3.0 * item.dependents.len() as f64
         + 1.5 * item.blockers.len() as f64
         + age_weight
@@ -157,10 +156,9 @@ pub const fn errc_lane(kind: WipKind) -> ErrcLane {
         | WipKind::UnsatisfiedRequirement
         | WipKind::SourceMarker => ErrcLane::Reduce,
 
-        WipKind::Ci
-        | WipKind::Dependency
-        | WipKind::CrossRepoBlocker
-        | WipKind::Replay => ErrcLane::Raise,
+        WipKind::Ci | WipKind::Dependency | WipKind::CrossRepoBlocker | WipKind::Replay => {
+            ErrcLane::Raise
+        }
 
         WipKind::Integration | WipKind::Evidence | WipKind::Receipt | WipKind::Release => {
             ErrcLane::Create
@@ -269,7 +267,10 @@ mod tests {
 
     #[test]
     fn errc_mapping_preserves_create_as_closure_only() {
-        assert_eq!(errc_lane(WipKind::DuplicateImplementation), ErrcLane::Eliminate);
+        assert_eq!(
+            errc_lane(WipKind::DuplicateImplementation),
+            ErrcLane::Eliminate
+        );
         assert_eq!(errc_lane(WipKind::Code), ErrcLane::Reduce);
         assert_eq!(errc_lane(WipKind::Dependency), ErrcLane::Raise);
         assert_eq!(errc_lane(WipKind::Receipt), ErrcLane::Create);
