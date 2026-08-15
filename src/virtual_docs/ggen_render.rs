@@ -9,14 +9,30 @@
 //!       same symbol would carry (see [`moniker_object_id`]); and
 //!   (b) a RECEIPT whose digest is computed over the actual rendered bytes.
 //!
+//! `ggen://wip-closure` is a reserved dynamic observation surface. It renders
+//! the read-only Little's Law WIP report instead of an ontology artifact and
+//! never grants execution authority to its closure intents.
+//!
 //! Live invocation of the real `ggen` binary at runtime is OUT OF SCOPE here:
 //! the rendering below is a deterministic representative artifact produced from
 //! an in-repo embedded ontology + template. The bounded status for live-ggen
 //! invocation is therefore `OPEN` (see [`LIVE_GGEN_STATUS`]). The receipt is
 //! NOT faked — its digest is taken over the bytes this module actually emits.
 
+use std::path::Path;
+
+use chrono::Utc;
+
+use crate::wip::{self, GitHubSnapshot, WIP_SNAPSHOT_SCHEMA};
+
 /// Virtual-document scheme handled by this surface.
 pub const SCHEME: &str = "ggen";
+
+/// Reserved URI for the live, read-only WIP closure report.
+pub const WIP_CLOSURE_URI: &str = "ggen://wip-closure";
+
+/// Conventional workspace-relative admitted GitHub snapshot path.
+pub const WIP_SNAPSHOT_PATH: &str = ".chatmangpt/wip-snapshot.json";
 
 /// Bounded status of LIVE `ggen` binary invocation at runtime. This module
 /// renders a deterministic representative artifact from an embedded ontology;
@@ -128,6 +144,10 @@ fn project_ontology(ontology: &str) -> String {
 /// Render the virtual document as the markdown surface served over LSP. Carries
 /// the moniker identity and the receipt inline so the client sees both facts.
 pub fn generate_ggen_markdown(ontology_uri: &str) -> String {
+    if ontology_uri == WIP_CLOSURE_URI {
+        return generate_wip_closure_markdown();
+    }
+
     let doc = render(ontology_uri);
     let r = &doc.receipt;
     let mut out = String::new();
@@ -146,6 +166,50 @@ pub fn generate_ggen_markdown(ontology_uri: &str) -> String {
     out.push_str("```\n");
     out.push_str(&doc.text);
     out.push_str("```\n");
+    out
+}
+
+/// Render the WIP report through the already-wired `ggen://` LSP transport.
+///
+/// The current process working directory is the bounded source root because the
+/// existing text-document-content router does not pass `workspace_root` into
+/// this module. If `.chatmangpt/wip-snapshot.json` exists it must pass the WIP
+/// schema gate; otherwise the view is explicitly source-only. No closure intent
+/// is executed here.
+fn generate_wip_closure_markdown() -> String {
+    let snapshot_path = Path::new(WIP_SNAPSHOT_PATH);
+    let (snapshot, observation_boundary) = if snapshot_path.is_file() {
+        match wip::load_snapshot(snapshot_path) {
+            Ok(snapshot) => (
+                snapshot,
+                format!("source + admitted GitHub snapshot `{WIP_SNAPSHOT_PATH}`"),
+            ),
+            Err(error) => {
+                return format!(
+                    "# Little's Law WIP Closure Report\n\nStatus: **REFUSED**\n\nSnapshot `{WIP_SNAPSHOT_PATH}` was rejected: {error}\n\nNo closure intent was constructed from the rejected snapshot.\n"
+                );
+            }
+        }
+    } else {
+        (
+            GitHubSnapshot {
+                schema_version: WIP_SNAPSHOT_SCHEMA.to_string(),
+                observed_at: Utc::now(),
+                window_days: 30,
+                workspace_repository: None,
+                repositories: Vec::new(),
+            },
+            "source-only; no admitted GitHub snapshot present".to_string(),
+        )
+    };
+
+    let report = wip::analyze_path(&snapshot, ".");
+    let mut out = report.to_markdown();
+    out.push_str("\n## LSP observation boundary\n\n");
+    out.push_str(&format!("- URI: `{WIP_CLOSURE_URI}`\n"));
+    out.push_str(&format!("- Observation: {observation_boundary}\n"));
+    out.push_str("- Source root: current process working directory (`.`)\n");
+    out.push_str("- Authority: `INTENT_ONLY`; this virtual document never actuates a closure\n");
     out
 }
 
@@ -212,5 +276,12 @@ mod witness {
         let a = render("ggen://example.org/onto/widgets");
         let b = render("ggen://example.org/onto/widgets");
         assert_eq!(a, b);
+    }
+
+    #[test]
+    fn wip_virtual_doc_never_claims_actuation_authority() {
+        let markdown = generate_ggen_markdown(WIP_CLOSURE_URI);
+        assert!(markdown.contains("INTENT_ONLY"));
+        assert!(!markdown.contains("Authority: `DO`"));
     }
 }
