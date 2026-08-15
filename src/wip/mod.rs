@@ -12,8 +12,10 @@ mod frontier;
 mod model;
 mod render;
 mod source;
+mod tree_sitter_scan;
 
 pub use analyze::{analyze, analyze_path, load_snapshot};
 pub use frontier::closure_priority;
 pub use model::*;
 pub use source::scan_source_wip;
+pub use tree_sitter_scan::{is_tree_sitter_path, supported_tree_sitter_languages};

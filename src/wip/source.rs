@@ -6,24 +6,57 @@ use std::{
 use ignore::WalkBuilder;
 use regex::Regex;
 
-use super::model::{SourceFinding, Standing, WipKind};
+use super::{
+    model::{SourceFinding, Standing, WipKind},
+    tree_sitter_scan::scan_tree_sitter_file,
+};
 
 pub fn scan_source_wip(root: impl AsRef<Path>) -> Vec<SourceFinding> {
     let root = root.as_ref();
     let mut findings = Vec::new();
     let marker_rules: [(&str, WipKind, Standing, &str); 7] = [
-        ("TODO", WipKind::SourceMarker, Standing::PartialAlive, "TODO marker"),
-        ("FIXME", WipKind::SourceMarker, Standing::PartialAlive, "FIXME marker"),
-        ("todo!(", WipKind::Code, Standing::PartialAlive, "Rust todo! macro"),
-        ("unimplemented!(", WipKind::Code, Standing::PartialAlive, "Rust unimplemented! macro"),
-        ("file:///", WipKind::Replay, Standing::PartialAlive, "machine-local replay pointer"),
+        (
+            "TODO",
+            WipKind::SourceMarker,
+            Standing::PartialAlive,
+            "TODO marker",
+        ),
+        (
+            "FIXME",
+            WipKind::SourceMarker,
+            Standing::PartialAlive,
+            "FIXME marker",
+        ),
+        (
+            "todo!(",
+            WipKind::Code,
+            Standing::PartialAlive,
+            "Rust todo! macro",
+        ),
+        (
+            "unimplemented!(",
+            WipKind::Code,
+            Standing::PartialAlive,
+            "Rust unimplemented! macro",
+        ),
+        (
+            "file:///",
+            WipKind::Replay,
+            Standing::PartialAlive,
+            "machine-local replay pointer",
+        ),
         (
             "stub implementation",
             WipKind::Code,
             Standing::PartialAlive,
             "stub implementation marker",
         ),
-        ("not implemented", WipKind::Code, Standing::PartialAlive, "not-implemented marker"),
+        (
+            "not implemented",
+            WipKind::Code,
+            Standing::PartialAlive,
+            "not-implemented marker",
+        ),
     ];
 
     let walker = WalkBuilder::new(root)
@@ -38,7 +71,11 @@ pub fn scan_source_wip(root: impl AsRef<Path>) -> Vec<SourceFinding> {
         if should_skip(path) || !path.is_file() {
             continue;
         }
-        let relative = path.strip_prefix(root).unwrap_or(path).to_string_lossy().replace('\\', "/");
+        let relative = path
+            .strip_prefix(root)
+            .unwrap_or(path)
+            .to_string_lossy()
+            .replace('\\', "/");
         if is_scanner_self_surface(&relative) {
             continue;
         }
@@ -46,6 +83,15 @@ pub fn scan_source_wip(root: impl AsRef<Path>) -> Vec<SourceFinding> {
             Ok(content) => content,
             Err(_) => continue,
         };
+
+        // Supported programming languages are AST-first. This is an authority
+        // fence against treating marker-like strings or generated syntax as WIP.
+        // The line scanner below is reserved for prose/config/unsupported files.
+        if let Some(ast_findings) = scan_tree_sitter_file(path, &relative, &content) {
+            findings.extend(ast_findings);
+            continue;
+        }
+
         for (index, line) in content.lines().enumerate() {
             if line.contains("WipKind::") && line.contains("Standing::") {
                 continue;
@@ -79,7 +125,10 @@ pub fn scan_source_wip(root: impl AsRef<Path>) -> Vec<SourceFinding> {
 
     findings.extend(scan_missing_path_dependencies(root));
     findings.sort_by(|a, b| {
-        a.path.cmp(&b.path).then(a.line.cmp(&b.line)).then(a.marker.cmp(&b.marker))
+        a.path
+            .cmp(&b.path)
+            .then(a.line.cmp(&b.line))
+            .then(a.marker.cmp(&b.marker))
     });
     findings.dedup_by(|a, b| a.id == b.id);
     findings
@@ -98,9 +147,19 @@ fn classify_declared_status(line: &str) -> Option<(&'static str, WipKind, Standi
     }
 
     if normalized.contains("BUILD_BROKEN") {
-        Some(("BUILD_BROKEN", WipKind::Ci, Standing::BuildBroken, "declared broken build"))
+        Some((
+            "BUILD_BROKEN",
+            WipKind::Ci,
+            Standing::BuildBroken,
+            "declared broken build",
+        ))
     } else if normalized.contains("BLOCKED") {
-        Some(("BLOCKED", WipKind::CrossRepoBlocker, Standing::Blocked, "declared blocker"))
+        Some((
+            "BLOCKED",
+            WipKind::CrossRepoBlocker,
+            Standing::Blocked,
+            "declared blocker",
+        ))
     } else if normalized.contains("PARTIAL_ALIVE") {
         Some((
             "PARTIAL_ALIVE",
@@ -178,7 +237,13 @@ fn compact_line(line: &str) -> String {
 }
 
 fn is_scanner_self_surface(relative: &str) -> bool {
-    matches!(relative, "src/wip/source.rs" | "tests/wip_closure.rs" | "docs/WIP_CLOSURE_ENGINE.md")
+    matches!(
+        relative,
+        "src/wip/source.rs"
+            | "src/wip/tree_sitter_scan.rs"
+            | "tests/wip_closure.rs"
+            | "docs/WIP_CLOSURE_ENGINE.md"
+    )
 }
 
 fn should_skip(path: &Path) -> bool {
