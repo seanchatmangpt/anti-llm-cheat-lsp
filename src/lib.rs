@@ -11,5 +11,6 @@ pub mod rules;
 pub mod semantic;
 pub mod server;
 pub mod virtual_docs;
+pub mod wip;
 
 pub use innovations::run_all_checks;
