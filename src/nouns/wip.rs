@@ -1,4 +1,6 @@
-use anti_llm_cheat_lsp::wip::{self, GitHubSnapshot, WIP_SNAPSHOT_SCHEMA};
+use anti_llm_cheat_lsp::wip::{
+    self, GitHubSnapshot, DEFAULT_PARETO_TARGET_SHARE, WIP_SNAPSHOT_SCHEMA,
+};
 use chrono::Utc;
 use clap_noun_verb::Result;
 use clap_noun_verb_macros::verb;
@@ -10,23 +12,7 @@ use clap_noun_verb_macros::verb;
 #[verb]
 pub fn scan(dir: String, snapshot: String, json: bool, ocel: bool) -> Result<()> {
     let target_dir = if dir.is_empty() { ".".to_string() } else { dir };
-    let admitted = if snapshot.is_empty() {
-        GitHubSnapshot {
-            schema_version: WIP_SNAPSHOT_SCHEMA.to_string(),
-            observed_at: Utc::now(),
-            window_days: 30,
-            workspace_repository: None,
-            repositories: Vec::new(),
-        }
-    } else {
-        match wip::load_snapshot(&snapshot) {
-            Ok(value) => value,
-            Err(error) => {
-                eprintln!("WIP snapshot REFUSED: {error}");
-                std::process::exit(2);
-            }
-        }
-    };
+    let admitted = admit_snapshot_or_source_only(&snapshot);
 
     let report = wip::analyze_path(&admitted, &target_dir);
     if ocel {
@@ -92,6 +78,56 @@ pub fn frontier(dir: String, snapshot: String, json: bool) -> Result<()> {
     Ok(())
 }
 
+/// Render the minimum deterministic WIP set covering at least 80% of weighted closure impact.
+///
+/// Every selected object receives an ERRC lane. Recommended actions remain `INTENT_ONLY`.
+#[verb]
+pub fn pareto(dir: String, snapshot: String, json: bool) -> Result<()> {
+    let target_dir = if dir.is_empty() { ".".to_string() } else { dir };
+    let admitted = admit_snapshot_or_source_only(&snapshot);
+    let report = wip::analyze_path(&admitted, &target_dir);
+    let summary = wip::errc_pareto(&report, DEFAULT_PARETO_TARGET_SHARE);
+
+    if json {
+        match serde_json::to_string_pretty(&summary) {
+            Ok(rendered) => println!("{rendered}"),
+            Err(error) => {
+                eprintln!("WIP Pareto serialization failed: {error}");
+                std::process::exit(3);
+            }
+        }
+    } else {
+        println!("--- 80/20 ERRC WIP Frontier ---");
+        println!(
+            "Selected {}/{} WIP objects ({:.1}% of objects) covering {:.1}% of weighted impact (target {:.1}%).",
+            summary.selected_wip,
+            summary.total_wip,
+            100.0 * summary.selected_wip_share,
+            100.0 * summary.selected_share,
+            100.0 * summary.target_share
+        );
+        for item in &summary.items {
+            let action = item
+                .recommended_intent
+                .as_ref()
+                .map(|intent| format!("{:?}", intent.action))
+                .unwrap_or_else(|| "NONE".to_string());
+            println!(
+                "{:>3}. [{:?}] impact={:.3} share={:.1}% cumulative={:.1}% action={} repo={} wip={}",
+                item.rank,
+                item.errc_lane,
+                item.impact_score,
+                100.0 * item.impact_share,
+                100.0 * item.cumulative_share,
+                action,
+                item.repository,
+                item.wip_id
+            );
+        }
+    }
+    Ok(())
+}
+
 /// Scan only the local tree for explicit source/dependency/replay WIP markers.
 #[verb]
 pub fn source(dir: String, json: bool) -> Result<()> {
@@ -138,4 +174,24 @@ pub fn languages(json: bool) -> Result<()> {
         }
     }
     Ok(())
+}
+
+fn admit_snapshot_or_source_only(snapshot: &str) -> GitHubSnapshot {
+    if snapshot.is_empty() {
+        GitHubSnapshot {
+            schema_version: WIP_SNAPSHOT_SCHEMA.to_string(),
+            observed_at: Utc::now(),
+            window_days: 30,
+            workspace_repository: None,
+            repositories: Vec::new(),
+        }
+    } else {
+        match wip::load_snapshot(snapshot) {
+            Ok(value) => value,
+            Err(error) => {
+                eprintln!("WIP snapshot REFUSED: {error}");
+                std::process::exit(2);
+            }
+        }
+    }
 }
