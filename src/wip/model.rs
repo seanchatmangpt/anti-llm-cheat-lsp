@@ -69,7 +69,6 @@ pub enum ClosureActionKind {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GitHubSnapshot {
-    #[serde(default = "default_snapshot_schema")]
     pub schema_version: String,
     pub observed_at: DateTime<Utc>,
     #[serde(default = "default_window_days")]
@@ -80,10 +79,6 @@ pub struct GitHubSnapshot {
     pub workspace_repository: Option<String>,
     #[serde(default)]
     pub repositories: Vec<RepositorySnapshot>,
-}
-
-fn default_snapshot_schema() -> String {
-    WIP_SNAPSHOT_SCHEMA.to_string()
 }
 
 const fn default_window_days() -> u32 {
