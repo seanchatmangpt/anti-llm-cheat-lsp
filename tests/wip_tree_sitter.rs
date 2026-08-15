@@ -47,11 +47,8 @@ fn rust_ast_ignores_marker_like_strings() {
 #[test]
 fn rust_todo_macro_is_ast_wip() {
     let dir = tempdir();
-    assert!(fs::write(
-        dir.path().join("lib.rs"),
-        "pub fn unfinished() { todo!(\"later\"); }\n",
-    )
-    .is_ok());
+    assert!(fs::write(dir.path().join("lib.rs"), "pub fn unfinished() { todo!(\"later\"); }\n",)
+        .is_ok());
 
     let findings = scan_source_wip(dir.path());
     assert_eq!(findings.len(), 1);
@@ -95,9 +92,7 @@ fn typescript_not_implemented_throw_is_wip() {
 
     let findings = scan_source_wip(dir.path());
     assert_eq!(findings.len(), 1);
-    assert!(findings[0]
-        .marker
-        .contains("tree-sitter:typescript:throw-not-implemented"));
+    assert!(findings[0].marker.contains("tree-sitter:typescript:throw-not-implemented"));
 }
 
 #[test]
@@ -111,9 +106,7 @@ fn csharp_not_implemented_exception_is_wip() {
 
     let findings = scan_source_wip(dir.path());
     assert_eq!(findings.len(), 1);
-    assert!(findings[0]
-        .marker
-        .contains("tree-sitter:csharp:throw-not-implemented"));
+    assert!(findings[0].marker.contains("tree-sitter:csharp:throw-not-implemented"));
 }
 
 #[test]
@@ -122,9 +115,7 @@ fn syntax_error_is_build_broken_wip() {
     assert!(fs::write(dir.path().join("Broken.java"), "class Broken { void run( { }\n").is_ok());
 
     let findings = scan_source_wip(dir.path());
-    assert!(findings
-        .iter()
-        .any(|finding| finding.standing == Standing::BuildBroken));
+    assert!(findings.iter().any(|finding| finding.standing == Standing::BuildBroken));
 }
 
 #[test]
@@ -142,11 +133,9 @@ fn test_file_stub_is_typed_as_test_wip() {
 #[test]
 fn cpp_header_uses_best_of_c_and_cpp_grammars() {
     let dir = tempdir();
-    assert!(fs::write(
-        dir.path().join("widget.h"),
-        "class Widget { public: void run(); };\n",
-    )
-    .is_ok());
+    assert!(
+        fs::write(dir.path().join("widget.h"), "class Widget { public: void run(); };\n",).is_ok()
+    );
 
     assert!(scan_source_wip(dir.path()).is_empty());
 }

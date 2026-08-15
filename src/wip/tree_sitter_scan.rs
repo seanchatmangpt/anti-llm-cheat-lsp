@@ -119,20 +119,15 @@ pub(super) fn scan_tree_sitter_file(
             continue;
         };
         let score = parse_error_score(tree.root_node());
-        let replace = best
-            .as_ref()
-            .is_none_or(|(_, _, current_score)| score < *current_score);
+        let replace = best.as_ref().is_none_or(|(_, _, current_score)| score < *current_score);
         if replace {
             best = Some((candidate, tree, score));
         }
     }
 
     let Some((language, tree, _)) = best else {
-        let marker = if load_failed {
-            "TREE_SITTER_LANGUAGE_LOAD"
-        } else {
-            "TREE_SITTER_PARSE_UNAVAILABLE"
-        };
+        let marker =
+            if load_failed { "TREE_SITTER_LANGUAGE_LOAD" } else { "TREE_SITTER_PARSE_UNAVAILABLE" };
         return Some(vec![SourceFinding {
             id: finding_id(relative, 1, marker),
             path: relative.to_string(),
@@ -140,9 +135,7 @@ pub(super) fn scan_tree_sitter_file(
             marker: marker.to_string(),
             kind: source_kind(relative),
             standing: Standing::Unsupported,
-            message: format!(
-                "tree-sitter parser unavailable for admitted extension: {relative}"
-            ),
+            message: format!("tree-sitter parser unavailable for admitted extension: {relative}"),
         }]);
     };
 
@@ -157,10 +150,7 @@ pub(super) fn scan_tree_sitter_file(
     }
 
     findings.sort_by(|a, b| {
-        a.path
-            .cmp(&b.path)
-            .then(a.line.cmp(&b.line))
-            .then(a.marker.cmp(&b.marker))
+        a.path.cmp(&b.path).then(a.line.cmp(&b.line)).then(a.marker.cmp(&b.marker))
     });
     findings.dedup_by(|a, b| a.id == b.id);
     Some(findings)
@@ -265,18 +255,11 @@ fn scan_comment(
     }
 
     if let Some((marker, kind, standing, label)) = classify_comment_status(text) {
-        push_finding(
-            findings, relative, node, language, marker, kind, standing, label, text,
-        );
+        push_finding(findings, relative, node, language, marker, kind, standing, label, text);
     }
 }
 
-fn scan_rust_node(
-    node: Node<'_>,
-    relative: &str,
-    text: &str,
-    findings: &mut Vec<SourceFinding>,
-) {
+fn scan_rust_node(node: Node<'_>, relative: &str, text: &str, findings: &mut Vec<SourceFinding>) {
     if node.kind() != "macro_invocation" {
         return;
     }
@@ -366,12 +349,7 @@ fn scan_python_node(
     }
 }
 
-fn scan_go_node(
-    node: Node<'_>,
-    relative: &str,
-    text: &str,
-    findings: &mut Vec<SourceFinding>,
-) {
+fn scan_go_node(node: Node<'_>, relative: &str, text: &str, findings: &mut Vec<SourceFinding>) {
     if node.kind() == "call_expression" {
         let normalized = compact_whitespace(text).to_ascii_lowercase();
         if normalized.starts_with("panic(") && contains_unfinished_phrase(&normalized) {
@@ -390,12 +368,7 @@ fn scan_go_node(
     }
 }
 
-fn scan_java_node(
-    node: Node<'_>,
-    relative: &str,
-    text: &str,
-    findings: &mut Vec<SourceFinding>,
-) {
+fn scan_java_node(node: Node<'_>, relative: &str, text: &str, findings: &mut Vec<SourceFinding>) {
     if node.kind() == "throw_statement"
         && (text.contains("UnsupportedOperationException")
             || text.contains("NotImplementedException")
@@ -415,12 +388,7 @@ fn scan_java_node(
     }
 }
 
-fn scan_csharp_node(
-    node: Node<'_>,
-    relative: &str,
-    text: &str,
-    findings: &mut Vec<SourceFinding>,
-) {
+fn scan_csharp_node(node: Node<'_>, relative: &str, text: &str, findings: &mut Vec<SourceFinding>) {
     if matches!(node.kind(), "throw_statement" | "throw_expression")
         && (text.contains("NotImplementedException") || contains_unfinished_phrase(text))
     {
@@ -485,12 +453,7 @@ fn scan_js_family_node(
     }
 }
 
-fn scan_bash_node(
-    node: Node<'_>,
-    relative: &str,
-    text: &str,
-    findings: &mut Vec<SourceFinding>,
-) {
+fn scan_bash_node(node: Node<'_>, relative: &str, text: &str, findings: &mut Vec<SourceFinding>) {
     if node.kind() == "command" {
         let normalized = compact_whitespace(text).to_ascii_lowercase();
         if normalized.starts_with("exit ") && contains_unfinished_phrase(&normalized) {
@@ -530,11 +493,7 @@ fn push_finding(
         marker: typed_marker,
         kind,
         standing,
-        message: format!(
-            "tree-sitter/{} {label}: {}",
-            language.name(),
-            compact(evidence)
-        ),
+        message: format!("tree-sitter/{} {label}: {}", language.name(), compact(evidence)),
     });
 }
 
@@ -614,9 +573,7 @@ fn contains_unfinished_phrase(text: &str) -> bool {
         || normalized.contains("stub implementation")
 }
 
-fn classify_comment_status(
-    text: &str,
-) -> Option<(&'static str, WipKind, Standing, &'static str)> {
+fn classify_comment_status(text: &str) -> Option<(&'static str, WipKind, Standing, &'static str)> {
     let normalized = strip_comment_prefix(text).to_ascii_uppercase();
     let declares_status = normalized.starts_with("STATUS:")
         || normalized.starts_with("STANDING:")
@@ -627,19 +584,9 @@ fn classify_comment_status(
     }
 
     if normalized.contains("BUILD_BROKEN") {
-        Some((
-            "BUILD_BROKEN",
-            WipKind::Ci,
-            Standing::BuildBroken,
-            "declared broken build",
-        ))
+        Some(("BUILD_BROKEN", WipKind::Ci, Standing::BuildBroken, "declared broken build"))
     } else if normalized.contains("BLOCKED") {
-        Some((
-            "BLOCKED",
-            WipKind::CrossRepoBlocker,
-            Standing::Blocked,
-            "declared blocker",
-        ))
+        Some(("BLOCKED", WipKind::CrossRepoBlocker, Standing::Blocked, "declared blocker"))
     } else if normalized.contains("PARTIAL_ALIVE") {
         Some((
             "PARTIAL_ALIVE",
