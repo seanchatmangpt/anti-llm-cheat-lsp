@@ -180,10 +180,9 @@ fn generate_wip_closure_markdown() -> String {
     let snapshot_path = Path::new(WIP_SNAPSHOT_PATH);
     let (snapshot, observation_boundary) = if snapshot_path.is_file() {
         match wip::load_snapshot(snapshot_path) {
-            Ok(snapshot) => (
-                snapshot,
-                format!("source + admitted GitHub snapshot `{WIP_SNAPSHOT_PATH}`"),
-            ),
+            Ok(snapshot) => {
+                (snapshot, format!("source + admitted GitHub snapshot `{WIP_SNAPSHOT_PATH}`"))
+            }
             Err(error) => {
                 return format!(
                     "# Little's Law WIP Closure Report\n\nStatus: **REFUSED**\n\nSnapshot `{WIP_SNAPSHOT_PATH}` was rejected: {error}\n\nNo closure intent was constructed from the rejected snapshot.\n"

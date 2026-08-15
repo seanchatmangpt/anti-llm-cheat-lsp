@@ -1,8 +1,7 @@
-use clap_noun_verb::Result;
-use clap_noun_verb_macros::verb;
-
 use anti_llm_cheat_lsp::wip::{self, GitHubSnapshot, WIP_SNAPSHOT_SCHEMA};
 use chrono::Utc;
+use clap_noun_verb::Result;
+use clap_noun_verb_macros::verb;
 
 /// Scan source plus an admitted GitHub activity snapshot and print the WIP closure report.
 ///

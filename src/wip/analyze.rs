@@ -31,18 +31,14 @@ pub fn analyze(snapshot: &GitHubSnapshot, source_findings: Vec<SourceFinding>) -
     let mut wip = Vec::new();
     let mut completion_cycles_days = Vec::new();
     let mut completed_objects = 0usize;
-    let window_start = snapshot.observed_at.clone() - Duration::days(i64::from(snapshot.window_days));
+    let window_start =
+        snapshot.observed_at.clone() - Duration::days(i64::from(snapshot.window_days));
     let dependency_index = dependency_dependents(snapshot);
 
     for repo in &snapshot.repositories {
-        let all_pr_numbers: BTreeSet<u64> =
-            repo.pull_requests.iter().map(|pr| pr.number).collect();
-        let open_pr_numbers: BTreeSet<u64> = repo
-            .pull_requests
-            .iter()
-            .filter(|pr| is_open(&pr.state))
-            .map(|pr| pr.number)
-            .collect();
+        let all_pr_numbers: BTreeSet<u64> = repo.pull_requests.iter().map(|pr| pr.number).collect();
+        let open_pr_numbers: BTreeSet<u64> =
+            repo.pull_requests.iter().filter(|pr| is_open(&pr.state)).map(|pr| pr.number).collect();
         let open_pr_branches: BTreeSet<&str> = repo
             .pull_requests
             .iter()
@@ -60,15 +56,10 @@ pub fn analyze(snapshot: &GitHubSnapshot, source_findings: Vec<SourceFinding>) -
                 let age = age_days(snapshot.observed_at.clone(), activity.clone());
                 let (kind, standing) = classify_open_pr(pr, age);
                 let id = format!("github:{}/pr/{}", repo.full_name, pr.number);
-                let mut evidence = vec![
-                    format!("head_branch={}", pr.head_branch),
-                    format!("ci={}", pr.ci_status),
-                ];
-                evidence.extend(
-                    pr.linked_issues
-                        .iter()
-                        .map(|issue| format!("linked_issue={issue}")),
-                );
+                let mut evidence =
+                    vec![format!("head_branch={}", pr.head_branch), format!("ci={}", pr.ci_status)];
+                evidence
+                    .extend(pr.linked_issues.iter().map(|issue| format!("linked_issue={issue}")));
                 wip.push(WipObject {
                     id: id.clone(),
                     repository: repo.full_name.clone(),
@@ -88,10 +79,9 @@ pub fn analyze(snapshot: &GitHubSnapshot, source_findings: Vec<SourceFinding>) -
                     evidence,
                     closure_conditions: pr_closure_conditions(pr),
                 });
-            } else if let (Some(created), Some(done)) = (
-                pr.created_at.clone(),
-                pr.merged_at.clone().or_else(|| pr.closed_at.clone()),
-            ) {
+            } else if let (Some(created), Some(done)) =
+                (pr.created_at.clone(), pr.merged_at.clone().or_else(|| pr.closed_at.clone()))
+            {
                 admit_completion(
                     snapshot,
                     window_start.clone(),
@@ -111,21 +101,15 @@ pub fn analyze(snapshot: &GitHubSnapshot, source_findings: Vec<SourceFinding>) -
             {
                 continue;
             }
-            let activity = branch
-                .last_activity_at
-                .clone()
-                .or_else(|| latest_commit_at(repo, &branch.name));
+            let activity =
+                branch.last_activity_at.clone().or_else(|| latest_commit_at(repo, &branch.name));
             let age = age_days(snapshot.observed_at.clone(), activity.clone());
             let stale = age >= DEFAULT_STALE_DAYS as f64;
             let id = format!("github:{}/branch/{}", repo.full_name, branch.name);
             wip.push(WipObject {
                 id: id.clone(),
                 repository: repo.full_name.clone(),
-                kind: if stale {
-                    WipKind::OrphanBranch
-                } else {
-                    WipKind::Code
-                },
+                kind: if stale { WipKind::OrphanBranch } else { WipKind::Code },
                 standing: Standing::PartialAlive,
                 title: format!("unmerged branch {}", branch.name),
                 origin: "github.branch".to_string(),
@@ -147,10 +131,7 @@ pub fn analyze(snapshot: &GitHubSnapshot, source_findings: Vec<SourceFinding>) -
 
         for issue in &repo.issues {
             if is_open(&issue.state) {
-                if issue
-                    .linked_pr
-                    .is_some_and(|number| open_pr_numbers.contains(&number))
-                {
+                if issue.linked_pr.is_some_and(|number| open_pr_numbers.contains(&number)) {
                     continue;
                 }
                 let id = format!("github:{}/issue/{}", repo.full_name, issue.number);
@@ -185,10 +166,7 @@ pub fn analyze(snapshot: &GitHubSnapshot, source_findings: Vec<SourceFinding>) -
                             .to_string(),
                     ],
                 });
-            } else if issue
-                .linked_pr
-                .is_some_and(|number| all_pr_numbers.contains(&number))
-            {
+            } else if issue.linked_pr.is_some_and(|number| all_pr_numbers.contains(&number)) {
                 // A linked PR already represents this logical flow unit's exit.
                 // Do not inflate lambda by counting its issue projection again.
                 continue;
@@ -252,10 +230,7 @@ pub fn analyze(snapshot: &GitHubSnapshot, source_findings: Vec<SourceFinding>) -
             if !is_failure(&run.conclusion) {
                 continue;
             }
-            if run
-                .pull_request
-                .is_some_and(|number| open_pr_numbers.contains(&number))
-            {
+            if run.pull_request.is_some_and(|number| open_pr_numbers.contains(&number)) {
                 continue;
             }
             let id = format!("github:{}/workflow/{}", repo.full_name, run.id);
@@ -351,17 +326,13 @@ fn collapse_source_findings(
         .workspace_repository
         .clone()
         .or_else(|| {
-            (snapshot.repositories.len() == 1)
-                .then(|| snapshot.repositories[0].full_name.clone())
+            (snapshot.repositories.len() == 1).then(|| snapshot.repositories[0].full_name.clone())
         })
         .unwrap_or_else(|| "local-workspace".to_string());
     let dependency_index = dependency_dependents(snapshot);
     let mut grouped: BTreeMap<(String, WipKind), Vec<&SourceFinding>> = BTreeMap::new();
     for finding in findings {
-        grouped
-            .entry((finding.path.clone(), finding.kind))
-            .or_default()
-            .push(finding);
+        grouped.entry((finding.path.clone(), finding.kind)).or_default().push(finding);
     }
 
     grouped
@@ -390,12 +361,7 @@ fn collapse_source_findings(
                 repository: repository.clone(),
                 kind,
                 standing,
-                title: format!(
-                    "{} source WIP finding(s) in {} [{}]",
-                    group.len(),
-                    path,
-                    markers
-                ),
+                title: format!("{} source WIP finding(s) in {} [{}]", group.len(), path, markers),
                 origin: "source.scan".to_string(),
                 created_at: None,
                 last_activity_at: None,
@@ -465,9 +431,8 @@ fn little_law_metrics(
 ) -> LittleLawMetrics {
     let throughput = (window_days > 0 && completed_objects > 0)
         .then(|| completed_objects as f64 / f64::from(window_days));
-    let mean_cycle = (!completion_cycles_days.is_empty()).then(|| {
-        completion_cycles_days.iter().sum::<f64>() / completion_cycles_days.len() as f64
-    });
+    let mean_cycle = (!completion_cycles_days.is_empty())
+        .then(|| completion_cycles_days.iter().sum::<f64>() / completion_cycles_days.len() as f64);
     let projected = throughput.and_then(|lambda| (lambda > 0.0).then(|| wip_l as f64 / lambda));
     LittleLawMetrics {
         wip_l,
@@ -494,19 +459,13 @@ fn admit_completion(
 }
 
 fn aggregate_status(wip: &[WipObject]) -> Standing {
-    if wip
-        .iter()
-        .any(|item| item.standing == Standing::BuildBroken)
-    {
+    if wip.iter().any(|item| item.standing == Standing::BuildBroken) {
         Standing::BuildBroken
     } else if wip.iter().any(|item| item.standing == Standing::Blocked) {
         Standing::Blocked
     } else if wip.iter().any(|item| item.standing == Standing::Refused) {
         Standing::Refused
-    } else if wip
-        .iter()
-        .any(|item| item.standing == Standing::Unsupported)
-    {
+    } else if wip.iter().any(|item| item.standing == Standing::Unsupported) {
         Standing::Unsupported
     } else if wip.is_empty() {
         Standing::Unknown
@@ -528,10 +487,7 @@ fn dependency_dependents(snapshot: &GitHubSnapshot) -> BTreeMap<String, Vec<Stri
     for repo in &snapshot.repositories {
         for edge in &repo.dependency_edges {
             if edge.blocking {
-                index
-                    .entry(edge.to.clone())
-                    .or_default()
-                    .push(edge.from.clone());
+                index.entry(edge.to.clone()).or_default().push(edge.from.clone());
             }
         }
     }
@@ -573,9 +529,7 @@ fn standing_rank(standing: Standing) -> u8 {
 }
 
 fn age_days(observed_at: DateTime<Utc>, from: Option<DateTime<Utc>>) -> f64 {
-    from.map(|timestamp| duration_days(observed_at - timestamp))
-        .unwrap_or(0.0)
-        .max(0.0)
+    from.map(|timestamp| duration_days(observed_at - timestamp)).unwrap_or(0.0).max(0.0)
 }
 
 fn duration_days(duration: chrono::Duration) -> f64 {
@@ -594,8 +548,5 @@ fn is_failure(status: &str) -> bool {
 }
 
 fn is_success(status: &str) -> bool {
-    matches!(
-        status.to_ascii_lowercase().as_str(),
-        "success" | "successful" | "passed"
-    )
+    matches!(status.to_ascii_lowercase().as_str(), "success" | "successful" | "passed")
 }

@@ -17,7 +17,12 @@ pub fn scan_source_wip(root: impl AsRef<Path>) -> Vec<SourceFinding> {
         ("todo!(", WipKind::Code, Standing::PartialAlive, "Rust todo! macro"),
         ("unimplemented!(", WipKind::Code, Standing::PartialAlive, "Rust unimplemented! macro"),
         ("file:///", WipKind::Replay, Standing::PartialAlive, "machine-local replay pointer"),
-        ("stub implementation", WipKind::Code, Standing::PartialAlive, "stub implementation marker"),
+        (
+            "stub implementation",
+            WipKind::Code,
+            Standing::PartialAlive,
+            "stub implementation marker",
+        ),
         ("not implemented", WipKind::Code, Standing::PartialAlive, "not-implemented marker"),
     ];
 
@@ -33,11 +38,7 @@ pub fn scan_source_wip(root: impl AsRef<Path>) -> Vec<SourceFinding> {
         if should_skip(path) || !path.is_file() {
             continue;
         }
-        let relative = path
-            .strip_prefix(root)
-            .unwrap_or(path)
-            .to_string_lossy()
-            .replace('\\', "/");
+        let relative = path.strip_prefix(root).unwrap_or(path).to_string_lossy().replace('\\', "/");
         if is_scanner_self_surface(&relative) {
             continue;
         }
@@ -78,10 +79,7 @@ pub fn scan_source_wip(root: impl AsRef<Path>) -> Vec<SourceFinding> {
 
     findings.extend(scan_missing_path_dependencies(root));
     findings.sort_by(|a, b| {
-        a.path
-            .cmp(&b.path)
-            .then(a.line.cmp(&b.line))
-            .then(a.marker.cmp(&b.marker))
+        a.path.cmp(&b.path).then(a.line.cmp(&b.line)).then(a.marker.cmp(&b.marker))
     });
     findings.dedup_by(|a, b| a.id == b.id);
     findings
@@ -100,19 +98,9 @@ fn classify_declared_status(line: &str) -> Option<(&'static str, WipKind, Standi
     }
 
     if normalized.contains("BUILD_BROKEN") {
-        Some((
-            "BUILD_BROKEN",
-            WipKind::Ci,
-            Standing::BuildBroken,
-            "declared broken build",
-        ))
+        Some(("BUILD_BROKEN", WipKind::Ci, Standing::BuildBroken, "declared broken build"))
     } else if normalized.contains("BLOCKED") {
-        Some((
-            "BLOCKED",
-            WipKind::CrossRepoBlocker,
-            Standing::Blocked,
-            "declared blocker",
-        ))
+        Some(("BLOCKED", WipKind::CrossRepoBlocker, Standing::Blocked, "declared blocker"))
     } else if normalized.contains("PARTIAL_ALIVE") {
         Some((
             "PARTIAL_ALIVE",
@@ -190,10 +178,7 @@ fn compact_line(line: &str) -> String {
 }
 
 fn is_scanner_self_surface(relative: &str) -> bool {
-    matches!(
-        relative,
-        "src/wip/source.rs" | "tests/wip_closure.rs" | "docs/WIP_CLOSURE_ENGINE.md"
-    )
+    matches!(relative, "src/wip/source.rs" | "tests/wip_closure.rs" | "docs/WIP_CLOSURE_ENGINE.md")
 }
 
 fn should_skip(path: &Path) -> bool {

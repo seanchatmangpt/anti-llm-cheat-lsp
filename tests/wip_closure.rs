@@ -1,10 +1,11 @@
+use std::fs;
+
 use anti_llm_cheat_lsp::wip::{
     analyze, closure_priority, load_snapshot, scan_source_wip, BranchSnapshot, ClosureActionKind,
-    GitHubSnapshot, IssueSnapshot, PullRequestSnapshot, RepositorySnapshot, Standing,
-    WorkflowRunSnapshot, WipKind, WIP_SNAPSHOT_SCHEMA,
+    GitHubSnapshot, IssueSnapshot, PullRequestSnapshot, RepositorySnapshot, Standing, WipKind,
+    WorkflowRunSnapshot, WIP_SNAPSHOT_SCHEMA,
 };
 use chrono::{DateTime, TimeZone, Utc};
-use std::fs;
 
 fn ts(day: u32) -> DateTime<Utc> {
     match Utc.with_ymd_and_hms(2026, 8, day, 0, 0, 0).single() {
@@ -88,10 +89,7 @@ fn linked_issue_pr_and_failed_workflow_are_one_wip_object() {
     let report = analyze(&admitted, Vec::new());
     assert_eq!(report.metrics.wip_l, 1);
     assert_eq!(report.wip[0].kind, WipKind::Ci);
-    assert!(report.wip[0]
-        .evidence
-        .iter()
-        .any(|item| item == "linked_issue=3"));
+    assert!(report.wip[0].evidence.iter().any(|item| item == "linked_issue=3"));
 }
 
 #[test]
@@ -135,14 +133,8 @@ fn ocel_projection_never_grants_execution_authority() {
     }]);
 
     let report = analyze(&admitted, Vec::new());
-    assert!(report
-        .closure_frontier
-        .iter()
-        .all(|intent| intent.authority == "INTENT_ONLY"));
-    assert!(report
-        .closure_frontier
-        .iter()
-        .all(|intent| intent.receipt_required));
+    assert!(report.closure_frontier.iter().all(|intent| intent.authority == "INTENT_ONLY"));
+    assert!(report.closure_frontier.iter().all(|intent| intent.receipt_required));
 
     let ocel = report.to_ocel_value();
     let events = match ocel.get("events").and_then(serde_json::Value::as_array) {
@@ -153,8 +145,7 @@ fn ocel_projection_never_grants_execution_authority() {
         event.get("type").and_then(serde_json::Value::as_str) == Some("WipObserved")
     }));
     assert!(events.iter().any(|event| {
-        event.get("type").and_then(serde_json::Value::as_str)
-            == Some("ClosureIntentConstructed")
+        event.get("type").and_then(serde_json::Value::as_str) == Some("ClosureIntentConstructed")
     }));
 }
 
@@ -207,11 +198,9 @@ fn missing_snapshot_schema_is_refused() {
         Err(error) => panic!("temporary directory failed: {error}"),
     };
     let path = dir.path().join("snapshot.json");
-    assert!(fs::write(
-        &path,
-        r#"{"observed_at":"2026-08-15T00:00:00Z","repositories":[]}"#,
-    )
-    .is_ok());
+    assert!(
+        fs::write(&path, r#"{"observed_at":"2026-08-15T00:00:00Z","repositories":[]}"#,).is_ok()
+    );
 
     assert!(load_snapshot(&path).is_err());
 }

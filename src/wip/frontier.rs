@@ -35,31 +35,26 @@ pub(super) fn build_closure_frontier(wip: &[WipObject]) -> Vec<ClosureIntent> {
 fn candidate_actions(item: &WipObject) -> Vec<ClosureActionKind> {
     match item.kind {
         WipKind::Ci => vec![ClosureActionKind::RepairCi],
-        WipKind::Dependency | WipKind::CrossRepoBlocker => vec![
-            ClosureActionKind::ResolveBlocker,
-            ClosureActionKind::MaterializeDependency,
-        ],
+        WipKind::Dependency | WipKind::CrossRepoBlocker => {
+            vec![ClosureActionKind::ResolveBlocker, ClosureActionKind::MaterializeDependency]
+        }
         WipKind::Evidence => vec![ClosureActionKind::AddEvidence],
         WipKind::Receipt => vec![ClosureActionKind::AddReceipt],
         WipKind::Replay => vec![ClosureActionKind::ReplaceReplayPointer],
-        WipKind::Review => vec![
-            ClosureActionKind::FinishImplementation,
-            ClosureActionKind::RequestReview,
-        ],
+        WipKind::Review => {
+            vec![ClosureActionKind::FinishImplementation, ClosureActionKind::RequestReview]
+        }
         WipKind::Merge => vec![ClosureActionKind::Merge],
         WipKind::Release => vec![ClosureActionKind::Release],
-        WipKind::OrphanBranch | WipKind::AbandonedExperiment => vec![
-            ClosureActionKind::CompareAndSupersede,
-            ClosureActionKind::OpenPullRequest,
-        ],
-        WipKind::StalePr => vec![
-            ClosureActionKind::FinishImplementation,
-            ClosureActionKind::CompareAndSupersede,
-        ],
-        WipKind::UnsatisfiedRequirement => vec![
-            ClosureActionKind::FinishImplementation,
-            ClosureActionKind::CloseSatisfiedIssue,
-        ],
+        WipKind::OrphanBranch | WipKind::AbandonedExperiment => {
+            vec![ClosureActionKind::CompareAndSupersede, ClosureActionKind::OpenPullRequest]
+        }
+        WipKind::StalePr => {
+            vec![ClosureActionKind::FinishImplementation, ClosureActionKind::CompareAndSupersede]
+        }
+        WipKind::UnsatisfiedRequirement => {
+            vec![ClosureActionKind::FinishImplementation, ClosureActionKind::CloseSatisfiedIssue]
+        }
         WipKind::GeneratedProjection => vec![ClosureActionKind::FinishImplementation],
         _ => vec![ClosureActionKind::FinishImplementation],
     }
@@ -78,9 +73,15 @@ fn closure_reason(item: &WipObject, action: ClosureActionKind) -> String {
         ClosureActionKind::Merge => "remove verified merge-ready WIP",
         ClosureActionKind::Release => "convert integrated work into a release",
         ClosureActionKind::OpenPullRequest => "put unmerged branch work on a review/merge path",
-        ClosureActionKind::CompareAndSupersede => "classify stale branch work instead of leaving latent WIP",
-        ClosureActionKind::CloseSatisfiedIssue => "close a requirement only after observed satisfaction",
-        ClosureActionKind::ReclassifyUnsupported => "classify unsupported work without claiming completion",
+        ClosureActionKind::CompareAndSupersede => {
+            "classify stale branch work instead of leaving latent WIP"
+        }
+        ClosureActionKind::CloseSatisfiedIssue => {
+            "close a requirement only after observed satisfaction"
+        }
+        ClosureActionKind::ReclassifyUnsupported => {
+            "classify unsupported work without claiming completion"
+        }
     };
     format!("{base}; object={}", item.title)
 }
