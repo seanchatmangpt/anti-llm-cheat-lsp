@@ -78,9 +78,11 @@ pub fn frontier(dir: String, snapshot: String, json: bool) -> Result<()> {
     Ok(())
 }
 
-/// Render the minimum deterministic WIP set covering at least 80% of weighted closure impact.
+/// Render every positive-impact WIP object in deterministic DfCM priority order.
 ///
-/// Every selected object receives an ERRC lane. Recommended actions remain `INTENT_ONLY`.
+/// The historical `pareto` command name is retained for compatibility, but it no longer
+/// truncates the lawful option space at an 80% threshold. Every ranked object receives an
+/// ERRC lane and every recommended action remains `INTENT_ONLY`.
 #[verb]
 pub fn pareto(dir: String, snapshot: String, json: bool) -> Result<()> {
     let target_dir = if dir.is_empty() { ".".to_string() } else { dir };
@@ -92,19 +94,18 @@ pub fn pareto(dir: String, snapshot: String, json: bool) -> Result<()> {
         match serde_json::to_string_pretty(&summary) {
             Ok(rendered) => println!("{rendered}"),
             Err(error) => {
-                eprintln!("WIP Pareto serialization failed: {error}");
+                eprintln!("WIP DfCM serialization failed: {error}");
                 std::process::exit(3);
             }
         }
     } else {
-        println!("--- 80/20 ERRC WIP Frontier ---");
+        println!("--- DfCM Full-Coverage ERRC WIP Frontier ---");
         println!(
-            "Selected {}/{} WIP objects ({:.1}% of objects) covering {:.1}% of weighted impact (target {:.1}%).",
+            "Ranked {}/{} WIP objects ({:.1}% of observed objects; {:.1}% of positive weighted impact preserved).",
             summary.selected_wip,
             summary.total_wip,
             100.0 * summary.selected_wip_share,
-            100.0 * summary.selected_share,
-            100.0 * summary.target_share
+            100.0 * summary.selected_share
         );
         for item in &summary.items {
             let action = item
