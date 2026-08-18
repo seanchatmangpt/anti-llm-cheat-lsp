@@ -4,7 +4,10 @@ use serde::{Deserialize, Serialize};
 
 use super::model::{ClosureIntent, Standing, WipKind, WipObject, WipReport};
 
-pub const DEFAULT_PARETO_TARGET_SHARE: f64 = 0.80;
+/// DfCM never deletes lawful reversible WIP options merely because a focus threshold was met.
+/// The legacy `pareto` surface is retained as a compatibility name, but its admitted target is
+/// complete weighted-impact closure.
+pub const DEFAULT_PARETO_TARGET_SHARE: f64 = 1.0;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Ord, PartialOrd)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
@@ -32,6 +35,7 @@ pub struct ParetoWip {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ParetoSummary {
+    /// Compatibility field. Under DfCM this is always 1.0 for admitted execution.
     pub target_share: f64,
     pub total_impact: f64,
     pub selected_impact: f64,
@@ -42,9 +46,11 @@ pub struct ParetoSummary {
     pub items: Vec<ParetoWip>,
 }
 
-/// Select the smallest deterministic WIP prefix whose cumulative weighted impact
-/// meets the requested Pareto target. Each logical WIP object is scored exactly
-/// once, so objects with multiple reversible closure candidates are not inflated.
+/// Rank every positive-impact logical WIP object without truncating the lawful option space.
+///
+/// `target_share` is accepted for API compatibility only. DfCM admission raises it to complete
+/// closure: every observed positive-impact WIP object remains represented exactly once. The
+/// impact score is therefore an ordering heuristic, never a selection/deletion authority.
 pub fn errc_pareto(report: &WipReport, target_share: f64) -> ParetoSummary {
     let target_share = normalize_target(target_share);
     let mut scored = report
@@ -77,12 +83,9 @@ pub fn errc_pareto(report: &WipReport, target_share: f64) -> ParetoSummary {
 
     let best_intents = best_intent_by_wip(&report.closure_frontier);
     let mut selected_impact = 0.0;
-    let mut items = Vec::new();
+    let mut items = Vec::with_capacity(scored.len());
 
     for (item, impact_score) in scored {
-        if !items.is_empty() && selected_impact / total_impact >= target_share {
-            break;
-        }
         selected_impact += impact_score;
         let lane = errc_lane(item.kind);
         items.push(ParetoWip {
@@ -182,12 +185,8 @@ fn best_intent_by_wip(intents: &[ClosureIntent]) -> BTreeMap<String, ClosureInte
     best
 }
 
-fn normalize_target(target_share: f64) -> f64 {
-    if target_share.is_finite() {
-        target_share.clamp(f64::EPSILON, 1.0)
-    } else {
-        DEFAULT_PARETO_TARGET_SHARE
-    }
+fn normalize_target(_target_share: f64) -> f64 {
+    DEFAULT_PARETO_TARGET_SHARE
 }
 
 fn errc_rationale(lane: ErrcLane, item: &WipObject) -> String {
@@ -253,7 +252,7 @@ mod tests {
     }
 
     #[test]
-    fn pareto_selects_minimum_prefix_for_target() {
+    fn dfcm_preserves_complete_ranked_positive_impact_frontier() {
         let report = report(vec![
             object("critical", WipKind::Ci, Standing::BuildBroken, 4, 2),
             object("medium", WipKind::Code, Standing::PartialAlive, 1, 0),
@@ -261,8 +260,23 @@ mod tests {
         ]);
         let summary = errc_pareto(&report, 0.80);
         assert_eq!(summary.items[0].wip_id, "critical");
-        assert!(summary.selected_share >= 0.80);
-        assert!(summary.selected_wip < summary.total_wip);
+        assert_eq!(summary.target_share, 1.0);
+        assert_eq!(summary.selected_share, 1.0);
+        assert_eq!(summary.selected_wip, summary.total_wip);
+        assert_eq!(summary.items.len(), 3);
+    }
+
+    #[test]
+    fn alive_objects_are_observed_but_not_prioritized() {
+        let report = report(vec![
+            object("done", WipKind::Code, Standing::Alive, 10, 10),
+            object("open", WipKind::Code, Standing::Unknown, 0, 0),
+        ]);
+        let summary = errc_pareto(&report, 0.80);
+        assert_eq!(summary.total_wip, 2);
+        assert_eq!(summary.selected_wip, 1);
+        assert_eq!(summary.items[0].wip_id, "open");
+        assert_eq!(summary.selected_share, 1.0);
     }
 
     #[test]
