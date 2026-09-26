@@ -1,0 +1,128 @@
+{
+  "schema_version": "chatman.wip.github-snapshot/v1",
+  "observed_at": "2026-08-15T21:55:00Z",
+  "window_days": 30,
+  "workspace_repository": "acme/api",
+  "repositories": [
+    {
+      "full_name": "acme/api",
+      "default_branch": "main",
+      "branches": [
+        {
+          "name": "main",
+          "head_sha": "1111111111111111111111111111111111111111",
+          "ahead_by": 0,
+          "behind_by": 0,
+          "merged_into_default": true,
+          "last_activity_at": "2026-08-15T20:00:00Z",
+          "associated_pr": null
+        },
+        {
+          "name": "feature/cache",
+          "head_sha": "2222222222222222222222222222222222222222",
+          "ahead_by": 4,
+          "behind_by": 1,
+          "merged_into_default": false,
+          "last_activity_at": "2026-08-14T18:00:00Z",
+          "associated_pr": 42
+        }
+      ],
+      "pull_requests": [
+        {
+          "number": 42,
+          "title": "Add cache admission",
+          "state": "open",
+          "draft": false,
+          "head_branch": "feature/cache",
+          "base_branch": "main",
+          "created_at": "2026-08-10T18:00:00Z",
+          "updated_at": "2026-08-14T18:00:00Z",
+          "closed_at": null,
+          "merged_at": null,
+          "ci_status": "failure",
+          "blockers": [],
+          "changed_files": 6,
+          "linked_issues": [7]
+        },
+        {
+          "number": 38,
+          "title": "Close old replay pointer",
+          "state": "closed",
+          "draft": false,
+          "head_branch": "fix/replay",
+          "base_branch": "main",
+          "created_at": "2026-08-01T12:00:00Z",
+          "updated_at": "2026-08-03T12:00:00Z",
+          "closed_at": "2026-08-03T12:00:00Z",
+          "merged_at": "2026-08-03T12:00:00Z",
+          "ci_status": "success",
+          "blockers": [],
+          "changed_files": 2,
+          "linked_issues": []
+        }
+      ],
+      "issues": [
+        {
+          "number": 7,
+          "title": "Cache admission requirement",
+          "state": "open",
+          "created_at": "2026-08-09T12:00:00Z",
+          "updated_at": "2026-08-14T18:00:00Z",
+          "closed_at": null,
+          "labels": ["feature"],
+          "linked_pr": 42
+        }
+      ],
+      "workflow_runs": [
+        {
+          "id": 9001,
+          "name": "CI",
+          "status": "completed",
+          "conclusion": "failure",
+          "head_branch": "feature/cache",
+          "head_sha": "2222222222222222222222222222222222222222",
+          "pull_request": 42,
+          "created_at": "2026-08-14T18:05:00Z",
+          "updated_at": "2026-08-14T18:10:00Z"
+        }
+      ],
+      "releases": [
+        {
+          "tag_name": "v26.8.16",
+          "name": "August closure release",
+          "draft": true,
+          "prerelease": false,
+          "created_at": "2026-08-14T19:00:00Z",
+          "published_at": null
+        }
+      ],
+      "commits": [
+        {
+          "sha": "2222222222222222222222222222222222222222",
+          "message": "feat: add cache admission",
+          "committed_at": "2026-08-14T18:00:00Z",
+          "branch": "feature/cache"
+        }
+      ],
+      "dependency_edges": [
+        {
+          "from": "acme/web",
+          "to": "github:acme/api/pr/42",
+          "relation": "blocks",
+          "blocking": true
+        }
+      ]
+    },
+    {
+      "full_name": "acme/web",
+      "default_branch": "main",
+      "branches": [],
+      "pull_requests": [],
+      "issues": [],
+      "workflow_runs": [],
+      "releases": [],
+      "commits": [],
+      "dependency_edges": []
+    }
+  ]
+}

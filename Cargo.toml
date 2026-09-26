@@ -56,6 +56,14 @@ url = "2.5"
 tree-sitter = "0.26.5"
 tree-sitter-rust = "0.24"
 tree-sitter-typescript = "0.23.2"
+tree-sitter-javascript = "0.25.0"
+tree-sitter-python = "0.25.0"
+tree-sitter-go = "0.25.0"
+tree-sitter-java = "0.23.5"
+tree-sitter-c = "0.24.2"
+tree-sitter-cpp = "0.23.4"
+tree-sitter-c-sharp = "0.23.5"
+tree-sitter-bash = "0.25.1"
 blake3 = "1"
 wasm4pm-compat = { version = "26.6.11", features = ["formats", "strict", "wasm4pm"] }
 linkme = "0.3.36"
@@ -76,5 +84,4 @@ harness = false
 wasm4pm = { path = "../wasm4pm/wasm4pm" }
 wasm4pm-compat = { path = "../wasm4pm-compat" }
 lsp-types-max = { path = "../lsp-types-max" }
-
 
