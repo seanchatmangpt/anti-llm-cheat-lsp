@@ -68,8 +68,9 @@ jobs:
       # numeric stable ref (e.g. @1.82, or the nonexistent @1.100 that rustup
       # rejects with a 404) can never be the MSRV. The toolchain is passed as an
       # input so version-bump bots cannot move it; tests/ci_toolchain_guard.rs
-      # refuses any drift between this value and rust-toolchain.toml.
-      - uses: dtolnay/rust-toolchain@master
+      # refuses any drift between this value and rust-toolchain.toml. The action
+      # itself is pinned to a commit of its master branch so its code is fixed too.
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # master
         with:
           toolchain: nightly-2026-04-15
       - uses: Swatinem/rust-cache@v2
