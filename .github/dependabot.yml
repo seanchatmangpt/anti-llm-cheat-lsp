@@ -18,6 +18,10 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "ci"
+    # dtolnay/rust-toolchain branch refs encode a Rust version, not an action
+    # release; bumping them changes the toolchain under test (see the msrv job).
+    ignore:
+      - dependency-name: "dtolnay/rust-toolchain"
     groups:
       minor-and-patch:
         update-types: ["minor", "patch"]

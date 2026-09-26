@@ -1,0 +1,80 @@
+{
+  "subject": {
+    "repo": "seanchatmangpt/anti-llm-cheat-lsp",
+    "pr": 1,
+    "parent_head": "e6eaba1095d2c11bf21edd69ebefd6e16cdb826a",
+    "files": [
+      ".github/workflows/ci.yml",
+      ".github/dependabot.yml",
+      "tests/ci_toolchain_guard.rs"
+    ],
+    "previous_parent_head": "e75bc559ddfd20ed96aaa098fea2681096b226e9"
+  },
+  "authority": "NONE",
+  "defect": {
+    "observed": "msrv job: rustup toolchain install 1.100.0 -> HTTP 404 'could not download nonexistent rust version' (GitHub run 32954607485, job msrv)",
+    "root_cause": "dtolnay/rust-toolchain branch refs encode a Rust version; the bump selected an unreleased version. Separately, no stable toolchain builds this crate (1.82.0: path dep lsp-max needs edition2024; 1.85.1: globset/icu need rustc 1.88; 1.91.0: wasm4pm-compat uses #![feature]), so the only true minimum is the pinned nightly in rust-toolchain.toml.",
+    "fix": "msrv job installs the rust-toolchain.toml channel via dtolnay/rust-toolchain pinned to commit 02cb101ec7c40f2c49e1d9714d64511d8e1b74de (its master branch at 2026-09-26) + toolchain input; dependabot ignores dtolnay/rust-toolchain; tests/ci_toolchain_guard.rs refuses drift."
+  },
+  "benchmark": {
+    "command": "cargo test [--release] --all-features --test ci_toolchain_guard guard_cost_is_bounded -- --nocapture",
+    "toolchain": "rustc 1.97.0-nightly (a5c825cd8 2026-04-14)",
+    "host": "Apple M3 Max, darwin",
+    "iterations": 2000,
+    "debug_ns_per_iter": [
+      121770,
+      118404,
+      124320
+    ],
+    "release_ns_per_iter": [
+      10213,
+      8262,
+      38115
+    ],
+    "regression_bound": "per-iteration mean < 2000 us, asserted in guard_cost_is_bounded"
+  },
+  "anti_vacuity": "restoring the PR-head ci.yml (dtolnay/rust-toolchain@1.100) makes 10 of 18 guard tests fail, including committed_ci_and_toolchain_are_admitted",
+  "standing": "PARTIAL_ALIVE: guard + tests ALIVE locally; GitHub cargo jobs remain red for a pre-existing reason (sibling path deps ../lsp-max, ../lsp-types-max, ../star-toml, ../wasm4pm, ../wasm4pm-compat are not checked out in CI)",
+  "hardening_round_2": {
+    "court": "/Users/sac/.claude/v26.9.26-receipts/court-anti-llm-cheat-lsp-1-e6eaba10.json",
+    "closed_findings": [
+      "'-   uses:' (extra spaces after dash) parsed as a step",
+      "flow-style steps and flow-style with: inputs parsed",
+      "every dtolnay install in the msrv job compared to rust-toolchain.toml, numeric toolchain inputs refused in any job",
+      "RUSTUP_TOOLCHAIN assignments (env block/flow, $GITHUB_ENV) refused unless equal to the pinned channel",
+      "cargo +<tc> / rustup default / rustup override in msrv run steps refused",
+      "lexical backstop: action refs seen by a line scan but not by the parser are refused (UnparsedToolchainRef)",
+      "msrv action ref must be a 40-hex commit (was floating @master)",
+      "rustfmt --check clean on tests/ci_toolchain_guard.rs"
+    ],
+    "tests": 28,
+    "anti_vacuity": {
+      "parent e75bc55 ci.yml (@1.100)": "20 of 28 fail",
+      "e6eaba1 ci.yml (floating @master)": "20 of 28 fail",
+      "'-   uses: dtolnay/rust-toolchain@1.100' appended": "10 of 28 fail incl. committed_ci_and_toolchain_are_admitted",
+      "'- {uses: dtolnay/rust-toolchain@1.100}' appended": "10 of 28 fail incl. committed_ci_and_toolchain_are_admitted",
+      "second @master step with toolchain '1.100'": "10 of 28 fail incl. committed_ci_and_toolchain_are_admitted",
+      "second @<sha> step with toolchain '1.100'": "10 of 28 fail incl. committed_ci_and_toolchain_are_admitted",
+      "msrv env RUSTUP_TOOLCHAIN: \"1.100\"": "8 of 28 fail incl. committed_ci_and_toolchain_are_admitted",
+      "'- run: cargo +1.100 check' appended": "8 of 28 fail incl. committed_ci_and_toolchain_are_admitted",
+      "folded-scalar uses: >- dtolnay/rust-toolchain@1.100": "9 of 28 fail incl. committed_ci_and_toolchain_are_admitted",
+      "restored": "28 of 28 pass"
+    },
+    "benchmark": {
+      "method": "20 batches x 100 iterations, bound asserted on the minimum batch (host load average 267-323 during measurement)",
+      "debug_min_ns_per_iter": [
+        232517,
+        242703,
+        255594,
+        243097
+      ],
+      "debug_mean_ns_per_iter": [
+        2731051,
+        3107424,
+        3224701,
+        3215529
+      ],
+      "regression_bound": "min-batch per-iteration < 2000 us, asserted in guard_cost_is_bounded"
+    }
+  }
+}
